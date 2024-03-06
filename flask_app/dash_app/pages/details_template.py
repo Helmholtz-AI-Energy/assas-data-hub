@@ -41,11 +41,11 @@ def layout(report_id=None):
     
     logger.info("report_id %s" % (report_id))
     
-    if report_id == 'none':
+    if (report_id == 'none') or (report_id is None):
         return html.Div([
             html.H1('This is the data details template.'),
             html.Div('The content is generated for each _id.'),
-            ],style=content_style())
+            ],style = content_style())
     else:
         database_manager = AssasDatabaseManager()
         document = database_manager.get_file_document(report_id)
