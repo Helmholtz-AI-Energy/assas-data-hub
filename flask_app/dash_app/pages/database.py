@@ -365,7 +365,7 @@ def cell_clicked_details(active_cell, data):
         col = active_cell['column_id']
         
         if col == 'meta_name':
-            url = '/dash_app/details/' + str(row_data['_id'])
+            url = '/assas_app/details/' + str(row_data['_id'])
             return url
         else:
             return dash.no_update

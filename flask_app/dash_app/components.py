@@ -4,8 +4,8 @@ import base64
 
 def encode_svg_image(svg_name):
     
-    logo = '/home/jonas/assas_app/flask_app' + dash.get_asset_url(svg_name)
-    encoded = base64.b64encode(open(logo,'rb').read())
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets/") + svg_name
+    encoded = base64.b64encode(open(path,'rb').read())
     svg = 'data:image/svg+xml;base64,{}'.format(encoded.decode())
     
     return svg
