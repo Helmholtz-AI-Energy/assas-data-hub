@@ -1,8 +1,6 @@
 """Application entry point."""
 import logging
-import dash_uploader
 
-from dash import html, dcc, Input, Output, callback, State
 from logging.handlers import RotatingFileHandler
 from flask_app import init_app
 

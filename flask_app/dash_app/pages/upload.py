@@ -91,7 +91,8 @@ layout = html.Div([
                 [
                     get_upload_component(id="dash-uploader"),
                     html.Div(id="callback-output", children="no data"),
-                    html.Button("Upload to LSDF", id="button", disabled=True, n_clicks=0),
+                    dbc.Button("Upload to LSDF", id="button", disabled=True, n_clicks=0),
+                    dcc.Store(id='intermediate-value')
                 ],
                 style={  # wrapper div style
                     "textAlign": "center",
@@ -128,24 +129,29 @@ layout = html.Div([
 
 @du.callback(
     output=[
-        Output("callback-output", "children"),
-        Output("button", "disabled")        
+        Output('callback-output', 'children'),
+        Output('intermediate-value', 'data'),
+        Output('button', 'disabled'),       
     ],
-    id="dash-uploader",
+    id='dash-uploader',
 )
 def callback_on_completion(status: du.UploadStatus):
     
     files = html.Ul([html.Li(str(x)) for x in status.uploaded_files])
     
-    return files, False
+    logger.info('uploaded file with id {}'.format(status.upload_id))
+ 
+    return files, status.upload_id, False
 
 
 @callback(
     Output("status-list", "children"),
-    Input('button', 'n_clicks'))
-def clicked_output(clicks):
+    Input('button', 'n_clicks'),
+    Input('intermediate-value', 'data'),
+)
+def clicked_output(clicks, data):
     
-    logger.debug('number of clicks {}'.format(clicks))
+    #logger.debug('number of clicks {}, data {}'.format(clicks, data))
     
     result_list = ['recognized ASTEC archive', 'converted']
     

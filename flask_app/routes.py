@@ -1,7 +1,7 @@
 """Routes for parent Flask app."""
 import datetime
 
-from flask import Flask, redirect, render_template
+from flask import redirect, render_template
 from flask import current_app as app
 
 @app.route('/')
