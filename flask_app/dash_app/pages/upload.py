@@ -17,7 +17,7 @@ from pathlib import Path
 from ..components import content_style
 from assasdb import AssasDatabaseManager
 
-from flask import current_app as app
+app = dash.get_app()
 
 logger = logging.getLogger('assas_app')
 
@@ -30,15 +30,20 @@ UPLOAD_FOLDER_ROOT = r'/home/jonas/upload'
 if not os.path.exists(UPLOAD_FOLDER_ROOT):
     os.makedirs(UPLOAD_FOLDER_ROOT)
     
-du.configure_upload(dash.get_app(), UPLOAD_FOLDER_ROOT)
+du.configure_upload(app, UPLOAD_FOLDER_ROOT)
 
 def get_upload_component(id):
     return du.Upload(
         id=id,
         max_file_size=10000,  # 1800 Mb
         filetypes=['csv', 'zip'],
-        upload_id=uuid.uuid1(),  # Unique session id
+        upload_id=uuid.uuid4(),  # Unique session id
+        cancel_button=True,
+        pause_button=True,
     )
+
+trends = ['python', 'flask', 'java']
+current_uuid = 0
 
 layout = html.Div([
     html.H2('ASSAS Database - Upload ASSAS Training Dataset'),
@@ -80,28 +85,68 @@ layout = html.Div([
             ]
     ),
     html.Hr(),
-    html.H3('Archive files'),
+    html.H3('Upload ASTEC archive'),
     html.Hr(),
-    get_upload_component('upload_data'),
+    html.Div(
+                [
+                    get_upload_component(id="dash-uploader"),
+                    html.Div(id="callback-output", children="no data"),
+                    html.Button("Upload to LSDF", id="button", disabled=True, n_clicks=0),
+                ],
+                style={  # wrapper div style
+                    "textAlign": "center",
+                    "width": "1000px",
+                    "margin-top": "1rem",
+                    "margin-bottom": "1rem",
+                    "margin-left": "1rem",
+                    "margin-right": "1rem",
+                    "padding": "2rem 1rem",
+                },
+            ),
     html.Hr(),
+    html.H3('Upload to LSDF'),
     dbc.Button(
             "Upload to LSDF", 
-            id="upload_archive", 
+            id="upload-button", 
             className="me-2", 
             n_clicks=0, 
             disabled=True,
         ),
-    html.Hr(),
+    html.Hr(),    
     dcc.Interval(id="progress-interval", n_intervals=0, interval=500),
     dbc.Progress(id="progress"),
     html.Hr(),
     html.H3("Report"),
-    html.Ul(id="file-list")
+    html.Div(
+        className="status",
+        children=[
+            html.Ul(id='status-list', children=[html.Li(i) for i in trends])
+        ],
+    ),
+    html.Ul(id="status-list2")
 ], style = content_style())
 
 @du.callback(
-    output=Output("callback-output", "children"),
+    output=[
+        Output("callback-output", "children"),
+        Output("button", "disabled")        
+    ],
     id="dash-uploader",
 )
 def callback_on_completion(status: du.UploadStatus):
-    return html.Ul([html.Li(str(x)) for x in status.uploaded_files])
+    
+    files = html.Ul([html.Li(str(x)) for x in status.uploaded_files])
+    
+    return files, False
+
+
+@callback(
+    Output("status-list", "children"),
+    Input('button', 'n_clicks'))
+def clicked_output(clicks):
+    
+    logger.debug('number of clicks {}'.format(clicks))
+    
+    result_list = ['recognized ASTEC archive', 'converted']
+    
+    return [html.Li("no ASTEC archive present")]
