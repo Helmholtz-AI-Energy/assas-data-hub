@@ -5,25 +5,40 @@ import numpy as np
 import os
 import base64
 import logging
+import dash_uploader as du
+import uuid
 
-from dash import html, dcc, Input, Output, callback
+from dash import html, dcc, Input, Output, callback, State
 from urllib.parse import quote as urlquote
 from flask import Flask, send_from_directory
 from collections import OrderedDict
+from pathlib import Path
 
 from ..components import content_style
 from assasdb import AssasDatabaseManager
 
-logger = logging.getLogger(__name__)
+from flask import current_app as app
 
-server = Flask(__name__)
+logger = logging.getLogger('assas_app')
 
-UPLOAD_DIRECTORY = "/home/jonas/upload"
-
-if not os.path.exists(UPLOAD_DIRECTORY):
-    os.makedirs(UPLOAD_DIRECTORY)
+logger.debug('initialize %s', __name__)
 
 dash.register_page(__name__, path="/upload")
+
+UPLOAD_FOLDER_ROOT = r'/home/jonas/upload'
+
+if not os.path.exists(UPLOAD_FOLDER_ROOT):
+    os.makedirs(UPLOAD_FOLDER_ROOT)
+    
+du.configure_upload(dash.get_app(), UPLOAD_FOLDER_ROOT)
+
+def get_upload_component(id):
+    return du.Upload(
+        id=id,
+        max_file_size=10000,  # 1800 Mb
+        filetypes=['csv', 'zip'],
+        upload_id=uuid.uuid1(),  # Unique session id
+    )
 
 layout = html.Div([
     html.H2('ASSAS Database - Upload ASSAS Training Dataset'),
@@ -66,24 +81,11 @@ layout = html.Div([
     ),
     html.Hr(),
     html.H3('Archive files'),
-    dcc.Upload(
-            id="upload-data",
-            children=html.Div(
-                ["Drag and drop or click to select a file to upload."]
-            ),
-            style={
-                "width": "100%",
-                "height": "60px",
-                "lineHeight": "60px",
-                "borderWidth": "1px",
-                "borderStyle": "dashed",
-                "borderRadius": "5px",
-                "textAlign": "center",
-                "margin": "10px",
-            }),
+    html.Hr(),
+    get_upload_component('upload_data'),
     html.Hr(),
     dbc.Button(
-            "Upload", 
+            "Upload to LSDF", 
             id="upload_archive", 
             className="me-2", 
             n_clicks=0, 
@@ -95,46 +97,11 @@ layout = html.Div([
     html.Hr(),
     html.H3("Report"),
     html.Ul(id="file-list")
-],style=content_style())
+], style = content_style())
 
-@server.route("/download/<path:path>")
-def download(path):
-    """Serve a file from the upload directory."""
-    return send_from_directory(UPLOAD_DIRECTORY, path, as_attachment=True)
-
-def file_download_link(filename):
-    """Create a Plotly Dash 'A' element that downloads a file from the app."""
-    location = "/download/{}".format(urlquote(filename))
-    return html.A(filename, href=location)
-
-def uploaded_files():
-    """List the files in the upload directory."""
-    files = []
-    for filename in os.listdir(UPLOAD_DIRECTORY):
-        path = os.path.join(UPLOAD_DIRECTORY, filename)
-        if os.path.isfile(path):
-            files.append(filename)
-    return files
-
-@callback(
-    Output("file-list", "children"),
-    [Input("upload-data", "filename"), Input("upload-data", "contents")],
+@du.callback(
+    output=Output("callback-output", "children"),
+    id="dash-uploader",
 )
-def update_output(uploaded_filenames, uploaded_file_contents):
-    """Save uploaded files and regenerate the file list."""
-
-    if uploaded_filenames is not None and uploaded_file_contents is not None:
-        for name, data in zip(uploaded_filenames, uploaded_file_contents):
-            save_file(name, data)
-
-    files = uploaded_files()
-    if len(files) == 0:
-        return [html.Li("no ASTEC archive present")]
-    else:
-        return [html.Li(file_download_link(filename)) for filename in files]
-
-def save_file(name, content):
-    """Decode and store a file uploaded with Plotly Dash."""
-    data = content.encode("utf8").split(b";base64,")[1]
-    with open(os.path.join(UPLOAD_DIRECTORY, name), "wb") as fp:
-        fp.write(base64.decodebytes(data))
+def callback_on_completion(status: du.UploadStatus):
+    return html.Ul([html.Li(str(x)) for x in status.uploaded_files])
