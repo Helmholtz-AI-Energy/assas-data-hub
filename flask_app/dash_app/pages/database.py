@@ -6,6 +6,7 @@ import numpy as np
 import logging
 
 from dash import Dash, dash_table, html, dcc, Input, Output, callback, State
+from flask import current_app as flask_app
 from zipfile import ZipFile
 from uuid import uuid4
 
@@ -28,7 +29,7 @@ operators = [['ge ', '>='],
              ['contains '],
              ['datestartswith ']]
 
-table_data = AssasDatabaseManager().get_datasets()
+table_data = AssasDatabaseManager(flask_app.config.get('LOCAL_ARCHIVE'), flask_app.config.get('LSDF_ARCHIVE')).get_database_entries()
 
 ALL = len(table_data)
 PAGE_SIZE = 30

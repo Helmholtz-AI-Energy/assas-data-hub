@@ -1,12 +1,13 @@
 import dash
 import dash_bootstrap_components as dbc
-import pandas as pd
+import pandas
 import numpy as np
 import os
 import base64
 import logging
 import dash_uploader as du
 import uuid
+import json
 
 from dash import html, dcc, Input, Output, callback, State
 from urllib.parse import quote as urlquote
@@ -14,8 +15,10 @@ from flask import Flask, send_from_directory
 from collections import OrderedDict
 from pathlib import Path
 
+from flask import current_app as flask_app
+
 from ..components import content_style
-from assasdb import AssasDatabaseManager
+from assasdb import AssasDatabaseManager, AssasDatabaseHandler
 
 app = dash.get_app()
 
@@ -25,7 +28,7 @@ logger.debug('initialize %s', __name__)
 
 dash.register_page(__name__, path="/upload")
 
-UPLOAD_FOLDER_ROOT = os.path.dirname(os.path.abspath(__file__)) + "/upload/"
+UPLOAD_FOLDER_ROOT = flask_app.config.get('LOCAL_ARCHIVE')
 
 logger.debug('initialize {}, upload folder {}'.format(__name__, UPLOAD_FOLDER_ROOT))
 
@@ -141,20 +144,30 @@ def callback_on_completion(status: du.UploadStatus):
     
     files = html.Ul([html.Li(str(x)) for x in status.uploaded_files])
     
-    logger.info('uploaded file with id {}'.format(status.upload_id))
- 
-    return files, status.upload_id, False
-
+    document = AssasDatabaseHandler.get_test_document_file(status.upload_id, str(status.uploaded_files[0]))
+    
+    logger.info(f'uploaded file with id {status.upload_id} {status.uploaded_files} {document}')
+    
+    return files, json.dumps(document), False
 
 @callback(
     Output("status-list", "children"),
     Input('button', 'n_clicks'),
-    Input('intermediate-value', 'data'),
+    State('intermediate-value', 'data'),
 )
 def clicked_output(clicks, data):
     
-    logger.debug('number of clicks {}, data {}'.format(str(clicks), str(data)))
-    
     result_list = ['recognized ASTEC archive', 'converted']
+    
+    if data is not None:
+    
+        document = json.loads(data)
+    
+        logger.debug(f'number of clicks {clicks} {document}')
+        
+        manager = AssasDatabaseManager(flask_app.config.get('LOCAL_ARCHIVE'), flask_app.config.get('LSDF_ARCHIVE'))
+        
+        manager.process_archive(document['system_path'])
+        manager.synchronize_archive(document['system_uuid'])
     
     return [html.Li("no ASTEC archive present")]

@@ -2,6 +2,7 @@ import dash
 import dash_bootstrap_components as dbc
 import logging
 
+from flask import current_app as flask_app
 from dash import html
 from assasdb import AssasDatabaseManager
 from ..components import content_style
@@ -47,8 +48,8 @@ def layout(report_id=None):
             html.Div('The content is generated for each _id.'),
             ],style = content_style())
     else:
-        database_manager = AssasDatabaseManager()
-        document = database_manager.get_file_document(report_id)
+        database_manager = AssasDatabaseManager(flask_app.config.get('LOCAL_ARCHIVE'), flask_app.config.get('LSDF_ARCHIVE'))
+        document = database_manager.get_database_entry(report_id)
         logger.info("document %s" % (document))
     
         return html.Div([    
