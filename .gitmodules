@@ -1,0 +1,3 @@
+[submodule "assas_database"]
+	path = assas_database
+	url = git@github.com:ke4920/assas_database.git

@@ -25,7 +25,9 @@ logger.debug('initialize %s', __name__)
 
 dash.register_page(__name__, path="/upload")
 
-UPLOAD_FOLDER_ROOT = r'/home/jonas/upload'
+UPLOAD_FOLDER_ROOT = os.path.dirname(os.path.abspath(__file__)) + "/upload/"
+
+logger.debug('initialize {}, upload folder {}'.format(__name__, UPLOAD_FOLDER_ROOT))
 
 if not os.path.exists(UPLOAD_FOLDER_ROOT):
     os.makedirs(UPLOAD_FOLDER_ROOT)
@@ -151,7 +153,7 @@ def callback_on_completion(status: du.UploadStatus):
 )
 def clicked_output(clicks, data):
     
-    #logger.debug('number of clicks {}, data {}'.format(clicks, data))
+    logger.debug('number of clicks {}, data {}'.format(str(clicks), str(data)))
     
     result_list = ['recognized ASTEC archive', 'converted']
     
