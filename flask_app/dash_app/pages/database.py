@@ -37,11 +37,11 @@ PAGE_MAX_SIZE = 100
 
 PAGE_COUNT = ALL / PAGE_SIZE
 
-dash.register_page(__name__, path="/database")
+dash.register_page(__name__, path='/database')
 
 layout = html.Div([
     html.H2('ASSAS Database - Training Dataset Index'),
-    dbc.Alert("Search interface for the available ASSAS training datasets", color="primary", style={'textAlign': 'center'}),
+    dbc.Alert('Search interface for the available ASSAS training datasets', color='primary', style={'textAlign': 'center'}),
     html.Hr(),
     html.Div([
     dbc.Pagination(
@@ -50,22 +50,22 @@ layout = html.Div([
                 previous_next=True,
                 max_value=PAGE_COUNT, 
                 fully_expanded=False,
-                size="lg"                
+                size='lg'                
                 )
     ], style={'width': '100%','padding-left':'30%', 'padding-right':'25%'}),
     html.Hr(),
     html.Div([
     dbc.Button(
-            "Download", 
-            id="download_selected", 
-            className="me-2", 
+            'Download', 
+            id='download_selected', 
+            className='me-2', 
             n_clicks=0, 
             disabled=True,
         ),
     dbc.Button(
-            "Reload", 
-            id="reload_page", 
-            className="me-2", 
+            'Reload', 
+            id='reload_page', 
+            className='me-2', 
             n_clicks=0, 
             disabled=True,
         ),
@@ -86,7 +86,7 @@ layout = html.Div([
         {'name': 'Status', 'id': 'system_status', 'selectable': True},
         {'name': 'Name', 'id': 'meta_name', 'selectable': True},
         ],
-        markdown_options={"html": True},
+        markdown_options={'html': True},
         hidden_columns=['', '_id', 'system_uuid', 'system_path'],
         data=table_data.to_dict('records'),
         style_cell={
@@ -156,17 +156,17 @@ def generate_archive(path_to_zip, file_path_list):
             zip_object.write(file_path)
             
     if os.path.exists(path_to_zip):
-        logger.info("ZIP file %s created" % path_to_zip)
+        logger.info('ZIP file %s created' % path_to_zip)
         return path_to_zip
     else:
-        logger.info("ZIP file %s not created" % path_to_zip)
+        logger.info('ZIP file %s not created' % path_to_zip)
         return None       
 
 @callback(
     Output('download_button', 'data'),
     Input('download_selected', 'n_clicks'),  
-    State("datatable-paging-and-sorting", "derived_viewport_selected_rows"),
-    State("datatable-paging-and-sorting", "derived_viewport_selected_row_ids"),
+    State('datatable-paging-and-sorting', 'derived_viewport_selected_rows'),
+    State('datatable-paging-and-sorting', 'derived_viewport_selected_row_ids'),
     State('datatable-paging-and-sorting', 'derived_viewport_data')
 )
 def start_download(clicks, rows, ids, data):
@@ -179,7 +179,7 @@ def start_download(clicks, rows, ids, data):
     
     download_folder = os.getcwd() + '/tmp'
     if not os.path.exists(download_folder):
-        logger.info("create %s" % download_folder)
+        logger.info('create %s' % download_folder)
         os.makedirs(download_folder)
         
     selected_data = [data[i] for i in rows]    
@@ -195,9 +195,9 @@ def start_download(clicks, rows, ids, data):
     return dcc.send_file(zip_file)
 
 @callback(
-    Output("download_selected", "disabled"),     
-    Input("datatable-paging-and-sorting", "derived_viewport_selected_rows"),
-    Input("datatable-paging-and-sorting", "derived_viewport_selected_row_ids"),
+    Output('download_selected', 'disabled'),     
+    Input('datatable-paging-and-sorting', 'derived_viewport_selected_rows'),
+    Input('datatable-paging-and-sorting', 'derived_viewport_selected_row_ids'),
     State('datatable-paging-and-sorting', 'derived_viewport_data')
 )
 def selected_button(rows, ids, data):

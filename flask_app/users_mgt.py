@@ -2,11 +2,11 @@
 from werkzeug.security import generate_password_hash
 
 class User():
-    id = "test"
-    username = "test"
-    email = "test"
-    password = "test"
-    admin = "test"
+    id = 'test'
+    username = 'test'
+    email = 'test'
+    password = 'test'
+    admin = 'test'
 
 def create_user_table():
   

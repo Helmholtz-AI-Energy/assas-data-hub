@@ -1,4 +1,4 @@
-"""Application entry point."""
+'''Application entry point.'''
 import logging
 
 from logging.handlers import RotatingFileHandler
@@ -13,7 +13,7 @@ logger = logging.getLogger('assas_app')
 
 app = init_app()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     app.logger.addHandler(handler)
     app.run(host='0.0.0.0', debug=True)

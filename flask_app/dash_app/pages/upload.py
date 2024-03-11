@@ -53,39 +53,39 @@ def get_upload_component(id):
 
 layout = html.Div([
     html.H2('ASSAS Database - Upload ASSAS Training Dataset'),
-    dbc.Alert("Upload interface for ASTEC binary archives", color="primary", style={'textAlign': 'center'}),
+    dbc.Alert('Upload interface for ASTEC binary archives', color='primary', style={'textAlign': 'center'}),
     html.H3('General meta data'),
     dbc.InputGroup(
-            [dbc.InputGroupText("Name"), dbc.Input(placeholder="Name")],
-            className="mb-3",
+            [dbc.InputGroupText('Name'), dbc.Input(id='input_name', placeholder='Name')],
+            className='mb-3',
     ),
     dbc.InputGroup(
-            [dbc.InputGroupText("Group"), dbc.Input(placeholder="Group")],
-            className="mb-3",
+            [dbc.InputGroupText('Group'), dbc.Input(id='input_group', placeholder='Group')],
+            className='mb-3',
     ),
     dbc.InputGroup(
-            [dbc.InputGroupText("Date"), dbc.Input(placeholder="Date")],
-            className="mb-3",
+            [dbc.InputGroupText('Date'), dbc.Input(id='input_date', placeholder='Date')],
+            className='mb-3',
     ),
     dbc.InputGroup(
-            [dbc.InputGroupText("Creator"), dbc.Input(placeholder="Creator")],
-            className="mb-3",
+            [dbc.InputGroupText('Creator'), dbc.Input(id='input_creator', placeholder='Creator')],
+            className='mb-3',
     ),  
     dbc.InputGroup(
             [
-                dbc.InputGroupText("Description"),
-                dbc.Textarea(),
+                dbc.InputGroupText('Description'),
+                dbc.Textarea(id='input description', placeholder=''),
             ],
-            className="mb-3",
+            className='mb-3',
     ),
     html.H3('Conversion schema'),
     dbc.InputGroup(
             [
-                dbc.InputGroupText("Schema"),
+                dbc.InputGroupText('Schema'),
                 dbc.Select(
                     options=[
-                        {"label": "Option 1", "value": 1},
-                        {"label": "Option 2", "value": 2},
+                        {'label': 'hdf5_full', 'value': 1},
+                        {'label': 'hdf5_custom', 'value': 2},
                     ]
                 )                
             ]
@@ -95,45 +95,45 @@ layout = html.Div([
     html.Hr(),
     html.Div(
                 [
-                    get_upload_component(id="dash-uploader"),
-                    html.Div(id="callback-output", children="no data"),
-                    html.P(id="paragraph", children=["Button not clicked"]),
-                    dbc.Button("Upload to LSDF", id="button", disabled=True, n_clicks=0),
-                    dbc.Button("Test progress", id="button2", disabled=True, n_clicks=0),
-                    dbc.Button("Cancel upload", id="cancel_button", disabled=True, n_clicks=0),                    
+                    get_upload_component(id='dash-uploader'),
+                    html.Div(id='callback-output', children='no data'),
+                    html.P(id='paragraph', children=['Button not clicked']),
+                    dbc.Button('Upload to LSDF', id='button', disabled=True, n_clicks=0),
+                    dbc.Button('Test progress', id='button2', disabled=True, n_clicks=0),
+                    dbc.Button('Cancel upload', id='cancel_button', disabled=True, n_clicks=0),                    
                     dcc.Store(id='intermediate-value')
                 ],
                 style={  # wrapper div style
-                    "textAlign": "center",
-                    "width": "1000px",
-                    "margin-top": "1rem",
-                    "margin-bottom": "1rem",
-                    "margin-left": "1rem",
-                    "margin-right": "1rem",
-                    "padding": "2rem 1rem",
+                    'textAlign': 'center',
+                    'width': '1000px',
+                    'margin-top': '1rem',
+                    'margin-bottom': '1rem',
+                    'margin-left': '1rem',
+                    'margin-right': '1rem',
+                    'padding': '2rem 1rem',
                 },
             ),
     #html.Hr(),
     #html.H3('Upload to LSDF'),
     #dbc.Button(
-    #        "Upload to LSDF", 
-    #        id="upload-button", 
-    #        className="me-2", 
+    #        'Upload to LSDF', 
+    #        id='upload-button', 
+    #        className='me-2', 
     #        n_clicks=0, 
     #        disabled=True,
     #    ),
     html.Hr(),    
-    #dcc.Interval(id="progress-interval", n_intervals=0, interval=500),
-    dbc.Progress(id="progress", value=0, striped=True),
+    #dcc.Interval(id='progress-interval', n_intervals=0, interval=500),
+    dbc.Progress(id='progress', value=0, striped=True),
     html.Hr(),
-    html.H3("Report"),
+    html.H3('Report'),
     html.Div(
-        className="status",
+        className='status',
         children=[
             html.Ul(id='status-list')
         ],
     ),
-    html.Ul(id="status-list2")
+    html.Ul(id='status-list2')
 ], style = content_style())
 
 @du.callback(
@@ -156,7 +156,7 @@ def callback_on_completion(status: du.UploadStatus):
     return files, json.dumps(document), False, False
 
 @callback(
-    Output("status-list", "children"),
+    Output('status-list', 'children'),
     Input('button', 'n_clicks'),
     State('intermediate-value', 'data'),
 )
@@ -176,29 +176,29 @@ def clicked_output(clicks, data):
         #manager.process_archive(document['system_path'])
         #manager.synchronize_archive(document['system_uuid'])
     
-    return [html.Li("no ASTEC archive present")]
+    return [html.Li('no ASTEC archive present')]
 
 @app.long_callback(
-    output=Output("paragraph", "children"),
-    inputs=[Input("button2", "n_clicks"),State('intermediate-value', 'data')],
+    output=Output('paragraph', 'children'),
+    inputs=[Input('button2', 'n_clicks'),State('intermediate-value', 'data')],
     #state=State('intermediate-value', 'data'),
-    background=True,
+    #background=True,
     running=[
-        (Output("button2", "disabled"), True, False),
-        (Output("cancel_button", "disabled"), False, True),
+        (Output('button2', 'disabled'), True, False),
+        (Output('cancel_button', 'disabled'), False, True),
         (
-            Output("paragraph", "style"),
-            {"visibility": "hidden"},
-            {"visibility": "visible"},
+            Output('paragraph', 'style'),
+            {'visibility': 'hidden'},
+            {'visibility': 'visible'},
         ),
         (
-            Output("progress", "style"),
-            {"visibility": "visible"},
-            {"visibility": "hidden"},
+            Output('progress', 'style'),
+            {'visibility': 'visible'},
+            {'visibility': 'hidden'},
         ),
     ],
-    cancel=Input("cancel_button", "n_clicks"),
-    progress=[Output("progress", "value"), Output("progress", "max")],
+    cancel=Input('cancel_button', 'n_clicks'),
+    progress=[Output('progress', 'value'), Output('progress', 'max')],
     prevent_initial_call=True
 )
 def update_progress(set_progress, n_clicks, data):
