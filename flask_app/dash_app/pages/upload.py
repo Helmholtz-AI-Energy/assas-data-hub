@@ -22,7 +22,7 @@ from pathlib import Path
 from flask import current_app as flask_app
 
 from ..components import content_style
-from assasdb import AssasDatabaseManager, AssasDatabaseHandler
+from assasdb import AssasDatabaseManager, AssasDatabaseHandler, AssasDocumentFile
 
 app = dash.get_app()
 
@@ -49,6 +49,7 @@ def get_upload_component(id):
         upload_id=uuid.uuid4(),  # Unique session id
         cancel_button=True,
         pause_button=True,
+        disabled=True,                        
     )
 
 layout = html.Div([
@@ -74,10 +75,11 @@ layout = html.Div([
     dbc.InputGroup(
             [
                 dbc.InputGroupText('Description'),
-                dbc.Textarea(id='input description', placeholder=''),
+                dbc.Textarea(id='input_description', placeholder='Description'),
             ],
             className='mb-3',
     ),
+    dcc.Store(id='intermediate-meta'),
     html.H3('Conversion schema'),
     dbc.InputGroup(
             [
@@ -136,6 +138,61 @@ layout = html.Div([
     html.Ul(id='status-list2')
 ], style = content_style())
 
+@callback(
+     Output('intermediate-meta', 'data'),
+     Output('dash-uploader', 'disabled'),
+     State('intermediate-meta', 'data'),
+     Input("input_name", "value"), 
+     Input("input_group", "value"), 
+     Input("input_date", "value"), 
+     Input("input_creator", "value"), 
+     Input("input_description", "value"))
+def output_text(data, name, group, date, creator, description):
+  
+    if data is not None:
+        document = json.loads(data)
+    else:
+        document = {}
+    
+    if name is not None and len(name) > 0:
+        document['meta_name'] = name  
+    else:
+        if 'meta_name' in document:
+            del document['meta_name']
+            
+    if group is not None and len(group) > 0:
+        document['meta_group'] = group  
+    else:
+        if 'meta_group' in document:
+            del document['meta_group']
+            
+    if date is not None and len(date) > 0:
+        document['meta_date'] = date  
+    else:
+        if 'meta_date' in document:
+            del document['meta_date']
+            
+    if creator is not None and len(creator) > 0:
+        document['meta_creator'] = creator  
+    else:
+        if 'meta_creator' in document:
+            del document['meta_creator']
+            
+    if description is not None and len(description) > 0:
+        document['meta_description'] = description  
+    else:
+        if 'meta_description' in document:
+            del document['meta_description']
+            
+    if len(document) == len(dash.callback_context.inputs_list):
+        disable_upload = False
+    else: 
+        disable_upload = True
+        
+    logger.debug(f'updated document ({document}, {len(document)}, {disable_upload})')
+    
+    return json.dumps(document), disable_upload
+
 @du.callback(
     output=[
         Output('callback-output', 'children'),
@@ -149,7 +206,7 @@ def callback_on_completion(status: du.UploadStatus):
     
     files = html.Ul([html.Li(str(x)) for x in status.uploaded_files])
     
-    document = AssasDatabaseHandler.get_test_document_file(status.upload_id, str(status.uploaded_files[0]))
+    document = AssasDocumentFile.get_test_document_file(status.upload_id, str(status.uploaded_files[0]))
     
     logger.info(f'uploaded file with id {status.upload_id} {status.uploaded_files} {document}')
     
