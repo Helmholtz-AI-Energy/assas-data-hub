@@ -1,9 +1,12 @@
-import dash_bootstrap_components as dbc
 import os
 import logging
-import dash_uploader
+import uuid
+import diskcache
+import dash_bootstrap_components as dbc
 
-from dash import dash, html, Output
+from dash import dash, html, Output, DiskcacheManager
+from dash.long_callback import DiskcacheLongCallbackManager
+from dash.dependencies import Input, Output
 from assasdb import AssasDatabaseManager
 from .components import encode_svg_image
 
@@ -50,22 +53,37 @@ def init_dashboard(server):
     assets_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
     logger.debug('pages folder %s, assets_folder %s' % (pages_folder, assets_folder))
     
+    launch_uid = uuid.uuid4()
+       
+    ## Diskcache
+    cache = diskcache.Cache("./cache")
+    long_callback_manager = DiskcacheLongCallbackManager(
+        cache, cache_by=[lambda: launch_uid], expire=60,
+    )
+    
+    # Background callbacks require a cache manager
+    #background_callback_manager = DiskcacheManager(
+    #    cache, cache_by=[lambda: launch_uid], expire=60,
+    #)
+    
     dash_app = dash.Dash(
         server=server,
         routes_pathname_prefix='/assas_app/',
         external_stylesheets=[dbc.themes.BOOTSTRAP],
         use_pages=True,
         pages_folder=pages_folder,
-        assets_folder=assets_folder
+        assets_folder=assets_folder,
+        long_callback_manager=long_callback_manager,
+        #background_callback_manager=background_callback_manager
     )
     
     #dash_app.index_string = html_layout
 
     # Create Dash Layout
     dash_app.layout = html.Div([
-    navbar,
-    html.Hr(),
-    dash.page_container    
-    ],id='dash-container')
+        navbar,
+        html.Hr(),
+        dash.page_container    
+        ],id='dash-container')
     
     return dash_app.server
