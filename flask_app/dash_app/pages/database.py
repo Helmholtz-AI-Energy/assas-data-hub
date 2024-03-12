@@ -67,8 +67,9 @@ layout = html.Div([
             id='reload_page', 
             className='me-2', 
             n_clicks=0, 
-            disabled=True,
+            disabled=False,
         ),
+    html.Div('Reloaded page', id='reload-contents')
     ], style={'width': '100%','padding-left':'10%', 'padding-right':'25%'}),
     dcc.Download(id='download_button'),
     html.Hr(),
@@ -148,6 +149,24 @@ layout = html.Div([
     html.Div('Select a page', id='pagination-contents'),    
 ],style=content_style())
 
+@callback(
+    Output('reload-contents', 'children'),
+    Input('reload_page', 'n_clicks'),
+)
+def reload_page(clicks):
+    
+    logger.debug(f'reload page {clicks}')
+    
+    global table_data
+    
+    manager = AssasDatabaseManager(
+        flask_app.config.get('LOCAL_ARCHIVE'), 
+        flask_app.config.get('LSDF_ARCHIVE'))
+    
+    table_data = manager.get_database_entries()
+    
+    return f'table_data (shape {table_data.shape}, size {table_data.size})'
+
 def generate_archive(path_to_zip, file_path_list):
     
     with ZipFile(path_to_zip, 'w') as zip_object:
@@ -156,10 +175,10 @@ def generate_archive(path_to_zip, file_path_list):
             zip_object.write(file_path)
             
     if os.path.exists(path_to_zip):
-        logger.info('ZIP file %s created' % path_to_zip)
+        logger.info(f'ZIP file %s created {path_to_zip}')
         return path_to_zip
     else:
-        logger.info('ZIP file %s not created' % path_to_zip)
+        logger.info(f'ZIP file %s not created {path_to_zip}')
         return None       
 
 @callback(
@@ -175,22 +194,22 @@ def start_download(clicks, rows, ids, data):
         return dash.no_update    
     
     uuid = str(uuid4())
-    logger.info('started download (id = %s)' % uuid)
+    logger.info(f'started download (id = {uuid})')
     
     download_folder = os.getcwd() + '/tmp'
     if not os.path.exists(download_folder):
-        logger.info('create %s' % download_folder)
+        logger.info(f'create {download_folder}')
         os.makedirs(download_folder)
         
     selected_data = [data[i] for i in rows]    
     file_list = [data_item['system_path']+'/dataset.h5' for data_item in selected_data]
     
     zip_file = download_folder + '/download_' + uuid + '.zip'
-    logger.info('generate archive %s' % zip_file)
+    logger.info(f'generate archive {zip_file}')
     
     zip_file = generate_archive(zip_file, file_list)
     
-    logger.debug('clicks %s rows %s files %s zip %s' % (str(clicks), str(rows), file_list, zip_file))   
+    logger.debug(f'clicks {clicks} rows {str(rows)} files {file_list} zip {zip_file}')   
         
     return dcc.send_file(zip_file)
 
@@ -280,7 +299,7 @@ def update_table(page_current, page_size, sort_by, filter):
     Input('datatable-page-size', 'value'))
 def update_page_size(use_page_size, page_size_value):
     
-    logger.debug('update page size, use page size %s page size value %s' % (str(use_page_size), str(page_size_value)))
+    logger.debug(f'update page size, use page size {use_page_size} page size value {page_size_value}')
     
     if len(use_page_size) == 0 or page_size_value is None:
         return PAGE_SIZE
@@ -293,10 +312,9 @@ def update_page_size(use_page_size, page_size_value):
     Input('pagination', 'max_value'))
 def change_page(page, value):
     
-    logger.debug('page %s value %s' % (str(page), str(value)))
+    logger.debug(f'page {page} value {value}')    
     
-    if page:
-        
+    if page:        
         return f'Page selected: {page}/{value}'
     
     return f'Page selected: 1/{value}'
@@ -306,12 +324,10 @@ def change_page(page, value):
     Input('pagination', 'active_page'))
 def change_page_table(page):
     
-    logger.debug('page %s' % (str(page)))
+    logger.debug(f'page {page}')
     
-    if page:
-        
-        return (page - 1)
-    
+    if page:        
+        return (page - 1)    
     return 0
 
 @callback(
@@ -321,7 +337,7 @@ def change_page_table(page):
     Input('datatable-page-size', 'value'))
 def update_page_count(use_page_size, page_size_value):
     
-    logger.debug('update page count, use page size %s page size value %s' % (str(use_page_size), str(page_size_value)))
+    logger.debug(f'update page count, use page size {use_page_size} page size value {page_size_value}')
     
     if len(use_page_size) > 1 and page_size_value is not None:                
         return int(len(table_data) / page_size_value) + 1,{'color': 'black'}
@@ -345,7 +361,8 @@ def cell_clicked_download(active_cell, data):
         
         if col == 'system_download':
             
-            logger.info('start download for %s' % row_data['system_path'])
+            path = row_data['system_path']
+            logger.info(f'start download for {path}')
             
             return dcc.send_file(row_data['system_path']+'/dataset.h5')
         

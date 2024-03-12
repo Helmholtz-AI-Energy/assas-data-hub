@@ -18,11 +18,12 @@ from urllib.parse import quote as urlquote
 from flask import Flask, send_from_directory
 from collections import OrderedDict
 from pathlib import Path
+from datetime import datetime
 
 from flask import current_app as flask_app
 
 from ..components import content_style
-from assasdb import AssasDatabaseManager, AssasDatabaseHandler, AssasDocumentFile
+from assasdb import AssasDatabaseManager, AssasDatabaseHandler, AssasDocumentFile, AssasDocumentFileStatus
 
 app = dash.get_app()
 
@@ -57,25 +58,25 @@ layout = html.Div([
     dbc.Alert('Upload interface for ASTEC binary archives', color='primary', style={'textAlign': 'center'}),
     html.H3('General meta data'),
     dbc.InputGroup(
-            [dbc.InputGroupText('Name'), dbc.Input(id='input_name', placeholder='Name')],
+            [dbc.InputGroupText('Name'), dbc.Input(id='input_name', placeholder='Enter Name', invalid=True, type='text')],
             className='mb-3',
     ),
     dbc.InputGroup(
-            [dbc.InputGroupText('Group'), dbc.Input(id='input_group', placeholder='Group')],
+            [dbc.InputGroupText('Group'), dbc.Input(id='input_group', placeholder='Enter Group', invalid=True, type='text')],
             className='mb-3',
     ),
     dbc.InputGroup(
-            [dbc.InputGroupText('Date'), dbc.Input(id='input_date', placeholder='Date')],
+            [dbc.InputGroupText('Date'), dbc.Input(id='input_date', placeholder='Enter Date', invalid=True, type='date')],
             className='mb-3',
     ),
     dbc.InputGroup(
-            [dbc.InputGroupText('Creator'), dbc.Input(id='input_creator', placeholder='Creator')],
+            [dbc.InputGroupText('Creator'), dbc.Input(id='input_creator', placeholder='Enter Creator', invalid=True, type='text')],
             className='mb-3',
     ),  
     dbc.InputGroup(
             [
                 dbc.InputGroupText('Description'),
-                dbc.Textarea(id='input_description', placeholder='Description'),
+                dbc.Textarea(id='input_description', placeholder='Description', invalid=True),
             ],
             className='mb-3',
     ),
@@ -99,11 +100,9 @@ layout = html.Div([
                 [
                     get_upload_component(id='dash-uploader'),
                     html.Div(id='callback-output', children='no data'),
-                    html.P(id='paragraph', children=['Button not clicked']),
-                    dbc.Button('Upload to LSDF', id='button', disabled=True, n_clicks=0),
-                    dbc.Button('Test progress', id='button2', disabled=True, n_clicks=0),
-                    dbc.Button('Cancel upload', id='cancel_button', disabled=True, n_clicks=0),                    
-                    dcc.Store(id='intermediate-value')
+                    dbc.Button('Upload to LSDF', id='button', disabled=True, n_clicks=0, size='lg'),
+                    dbc.Button('Cancel Upload', id='cancel_button', disabled=True, n_clicks=0, size='lg'),                    
+                    dcc.Store(id='intermediate-system')
                 ],
                 style={  # wrapper div style
                     'textAlign': 'center',
@@ -134,9 +133,77 @@ layout = html.Div([
         children=[
             html.Ul(id='status-list')
         ],
-    ),
-    html.Ul(id='status-list2')
+    )    
 ], style = content_style())
+
+def string_validation(text: str):
+    
+    invalid = True
+    
+    if text is not None and len(text) > 0:
+        invalid = False  
+    
+    return invalid
+
+@callback(     
+     Output('input_name', 'invalid'),
+     Output('input_name', 'valid'),
+     State('intermediate-meta', 'data'),
+     Input("input_name", "value"),
+)
+def input_validator_name_callback(data, name):
+    
+    invalid = string_validation(name)     
+    
+    return invalid, (not invalid)
+
+@callback(     
+     Output('input_group', 'invalid'),
+     Output('input_group', 'valid'),
+     State('intermediate-meta', 'data'),
+     Input("input_group", "value"),
+)
+def input_validator_group_callback(data, group):
+    
+    invalid = string_validation(group)     
+    
+    return invalid, (not invalid)
+
+@callback(     
+     Output('input_date', 'invalid'),
+     Output('input_date', 'valid'),
+     State('intermediate-meta', 'data'),
+     Input("input_date", "value"),
+)
+def input_validator_date_callback(data, date):
+    
+    invalid = string_validation(date)     
+    
+    return invalid, (not invalid)
+
+@callback(     
+     Output('input_creator', 'invalid'),
+     Output('input_creator', 'valid'),
+     State('intermediate-meta', 'data'),
+     Input("input_creator", "value"),
+)
+def input_validator_creator_callback(data, creator):
+    
+    invalid = string_validation(creator)     
+    
+    return invalid, (not invalid)
+
+@callback(     
+     Output('input_description', 'invalid'),
+     Output('input_description', 'valid'),
+     State('intermediate-meta', 'data'),
+     Input("input_description", "value"),
+)
+def input_validator_description_callback(data, description):
+    
+    invalid = string_validation(description)     
+    
+    return invalid, (not invalid)
 
 @callback(
      Output('intermediate-meta', 'data'),
@@ -147,58 +214,51 @@ layout = html.Div([
      Input("input_date", "value"), 
      Input("input_creator", "value"), 
      Input("input_description", "value"))
-def output_text(data, name, group, date, creator, description):
+def meta_collector_callback(meta, name, group, date, creator, description):
   
-    if data is not None:
-        document = json.loads(data)
-    else:
-        document = {}
+    document = AssasDocumentFile()
+    if meta is not None:
+        document.set_document(json.loads(meta))
     
-    if name is not None and len(name) > 0:
-        document['meta_name'] = name  
+    if (not string_validation(name)):
+        document.set_value('meta_name', name)  
     else:
-        if 'meta_name' in document:
-            del document['meta_name']
+        document.delete_key('meta_name')
             
-    if group is not None and len(group) > 0:
-        document['meta_group'] = group  
+    if (not string_validation(group)):
+        document.set_value('meta_group', group)  
     else:
-        if 'meta_group' in document:
-            del document['meta_group']
+        document.delete_key('meta_group')
             
-    if date is not None and len(date) > 0:
-        document['meta_date'] = date  
+    if (not string_validation(date)):
+        document.set_value('meta_date', date)  
     else:
-        if 'meta_date' in document:
-            del document['meta_date']
+        document.delete_key('meta_date')
             
-    if creator is not None and len(creator) > 0:
-        document['meta_creator'] = creator  
+    if (not string_validation(creator)):
+        document.set_value('meta_creator', creator)  
     else:
-        if 'meta_creator' in document:
-            del document['meta_creator']
+        document.delete_key('meta_creator')
             
-    if description is not None and len(description) > 0:
-        document['meta_description'] = description  
+    if (not string_validation(description)):
+        document.set_value('meta_description', description)  
     else:
-        if 'meta_description' in document:
-            del document['meta_description']
+        document.delete_key('meta_description')
             
-    if len(document) == len(dash.callback_context.inputs_list):
+    if len(document.get_document()) == len(dash.callback_context.inputs_list):
         disable_upload = False
     else: 
         disable_upload = True
         
-    logger.debug(f'updated document ({document}, {len(document)}, {disable_upload})')
+    logger.debug(f'updated document ({document.get_document()}, {len(document.get_document())}, {disable_upload})')
     
-    return json.dumps(document), disable_upload
+    return json.dumps(document.get_document()), disable_upload
 
 @du.callback(
     output=[
         Output('callback-output', 'children'),
-        Output('intermediate-value', 'data'),
-        Output('button', 'disabled'),       
-        Output('button2', 'disabled'),       
+        Output('intermediate-system', 'data'),
+        Output('button', 'disabled'),        
     ],
     id='dash-uploader',
 )
@@ -206,45 +266,29 @@ def callback_on_completion(status: du.UploadStatus):
     
     files = html.Ul([html.Li(str(x)) for x in status.uploaded_files])
     
-    document = AssasDocumentFile.get_test_document_file(status.upload_id, str(status.uploaded_files[0]))
+    document = AssasDocumentFile()    
+    document.set_system_values(
+        status.upload_id,
+        datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+        str(status.uploaded_files[0]),
+        str(status.total_size_mb) + ' MB',
+        'test user',
+        'Download',
+        AssasDocumentFileStatus.UPLOADED       
+    )
     
-    logger.info(f'uploaded file with id {status.upload_id} {status.uploaded_files} {document}')
+    logger.debug(f'uploaded file with id {status.upload_id} {status.uploaded_files} {document.get_document()}')
     
-    return files, json.dumps(document), False, False
-
-@callback(
-    Output('status-list', 'children'),
-    Input('button', 'n_clicks'),
-    State('intermediate-value', 'data'),
-)
-def clicked_output(clicks, data):
-    
-    result_list = ['recognized ASTEC archive', 'converted']
-    logger.debug(f'clicked output called {clicks} {data}')
-    
-    if data is not None:
-    
-        document = json.loads(data)
-    
-        logger.debug(f'number of clicks {clicks}, saved document: {document}')
-        
-        manager = AssasDatabaseManager(flask_app.config.get('LOCAL_ARCHIVE'), flask_app.config.get('LSDF_ARCHIVE'))
-        
-        #manager.process_archive(document['system_path'])
-        #manager.synchronize_archive(document['system_uuid'])
-    
-    return [html.Li('no ASTEC archive present')]
+    return files, json.dumps(document.get_document()), False
 
 @app.long_callback(
-    output=Output('paragraph', 'children'),
-    inputs=[Input('button2', 'n_clicks'),State('intermediate-value', 'data')],
-    #state=State('intermediate-value', 'data'),
-    #background=True,
+    output=Output('status-list', 'children'),
+    inputs=[Input('button', 'n_clicks'),State('intermediate-system', 'data'),State('intermediate-meta', 'data')],
     running=[
-        (Output('button2', 'disabled'), True, False),
+        (Output('button', 'disabled'), True, False),
         (Output('cancel_button', 'disabled'), False, True),
         (
-            Output('paragraph', 'style'),
+            Output('status-list', 'style'),
             {'visibility': 'hidden'},
             {'visibility': 'visible'},
         ),
@@ -258,29 +302,60 @@ def clicked_output(clicks, data):
     progress=[Output('progress', 'value'), Output('progress', 'max')],
     prevent_initial_call=True
 )
-def update_progress(set_progress, n_clicks, data):
+def update_progress(set_progress, n_clicks, system, meta):
+    
+    result_list = []
+    result_list.append(f'start upload')
     
     set_progress((str(1), str(5)))
-    
-    document = json.loads(data)
-    
-    logger.debug(f'number of clicks {n_clicks}, saved document: {document}')
-    
-    set_progress((str(2), str(5)))
     
     manager = AssasDatabaseManager(
         flask_app.config.get('LOCAL_ARCHIVE'),
         flask_app.config.get('LSDF_ARCHIVE')
         )
     
-    set_progress((str(3), str(5)))
-        
-    manager.process_archive(document['system_path'])
+    document = AssasDocumentFile()
+    document.set_document(json.loads(system))
+    document.extend_document(json.loads(meta))
+    document.set_data_values()
     
-    set_progress((str(4), str(5)))
+    uuid = document.get_value('system_uuid')
+    full_path = document.get_value('system_path')
+    path = os.path.dirname(document.get_value('system_path')) + '/result'
+    document.set_value('system_path', path)
     
-    manager.synchronize_archive(document['system_uuid'])
+    saved_document = manager.get_database_entry_uuid(uuid)
+  
+    logger.debug(f'number of clicks {n_clicks}, intermediate document: {document.get_document()}, saved document: {saved_document}')
+    
+    if saved_document is None:
         
+        result = f'1. add new archive (uuid {uuid}, path {path})'
+        result_list.append(result)
+        logger.info(result)
+
+        set_progress((str(2), str(5)))
+        
+        result = f'2. process archive (uuid {uuid}, path {path})'
+        result_list.append(result)
+        logger.info(result)
+        manager.process_archive(full_path)
+    
+        set_progress((str(3), str(5)))
+
+        #manager.synchronize_archive(document['system_uuid'])
+    
+        set_progress((str(4), str(5)))
+        
+        result = f'3. add database entry (uuid {uuid}, path {path})'
+        result_list.append(result)
+        document.set_value('system_status', AssasDocumentFileStatus.ARCHIVED)
+        manager.add_database_entry(document.get_document())
+    
+    else:
+        result = f'1. archive already processed (uuid {uuid}, path {path})'
+        result_list.append(result)  
+            
     set_progress((str(5), str(5)))
     
-    return f'Update progress complete, started {n_clicks} times'
+    return html.Ul([html.Li(str(result)) for result in result_list])
