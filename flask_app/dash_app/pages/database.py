@@ -63,7 +63,7 @@ layout = html.Div([
             disabled=True,
         ),
     dbc.Button(
-            'Reload', 
+            'Refresh', 
             id='reload_page', 
             className='me-2', 
             n_clicks=0, 

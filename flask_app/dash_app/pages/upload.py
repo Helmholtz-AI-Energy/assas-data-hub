@@ -98,10 +98,12 @@ layout = html.Div([
     html.Hr(),
     html.Div(
                 [
+                    html.H4('1. Upload archive to app'),
                     get_upload_component(id='dash-uploader'),
                     html.Div(id='callback-output', children='no data'),
+                    html.H4('2. Store archive in LSDF'),
                     dbc.Button('Upload to LSDF', id='button', disabled=True, n_clicks=0, size='lg'),
-                    dbc.Button('Cancel Upload', id='cancel_button', disabled=True, n_clicks=0, size='lg'),                    
+                    dbc.Button('Cancel Upload', id='cancel_button', disabled=True, n_clicks=0, size='lg', style={'margin-left': '4rem'}),                    
                     dcc.Store(id='intermediate-system')
                 ],
                 style={  # wrapper div style
@@ -110,7 +112,7 @@ layout = html.Div([
                     'margin-top': '1rem',
                     'margin-bottom': '1rem',
                     'margin-left': '1rem',
-                    'margin-right': '1rem',
+                    'margin-right': '2rem',
                     'padding': '2rem 1rem',
                 },
             ),
@@ -271,7 +273,7 @@ def callback_on_completion(status: du.UploadStatus):
         status.upload_id,
         datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
         str(status.uploaded_files[0]),
-        str(status.total_size_mb) + ' MB',
+        ('%.2f' % status.total_size_mb) + ' MB',
         'test user',
         'Download',
         AssasDocumentFileStatus.UPLOADED       

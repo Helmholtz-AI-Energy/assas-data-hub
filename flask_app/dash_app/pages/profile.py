@@ -1,12 +1,15 @@
 import dash
-
+import logging
 import dash_bootstrap_components as dbc
 
 from dash import html, dcc, Input, Output, State, callback
 
 from flask_login import current_user
-from ...users_mgt import update_password
 from werkzeug.security import check_password_hash
+
+from ...users_mgt import update_password
+
+logger = logging.getLogger('assas_app')
 
 dash.register_page(__name__, path='/profile')
 
@@ -22,6 +25,12 @@ layout = dbc.Container([
                 dbc.Label('Username:'),
                 html.Br(),
                 html.Br(),
+                dbc.Label('First:'),
+                html.Br(),
+                dbc.Label('Lastname:'),
+                html.Br(),
+                dbc.Label('Institute:'),
+                html.Br(),
                 dbc.Label('Email:'),
             ], md=2),
 
@@ -29,9 +38,15 @@ layout = dbc.Container([
                 dbc.Label(id='username', className='text-success'),
                 html.Br(),
                 html.Br(),
+                dbc.Label(id='firstname', className='text-success'),
+                html.Br(),
+                dbc.Label(id='lastname', className='text-success'),
+                html.Br(),
+                dbc.Label(id='institute', className='text-success'),
+                html.Br(),
                 dbc.Label(id='email', className='text-success'),
             ], md=4),
-
+            
             dbc.Col([
                 dbc.Label('Old Password: '),
                 dcc.Input(
@@ -85,6 +100,36 @@ layout = dbc.Container([
 
 @callback(
     Output('username', 'children'),
+    [Input('pageContent', 'children')])
+def currentUserName(pageContent):
+    try:
+        username = current_user.username
+        return username
+    except AttributeError:
+        return ''
+
+@callback(
+    Output('firstname', 'children'),
+    [Input('pageContent', 'children')])
+def currentUserName(pageContent):
+    try:
+        username = current_user.username
+        return username
+    except AttributeError:
+        return ''
+    
+@callback(
+    Output('lastname', 'children'),
+    [Input('pageContent', 'children')])
+def currentUserName(pageContent):
+    try:
+        username = current_user.username
+        return username
+    except AttributeError:
+        return ''
+
+@callback(
+    Output('institute', 'children'),
     [Input('pageContent', 'children')])
 def currentUserName(pageContent):
     try:

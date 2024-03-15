@@ -1,9 +1,12 @@
 import dash
 import dash_bootstrap_components as dbc
+import logging
 
 from dash import Dash, dash_table, html, dcc, Input, Output, callback, State
 
 from ...users_mgt import show_users, add_user
+
+logger = logging.getLogger('assas_app')
 
 dash.register_page(__name__, path='/admin')
 
@@ -18,6 +21,15 @@ layout = dbc.Container([
                 dbc.Label('Username: '),
                 dcc.Input(
                     id='newUsername',
+                    className='form-control',
+                    n_submit=0,
+                    style={
+                        'width' : '90%'
+                    },
+                ),
+                dbc.Label('Firstname: '),
+                dcc.Input(
+                    id='newFirstname',
                     className='form-control',
                     n_submit=0,
                     style={
@@ -50,9 +62,18 @@ layout = dbc.Container([
             ], md=4),
 
             dbc.Col([
-                dbc.Label('Email: '),
+                dbc.Label('Institute: '),
                 dcc.Input(
-                    id='newEmail',
+                    id='newInstitute',
+                    className='form-control',
+                    n_submit=0,
+                    style={
+                        'width' : '90%'
+                    },
+                ),
+                dbc.Label('Lastname: '),
+                dcc.Input(
+                    id='newLastname',
                     className='form-control',
                     n_submit=0,
                     style={
@@ -87,6 +108,15 @@ layout = dbc.Container([
             ], md=4),
 
             dbc.Col([
+                dbc.Label('Email: '),
+                dcc.Input(
+                    id='newEmail',
+                    className='form-control',
+                    n_submit=0,
+                    style={
+                        'width' : '90%'
+                    },
+                ),
 
             ], md=4)
 
@@ -100,8 +130,10 @@ layout = dbc.Container([
             dbc.Col([
                 dash_table.DataTable(
                     id='users',
-                    columns = [{'name' : 'ID', 'id' : 'id'},
-                                {'name' : 'Username', 'id' : 'username'},
+                    columns = [{'name' : 'Username', 'id' : 'username'},
+                                {'name' : 'Firstname', 'id' : 'firstname'},
+                                {'name' : 'Lastname', 'id' : 'lastname'},
+                                {'name' : 'Institute', 'id' : 'institute'},
                                 {'name' : 'Email', 'id' : 'email'},
                                 {'name' : 'Admin', 'id' : 'admin'}],
                     data=show_users(),
@@ -110,7 +142,6 @@ layout = dbc.Container([
         ]),
     ], className='jumbotron')
 ])
-
 
 ################################################################################
 # CREATE USER BUTTON CLICK / FORM SUBMIT - VALIDATE USERNAME
@@ -265,3 +296,259 @@ def createUser(n_clicks, usernameSubmit, newPassword1Submit, newPassword2Submit,
                 return html.Div(children=['Passwords do not match'], className='text-danger')
         else:
             return html.Div(children=['Invalid details submitted'], className='text-danger')
+
+'''
+################################################################################
+# CREATE USER BUTTON CLICK / FORM SUBMIT - VALIDATE USERNAME
+################################################################################
+@callback(Output('newUsername', 'className'),
+          Input('createUserButton', 'n_clicks'),
+          Input('newUsername', 'n_submit'),
+          Input('newFirstname', 'n_submit'),
+          Input('newLastname', 'n_submit'),
+          Input('newInstitute', 'n_submit'),
+          Input('newPwd1', 'n_submit'),
+          Input('newPwd2', 'n_submit'),
+          Input('newEmail', 'n_submit'),
+          State('newUsername', 'value'),
+          State('newFirstname', 'value'),
+          State('newLastname', 'value'),
+          State('newInstitute', 'value'))
+def validate_username(n_clicks, usernameSubmit, firstnameSubmit, lastnameSubmit, instituteSubmit, newPassword1Submit,
+    newPassword2Submit, newEmailSubmit, newUsername, newFirstname, newLastname, newInstitute):
+
+    if (n_clicks > 0) or (usernameSubmit > 0) or (firstnameSubmit > 0) or \
+        (lastnameSubmit > 0)or (instituteSubmit > 0) or (newPassword1Submit > 0) or \
+        (newPassword2Submit > 0) or (newEmailSubmit > 0):
+
+        if newUsername == None or newUsername == '':
+            return 'form-control is-invalid'
+        else:
+            return 'form-control is-valid'
+    else:
+        return 'form-control'
+    
+    
+################################################################################
+# CREATE USER BUTTON CLICK / FORM SUBMIT - VALIDATE FIRSTNAME
+################################################################################
+@callback(Output('newUsername', 'className'),
+          Input('createUserButton', 'n_clicks'),
+          Input('newUsername', 'n_submit'),
+          Input('newFirstname', 'n_submit'),
+          Input('newLastname', 'n_submit'),
+          Input('newInstitute', 'n_submit'),
+          Input('newPwd1', 'n_submit'),
+          Input('newPwd2', 'n_submit'),
+          Input('newEmail', 'n_submit'),
+          State('newUsername', 'value'),
+          State('newFirstname', 'value'),
+          State('newLastname', 'value'),
+          State('newInstitute', 'value'))
+def validate_firstname(n_clicks, usernameSubmit, firstnameSubmit, lastnameSubmit, instituteSubmit, newPassword1Submit,
+    newPassword2Submit, newEmailSubmit, newUsername, newFirstname, newLastname, newInstitute):
+
+    if (n_clicks > 0) or (usernameSubmit > 0) or (firstnameSubmit > 0) or \
+        (lastnameSubmit > 0) or (instituteSubmit > 0) or (newPassword1Submit > 0) or \
+        (newPassword2Submit > 0) or (newEmailSubmit > 0):
+
+        if newFirstname == None or newFirstname == '':
+            return 'form-control is-invalid'
+        else:
+            return 'form-control is-valid'
+    else:
+        return 'form-control'
+    
+
+################################################################################
+# CREATE USER BUTTON CLICK / FORM SUBMIT - VALIDATE LASTNAME
+################################################################################
+@callback(Output('newUsername', 'className'),
+          Input('createUserButton', 'n_clicks'),
+          Input('newUsername', 'n_submit'),
+          Input('newFirstname', 'n_submit'),
+          Input('newLastname', 'n_submit'),
+          Input('newInstitute', 'n_submit'),
+          Input('newPwd1', 'n_submit'),
+          Input('newPwd2', 'n_submit'),
+          Input('newEmail', 'n_submit'),
+          State('newUsername', 'value'),
+          State('newFirstname', 'value'),
+          State('newLastname', 'value'),
+          State('newInstitute', 'value'))
+def validate_lastname(n_clicks, usernameSubmit, firstnameSubmit, lastnameSubmit, instituteSubmit, newPassword1Submit,
+    newPassword2Submit, newEmailSubmit, newUsername, newFirstname, newLastname, newInstitute):
+
+    if (n_clicks > 0) or (usernameSubmit > 0) or (firstnameSubmit > 0) or \
+        (lastnameSubmit > 0) or (instituteSubmit > 0) or (newPassword1Submit > 0) or \
+        (newPassword2Submit > 0) or (newEmailSubmit > 0):
+
+        if newLastname == None or newLastname == '':
+            return 'form-control is-invalid'
+        else:
+            return 'form-control is-valid'
+    else:
+        return 'form-control'
+    
+################################################################################
+# CREATE USER BUTTON CLICK / FORM SUBMIT - VALIDATE INSTITUTE
+################################################################################
+@callback(Output('newUsername', 'className'),
+          Input('createUserButton', 'n_clicks'),
+          Input('newUsername', 'n_submit'),
+          Input('newFirstname', 'n_submit'),
+          Input('newLastname', 'n_submit'),
+          Input('newInstitute', 'n_submit'),
+          Input('newPwd1', 'n_submit'),
+          Input('newPwd2', 'n_submit'),
+          Input('newEmail', 'n_submit'),
+          State('newUsername', 'value'),
+          State('newFirstname', 'value'),
+          State('newLastname', 'value'),
+          State('newInstitute', 'value'))
+def validate_institute(n_clicks, usernameSubmit, firstnameSubmit, lastnameSubmit, instituteSubmit, newPassword1Submit,
+    newPassword2Submit, newEmailSubmit, newUsername, newFirstname, newLastname, newInstitute):
+
+    if (n_clicks > 0) or (usernameSubmit > 0) or (firstnameSubmit > 0) or \
+        (lastnameSubmit > 0) or (instituteSubmit > 0) or (newPassword1Submit > 0) or \
+        (newPassword2Submit > 0) or (newEmailSubmit > 0):
+
+        if newInstitute == None or newInstitute == '':
+            return 'form-control is-invalid'
+        else:
+            return 'form-control is-valid'
+    else:
+        return 'form-control'
+
+
+
+################################################################################
+# CREATE USER BUTTON CLICK / FORM SUBMIT - RED BOX IF PASSWORD DOES NOT MATCH
+################################################################################
+@callback(Output('newPwd1', 'className'),
+          Input('createUserButton', 'n_clicks'),
+          Input('newUsername', 'n_submit'),
+          Input('newPwd1', 'n_submit'),
+          Input('newPwd2', 'n_submit'),
+          Input('newEmail', 'n_submit'),
+          State('newPwd1', 'value'),
+          State('newPwd2', 'value'))
+def validate_password1(n_clicks, usernameSubmit, newPassword1Submit,
+    newPassword2Submit, newEmailSubmit, newPassword1, newPassword2):
+
+    if (n_clicks > 0) or (usernameSubmit > 0) or (newPassword1Submit > 0) or \
+        (newPassword2Submit > 0) or (newEmailSubmit > 0):
+
+        if newPassword1 == newPassword2 and len(newPassword1) > 7:
+            return 'form-control is-valid'
+        else:
+            return 'form-control is-invalid'
+    else:
+        return 'form-control'
+
+
+################################################################################
+# CREATE USER BUTTON CLICK / FORM SUBMIT - RED BOX IF PASSWORD DOES NOT MATCH
+################################################################################
+@callback(Output('newPwd2', 'className'),
+          Input('createUserButton', 'n_clicks'),
+          Input('newUsername', 'n_submit'),
+          Input('newPwd1', 'n_submit'),
+          Input('newPwd2', 'n_submit'),
+          Input('newEmail', 'n_submit'),
+          State('newPwd1', 'value'),
+          State('newPwd2', 'value'))
+def validate_password2(n_clicks, usernameSubmit, newPassword1Submit,
+    newPassword2Submit, newEmailSubmit, newPassword1, newPassword2):
+
+    if (n_clicks > 0) or (usernameSubmit > 0) or (newPassword1Submit > 0) or \
+        (newPassword2Submit > 0) or (newEmailSubmit > 0):
+
+        if newPassword1 == newPassword2 and len(newPassword2) > 7:
+            return 'form-control is-valid'
+        else:
+            return 'form-control is-invalid'
+    else:
+        return 'form-control'
+
+
+
+################################################################################
+# CREATE USER BUTTON CLICK / FORM SUBMIT - VALIDATE EMAIL
+################################################################################
+@callback(Output('newEmail', 'className'),
+
+              [Input('createUserButton', 'n_clicks'),
+              Input('newUsername', 'n_submit'),
+              Input('newPwd1', 'n_submit'),
+              Input('newPwd2', 'n_submit'),
+              Input('newEmail', 'n_submit')],
+
+              [State('newEmail', 'value')])
+
+def validate_email(n_clicks, usernameSubmit, newPassword1Submit,
+    newPassword2Submit, newEmailSubmit, newEmail):
+
+    logger.info(f'validate email')
+    
+    if (n_clicks > 0) or (usernameSubmit > 0) or (newPassword1Submit > 0) or \
+        (newPassword2Submit > 0) or (newEmailSubmit > 0):
+
+        if newEmail == None or newEmail == '':
+            return 'form-control is-invalid'
+        else:
+            return 'form-control is-valid'
+    else:
+        return 'form-control'
+
+
+
+
+
+################################################################################
+# CREATE USER BUTTON CLICKED / ENTER PRESSED - UPDATE DATABASE WITH NEW USER
+################################################################################
+@callback(Output('createUserSuccess', 'children'),
+          Input('createUserButton', 'n_clicks'),
+          Input('newUsername', 'n_submit'),
+          Input('newFirstname', 'n_submit'),
+          Input('newLastname', 'n_submit'),
+          Input('newInstitute', 'n_submit'),
+          Input('newPwd1', 'n_submit'),
+          Input('newPwd2', 'n_submit'),
+          Input('newEmail', 'n_submit'),
+          State('pageContent', 'children'),
+          State('newUsername', 'value'),
+          State('newFirstname', 'value'),
+          State('newLastname', 'value'),
+          State('newInstitute', 'value'),
+          State('newPwd1', 'value'),
+          State('newPwd2', 'value'),
+          State('newEmail', 'value'),
+          State('admin', 'value'))
+def create_user(n_clicks, usernameSubmit, firstnameSubmit, lastnameSubmit, instituteSubmit, newPassword1Submit, newPassword2Submit,
+            newEmailSubmit, pageContent, newUser, newFirst, newLast, newInstitute, newPassword1, newPassword2, newEmail, admin):
+    
+    logger.info(f'create user')
+    
+    if (n_clicks > 0) or (usernameSubmit > 0) or (firstnameSubmit > 0) or \
+        (lastnameSubmit > 0) or (instituteSubmit > 0) or (newPassword1Submit > 0) or \
+        (newPassword2Submit > 0) or (newEmailSubmit > 0):
+            
+        logger.info(f'create user 2')
+        
+        if newUser and newFirst and newLast and newInstitute and newPassword1 and newPassword2 and newEmail != '':
+            if newPassword1 == newPassword2:
+                if len(newPassword1) > 7:
+                    try:
+                        add_user(newUser, newFirst, newLast, newInstitute, newPassword1, newEmail, admin)
+                        return html.Div(children=['New User created'], className='text-success')
+                    except Exception as e:
+                        return html.Div(children=['New User not created: {e}'.format(e=e)], className='text-danger')
+                else:
+                    return html.Div(children=['New Password Must Be Minimum 8 Characters'], className='text-danger')
+            else:
+                return html.Div(children=['Passwords do not match'], className='text-danger')
+        else:
+            return html.Div(children=['Invalid details submitted'], className='text-danger')
+'''

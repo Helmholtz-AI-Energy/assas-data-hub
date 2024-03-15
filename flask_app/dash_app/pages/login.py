@@ -1,12 +1,16 @@
 import dash
-
+import logging
 import dash_bootstrap_components as dbc
 
 from dash import html, dcc, Input, Output, State, callback
 
 from flask_login import login_user
 from werkzeug.security import check_password_hash
+
 from ..components import encode_svg_image
+from ...users_mgt import User, AssasUserManager
+
+logger = logging.getLogger('assas_app')
 
 dash.register_page(__name__, path='/login')
 
@@ -63,11 +67,14 @@ layout = dbc.Container([
               [State('usernameBox', 'value'),
                State('passwordBox', 'value')])
 def sucess(n_clicks, usernameSubmit, passwordSubmit, username, password):
-    user = 'lol'#User.query.filter_by(username=username).first()
+    
+    #User.query.filter_by(username=username).first()
+    user = AssasUserManager().get_user_o(username)
+    
     if user:
-        if check_password_hash(user.password, password):
+        if check_password_hash(user.password(), password):
             login_user(user)
-            return '/page1'
+            return '/assas_app/home'
         else:
             pass
     else:
@@ -85,9 +92,10 @@ def sucess(n_clicks, usernameSubmit, passwordSubmit, username, password):
                State('passwordBox', 'value')])
 def update_output(n_clicks, usernameSubmit, passwordSubmit, username, password):
     if (n_clicks > 0) or (usernameSubmit > 0) or (passwordSubmit) > 0:
-        user = 'lol'#User.query.filter_by(username=username).first()
+        #User.query.filter_by(username=username).first()
+        user = AssasUserManager().get_user_o(username)
         if user:
-            if check_password_hash(user.password, password):
+            if check_password_hash(user.password(), password):
                 return 'form-control'
             else:
                 return 'form-control is-invalid'
@@ -108,9 +116,13 @@ def update_output(n_clicks, usernameSubmit, passwordSubmit, username, password):
                State('passwordBox', 'value')])
 def update_output(n_clicks, usernameSubmit, passwordSubmit, username, password):
     if (n_clicks > 0) or (usernameSubmit > 0) or (passwordSubmit) > 0:
-        user = 'lol'#User.query.filter_by(username=username).first()
+        #User.query.filter_by(username=username).first()
+        user = AssasUserManager().get_user_o(username)
         if user:
-            if check_password_hash(user.password, password):
+            
+            logger.info(f'check {user.username()}{user.password()} {password}')
+            
+            if check_password_hash(user.password(), password):
                 return 'form-control'
             else:
                 return 'form-control is-invalid'

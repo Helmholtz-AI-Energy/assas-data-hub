@@ -7,8 +7,10 @@ import dash_bootstrap_components as dbc
 from dash import dash, html, Output, DiskcacheManager
 from dash.long_callback import DiskcacheLongCallbackManager
 from dash.dependencies import Input, Output
+
 from assasdb import AssasDatabaseManager
 from .components import encode_svg_image
+from flask_login import current_user
 
 logger = logging.getLogger('assas_app')
 
@@ -19,8 +21,8 @@ navbar = dbc.Navbar(
                 # Use row and col to control vertical alignment of logo / brand
                 dbc.Row(
                     [                     
-                        dbc.Col(html.Img(src=encode_svg_image('kit_logo.drawio.svg'), height='60px', width='120px'), width=6),
-                        dbc.Col(html.Img(src=encode_svg_image('assas_logo.svg'), height='60px', width='60px'), width=3),
+                        dbc.Col(html.Img(src=encode_svg_image('kit_logo.drawio.svg'), height='60px', width='120px', style={'border':'1px grey solid'}), width=6),
+                        dbc.Col(html.Img(src=encode_svg_image('assas_logo.svg'), height='60px', width='60px', style={'border':'1px grey solid'}), width=3),
                         dbc.Col(dbc.NavbarBrand('ASSAS Data Hub', className='ms-2'), width=3),                                           
                     ],
                     align='center',
@@ -35,6 +37,17 @@ navbar = dbc.Navbar(
                 dbc.NavItem(dbc.NavLink('Database', href='/assas_app/database', active='exact')),
                 dbc.NavItem(dbc.NavLink('Upload', href='/assas_app/upload', active='exact')),
                 dbc.NavItem(dbc.NavLink('About', href='/assas_app/about', active='exact')),
+                dbc.DropdownMenu(
+                    nav=True,
+                    in_navbar=True,
+                    label='User',
+                    children=[
+                        dbc.DropdownMenuItem('Profile', href='/assas_app/profile'),
+                        dbc.DropdownMenuItem('Admin', href='/assas_app/admin'),
+                        dbc.DropdownMenuItem(divider=True),
+                        dbc.DropdownMenuItem('Logout', href='/assas_app/logout'),
+                    ],
+                ),
             ],
             vertical=False,
             pills=True,
@@ -75,10 +88,8 @@ def init_dashboard(server):
         assets_folder=assets_folder,
         long_callback_manager=long_callback_manager,
         #background_callback_manager=background_callback_manager
-    )
-    
-    #dash_app.index_string = html_layout
-
+    )    
+  
     # Create Dash Layout
     dash_app.layout = html.Div([
         navbar,
