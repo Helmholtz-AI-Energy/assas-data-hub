@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 
 from dash import html, dcc, Input, Output, State, callback
 
-from flask_login import login_user
+from flask_login import login_user, current_user
 from werkzeug.security import check_password_hash
 
 from ..components import encode_svg_image
@@ -74,36 +74,14 @@ def sucess(n_clicks, usernameSubmit, passwordSubmit, username, password):
     if user:
         if check_password_hash(user.password(), password):
             login_user(user)
+            
+            logger.info(f'current_user {current_user.email()}')
+            
             return '/assas_app/home'
         else:
             pass
     else:
         pass
-
-
-################################################################################
-# LOGIN BUTTON CLICKED / ENTER PRESSED - RETURN RED BOXES IF LOGIN DETAILS INCORRECT
-################################################################################
-@callback(Output('usernameBox', 'className'),
-              [Input('loginButton', 'n_clicks'),
-              Input('usernameBox', 'n_submit'),
-              Input('passwordBox', 'n_submit')],
-              [State('usernameBox', 'value'),
-               State('passwordBox', 'value')])
-def update_output(n_clicks, usernameSubmit, passwordSubmit, username, password):
-    if (n_clicks > 0) or (usernameSubmit > 0) or (passwordSubmit) > 0:
-        #User.query.filter_by(username=username).first()
-        user = AssasUserManager().get_user_o(username)
-        if user:
-            if check_password_hash(user.password(), password):
-                return 'form-control'
-            else:
-                return 'form-control is-invalid'
-        else:
-            return 'form-control is-invalid'
-    else:
-        return 'form-control'
-
 
 ################################################################################
 # LOGIN BUTTON CLICKED / ENTER PRESSED - RETURN RED BOXES IF LOGIN DETAILS INCORRECT
@@ -115,9 +93,11 @@ def update_output(n_clicks, usernameSubmit, passwordSubmit, username, password):
               [State('usernameBox', 'value'),
                State('passwordBox', 'value')])
 def update_output(n_clicks, usernameSubmit, passwordSubmit, username, password):
+    
     if (n_clicks > 0) or (usernameSubmit > 0) or (passwordSubmit) > 0:
         #User.query.filter_by(username=username).first()
         user = AssasUserManager().get_user_o(username)
+        
         if user:
             
             logger.info(f'check {user.username()}{user.password()} {password}')

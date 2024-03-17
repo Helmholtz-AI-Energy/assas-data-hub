@@ -114,19 +114,25 @@ class AssasUserManager:
         
         self.user_collection.insert_one(user.get_user_document())
         
-    def get_user(self, username: str):
+    def get_user_name(self,  username: str):
         
-        return self.user_collection.find_one({'username': username})
+        user_info = self.user_collection.find_one({'username': username})
+        if user_info:
+            logger.info(f'found user id: {user_info}')
+            return User(user_info['id'], user_info['username'], user_info['firstname'], user_info['lastname'], user_info['institute'],user_info['password'],user_info['email'],user_info['admin'])
     
     def get_user_id(self, id: ObjectId):
         
-        return self.user_collection.find_one(ObjectId(id))
-    
+        user_info = self.user_collection.find_one(ObjectId(id))
+        if user_info:
+            logger.info(f'found user id: {user_info}')
+            return User(user_info['id'], user_info['username'], user_info['firstname'], user_info['lastname'], user_info['institute'],user_info['password'],user_info['email'],user_info['admin'])
+            
     def get_user_o(self, username: str) -> User:
         
         user_info = self.user_collection.find_one({'username': username})
         if user_info:
-            logger.info(f'found user: {user_info}')
+            logger.info(f'found user o: {user_info}')
             return User(user_info['id'], user_info['username'], user_info['firstname'], user_info['lastname'], user_info['institute'],user_info['password'],user_info['email'],user_info['admin'])
         else:
             return None    
@@ -195,7 +201,7 @@ def show_users():
 
 def create_admin_user():
   
-    if AssasUserManager().get_user('Admin') is None:
+    if AssasUserManager().get_user_name('Admin') is None:
         
         logger.info(f'create admin user')
         add_user('Admin','Jonas','Dressner','SCC','r.adio_1','jonas.dressner@kit.edu','True')

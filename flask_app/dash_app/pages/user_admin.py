@@ -104,7 +104,7 @@ layout = dbc.Container([
                     className='btn btn-primary btn-lg'
                 ),
                 html.Br(),
-                html.Div(id='createUserSuccess')
+                html.Div(id='createUserSuccess',children=[html.Div(children=['Invalid details submitted'], className='text-danger')])
             ], md=4),
 
             dbc.Col([
@@ -159,6 +159,8 @@ layout = dbc.Container([
 def validateUsername(n_clicks, usernameSubmit, newPassword1Submit,
     newPassword2Submit, newEmailSubmit, newUsername):
 
+    logger.info(f'validate username {n_clicks}')
+    
     if (n_clicks > 0) or (usernameSubmit > 0) or (newPassword1Submit > 0) or \
         (newPassword2Submit > 0) or (newEmailSubmit > 0):
 
@@ -188,6 +190,8 @@ def validateUsername(n_clicks, usernameSubmit, newPassword1Submit,
 def validatePassword1(n_clicks, usernameSubmit, newPassword1Submit,
     newPassword2Submit, newEmailSubmit, newPassword1, newPassword2):
 
+    logger.info(f'validate pwd 1 {n_clicks}')
+    
     if (n_clicks > 0) or (usernameSubmit > 0) or (newPassword1Submit > 0) or \
         (newPassword2Submit > 0) or (newEmailSubmit > 0):
 
@@ -216,6 +220,8 @@ def validatePassword1(n_clicks, usernameSubmit, newPassword1Submit,
 def validatePassword2(n_clicks, usernameSubmit, newPassword1Submit,
     newPassword2Submit, newEmailSubmit, newPassword1, newPassword2):
 
+    logger.info(f'validate pwd 2 {n_clicks}')
+    
     if (n_clicks > 0) or (usernameSubmit > 0) or (newPassword1Submit > 0) or \
         (newPassword2Submit > 0) or (newEmailSubmit > 0):
 
@@ -244,6 +250,8 @@ def validatePassword2(n_clicks, usernameSubmit, newPassword1Submit,
 def validateEmail(n_clicks, usernameSubmit, newPassword1Submit,
     newPassword2Submit, newEmailSubmit, newEmail):
 
+    logger.info(f'validate email {n_clicks}')
+    
     if (n_clicks > 0) or (usernameSubmit > 0) or (newPassword1Submit > 0) or \
         (newPassword2Submit > 0) or (newEmailSubmit > 0):
 
@@ -257,45 +265,60 @@ def validateEmail(n_clicks, usernameSubmit, newPassword1Submit,
 
 
 
-
 ################################################################################
 # CREATE USER BUTTON CLICKED / ENTER PRESSED - UPDATE DATABASE WITH NEW USER
 ################################################################################
 @callback(Output('createUserSuccess', 'children'),
 
-              [Input('createUserButton', 'n_clicks'),
-              Input('newUsername', 'n_submit'),
-              Input('newPwd1', 'n_submit'),
-              Input('newPwd2', 'n_submit'),
-              Input('newEmail', 'n_submit')],
+              [Input('createUserButton', 'n_clicks')],
 
-              [State('pageContent', 'children'),
-              State('newUsername', 'value'),
-              State('newPwd1', 'value'),
-              State('newPwd2', 'value'),
-              State('newEmail', 'value'),
-              State('admin', 'value')])
+              [State('newUsername', 'value'),
+               State('newFirstname', 'value'),
+               State('newLastname', 'value'),
+               State('newInstitute', 'value'),
+               State('newEmail', 'value'),
+               State('admin', 'value'),
+               State('newPwd1', 'value'),
+               State('newPwd2', 'value')])
 
-def createUser(n_clicks, usernameSubmit, newPassword1Submit, newPassword2Submit,
-            newEmailSubmit, pageContent, newUser, newPassword1, newPassword2, newEmail, admin):
-    if (n_clicks > 0) or (usernameSubmit > 0) or (newPassword1Submit > 0) or \
-        (newPassword2Submit > 0) or (newEmailSubmit > 0):
-
-
-        if newUser and newPassword1 and newPassword2 and newEmail != '':
-            if newPassword1 == newPassword2:
-                if len(newPassword1) > 7:
-                    try:
-                        add_user(newUser, newPassword1, newEmail, admin)
-                        return html.Div(children=['New User created'], className='text-success')
-                    except Exception as e:
-                        return html.Div(children=['New User not created: {e}'.format(e=e)], className='text-danger')
-                else:
-                    return html.Div(children=['New Password Must Be Minimum 8 Characters'], className='text-danger')
-            else:
-                return html.Div(children=['Passwords do not match'], className='text-danger')
-        else:
-            return html.Div(children=['Invalid details submitted'], className='text-danger')
+def createUser(n_clicks, username, firstname, lastname, institute, email, admin, pwd1, pwd2):
+    
+    logger.info(f'create user {username} {firstname} {lastname} {institute}')
+    
+    if (username is not None) and (firstname is not None) and (lastname is not None) and (institute is not None) and (email is not None):
+        add_user(username, firstname, lastname, institute, pwd1, email, admin)
+        return html.Div(children=['added user'], className='text-success')
+    else:
+        return html.Div(children=['adding user failed'], className='text-danger')
+    
+################################################################################
+# CREATE USER BUTTON CLICKED / ENTER PRESSED - UPDATE DATABASE WITH NEW USER
+################################################################################
+@callback(Output('users', 'data'),
+         [Input('createUserButton', 'n_clicks')])
+def updateTable(n_clicks):
+    logger.info(f'update_table {n_clicks}')
+    return show_users()
+    
+    #
+    #if (n_clicks > 0) or (usernameSubmit > 0) or (newPassword1Submit > 0) or \
+    #    (newPassword2Submit > 0) or (newEmailSubmit > 0):#
+    #
+#
+#        if newUser and newPassword1 and newPassword2 and newEmail != '':
+#            if newPassword1 == newPassword2:
+#                if len(newPassword1) > 7:
+#                    try:
+#                        add_user(newUser, newPassword1, newEmail, admin)
+#                        return html.Div(children=['New User created'], className='text-success')
+#                    except Exception as e:
+#                        return html.Div(children=['New User not created: {e}'.format(e=e)], className='text-danger')
+ #               else:
+ #                   return html.Div(children=['New Password Must Be Minimum 8 Characters'], className='text-danger')
+ #           else:
+ #               return html.Div(children=['Passwords do not match'], className='text-danger')
+ #       else:
+ #           return html.Div(children=['Invalid details submitted'], className='text-danger')
 
 '''
 ################################################################################
