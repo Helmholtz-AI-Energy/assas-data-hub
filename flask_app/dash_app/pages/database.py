@@ -29,7 +29,7 @@ operators = [['ge ', '>='],
              ['contains '],
              ['datestartswith ']]
 
-table_data = AssasDatabaseManager(flask_app.config.get('LOCAL_ARCHIVE'), flask_app.config.get('LSDF_ARCHIVE')).get_database_entries()
+table_data = AssasDatabaseManager(flask_app.config).get_database_entries()
 
 ALL = len(table_data)
 PAGE_SIZE = 30
@@ -159,9 +159,7 @@ def reload_page(clicks):
     
     global table_data
     
-    manager = AssasDatabaseManager(
-        flask_app.config.get('LOCAL_ARCHIVE'), 
-        flask_app.config.get('LSDF_ARCHIVE'))
+    manager = AssasDatabaseManager(flask_app.config)
     
     table_data = manager.get_database_entries()
     

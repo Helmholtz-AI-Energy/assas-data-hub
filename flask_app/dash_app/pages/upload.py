@@ -311,10 +311,7 @@ def update_progress(set_progress, n_clicks, system, meta):
     
     set_progress((str(1), str(5)))
     
-    manager = AssasDatabaseManager(
-        flask_app.config.get('LOCAL_ARCHIVE'),
-        flask_app.config.get('LSDF_ARCHIVE')
-        )
+    manager = AssasDatabaseManager(flask_app.config)
     
     document = AssasDocumentFile()
     document.set_document(json.loads(system))

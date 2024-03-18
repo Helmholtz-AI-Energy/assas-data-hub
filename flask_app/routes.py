@@ -19,9 +19,7 @@ def from_app_to_home():
 @app.route('/assas_app/files/<uuid>', methods=['GET'])
 def get_data_files(uuid):
     
-    manager = AssasDatabaseManager(
-        app.config.get('LOCAL_ARCHIVE'), 
-        app.config.get('LSDF_ARCHIVE'))
+    manager = AssasDatabaseManager(app.config)
     
     document = manager.get_database_entry_uuid(uuid)
     filepath = document['system_path'] + '/dataset.h5'
