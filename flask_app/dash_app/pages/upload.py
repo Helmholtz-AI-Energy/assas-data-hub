@@ -307,7 +307,7 @@ def callback_on_completion(status: du.UploadStatus):
 def update_progress(set_progress, n_clicks, system, meta):
     
     result_list = []
-    result_list.append(f'start upload')
+    result_list.append(f'started upload process')
     
     set_progress((str(1), str(5)))
     
@@ -316,11 +316,9 @@ def update_progress(set_progress, n_clicks, system, meta):
     document = AssasDocumentFile()
     document.set_document(json.loads(system))
     document.extend_document(json.loads(meta))
-    #document.set_data_values()
-    
+        
     uuid = document.get_value('system_uuid')
     full_path = document.get_value('system_path')
-    
     path = manager.storage_handler.get_dataset_archive_dir(uuid)
     document.set_value('system_path', path)
     
@@ -330,32 +328,55 @@ def update_progress(set_progress, n_clicks, system, meta):
     
     if saved_document is None:
         
-        result = f'1. add new archive (uuid {uuid}, path {path})'
+        result = f'1. added new archive (uuid {uuid}, path {path})'
         result_list.append(result)
         logger.info(result)
 
         set_progress((str(2), str(5)))
         
-        result = f'2. process archive (uuid {uuid}, path {path})'
-        result_list.append(result)
-        logger.info(result)
-        manager.process_archive(full_path)
-    
-        set_progress((str(3), str(5)))
+        if manager.process_archive(full_path):
+            
+            result = f'2. processed archive (uuid {uuid}, path {path})'
+            result_list.append(result)
+            logger.info(result)
+            
+            set_progress((str(3), str(5)))
+                        
+            if manager.synchronize_archive(document.get_value('system_uuid')):
+                
+                set_progress((str(4), str(5)))
+                
+                result = f'3. synchronized archive on LSDF (uuid {uuid}, path {path})'
+                result_list.append(result)
+                logger.info(result)
 
-        manager.synchronize_archive(document.get_value('system_uuid'))
-    
-        set_progress((str(4), str(5)))
-        
-        result = f'3. add database entry (uuid {uuid}, path {path})'
-        result_list.append(result)
-        document.set_value('system_status', AssasDocumentFileStatus.ARCHIVED)
-        
-        document = AssasDatasetHandler.update_meta_data(document)
-        
-        manager.add_database_entry(document.get_document())
-    
+                document.set_value('system_status', AssasDocumentFileStatus.ARCHIVED)
+                document = AssasDatasetHandler.update_meta_data(document)
+                manager.add_database_entry(document.get_document())
+                
+                result = f'4. added database entry (uuid {uuid}, path {path})'
+                result_list.append(result)
+            
+            else:
+                                
+                result = f'3. ERROR when synchronizing archive on LSDF (uuid {uuid}, path {path})'
+                result_list.append(result)
+                logger.critical(result)
+            
+        else:
+            
+            result = f'2. ERROR when processing archive (uuid {uuid}, path {path})'
+            result_list.append(result)
+            logger.critical(result)
+            
+            if manager.clear_archive(uuid):
+            
+                result = f'3. cleared local archive (uuid {uuid}, path {path})'
+                result_list.append(result)
+                logger.critical(result)
+            
     else:
+        
         result = f'1. archive already processed (uuid {uuid}, path {path})'
         result_list.append(result)  
             
