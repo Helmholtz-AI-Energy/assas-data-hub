@@ -31,7 +31,7 @@ def meta_info_table(document):
     data_body = [html.Tbody([html.Tr([html.Td('Variables'), html.Td(document['meta_data_variables'])]),
                              html.Tr([html.Td('Channels'), html.Td(document['meta_data_channels'])]),
                              html.Tr([html.Td('Meshes'), html.Td(document['meta_data_meshes'])]),
-                             html.Tr([html.Td('Timesteps'), html.Td(document['meta_data_timesteps'])])
+                             html.Tr([html.Td('Timesteps'), html.Td(document['meta_data_samples'])])
                             ])]
     
     table = general_header + general_body + data_header + data_body

@@ -23,7 +23,7 @@ from datetime import datetime
 from flask import current_app as flask_app
 
 from ..components import content_style
-from assasdb import AssasDatabaseManager, AssasDatabaseHandler, AssasDocumentFile, AssasDocumentFileStatus
+from assasdb import AssasDatabaseManager, AssasDatabaseHandler, AssasDocumentFile, AssasDocumentFileStatus, AssasDatasetHandler
 
 app = dash.get_app()
 
@@ -316,7 +316,7 @@ def update_progress(set_progress, n_clicks, system, meta):
     document = AssasDocumentFile()
     document.set_document(json.loads(system))
     document.extend_document(json.loads(meta))
-    document.set_data_values()
+    #document.set_data_values()
     
     uuid = document.get_value('system_uuid')
     full_path = document.get_value('system_path')
@@ -350,6 +350,9 @@ def update_progress(set_progress, n_clicks, system, meta):
         result = f'3. add database entry (uuid {uuid}, path {path})'
         result_list.append(result)
         document.set_value('system_status', AssasDocumentFileStatus.ARCHIVED)
+        
+        document = AssasDatasetHandler.update_meta_data(document)
+        
         manager.add_database_entry(document.get_document())
     
     else:
