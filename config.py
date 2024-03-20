@@ -13,3 +13,4 @@ class Config(object):
     #FLASK_HTPASSWD_PATH = '/secret/.htpasswd'
     #FLASK_SECRET = SECRET_KEY
     #DB_HOST = 'database' # a docker link
+   

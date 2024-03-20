@@ -342,7 +342,7 @@ def update_progress(set_progress, n_clicks, system, meta):
     
         set_progress((str(3), str(5)))
 
-        #manager.synchronize_archive(document['system_uuid'])
+        manager.synchronize_archive(document.get_value('system_uuid'))
     
         set_progress((str(4), str(5)))
         
