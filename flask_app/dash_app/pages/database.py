@@ -200,7 +200,7 @@ def start_download(clicks, rows, ids, data):
         os.makedirs(download_folder)
         
     selected_data = [data[i] for i in rows]    
-    file_list = [data_item['system_path']+'/dataset.h5' for data_item in selected_data]
+    file_list = [data_item['system_path']+'/result/dataset.h5' for data_item in selected_data]
     
     zip_file = download_folder + '/download_' + uuid + '.zip'
     logger.info(f'generate archive {zip_file}')
@@ -362,7 +362,7 @@ def cell_clicked_download(active_cell, data):
             path = row_data['system_path']
             logger.info(f'start download for {path}')
             
-            return dcc.send_file(row_data['system_path']+'/dataset.h5')
+            return dcc.send_file(row_data['system_path']+'/result/dataset.h5')
         
         else:
             

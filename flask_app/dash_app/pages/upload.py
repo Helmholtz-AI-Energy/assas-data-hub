@@ -320,7 +320,8 @@ def update_progress(set_progress, n_clicks, system, meta):
     
     uuid = document.get_value('system_uuid')
     full_path = document.get_value('system_path')
-    path = os.path.dirname(document.get_value('system_path')) + '/result'
+    
+    path = manager.storage_handler.get_dataset_archive_dir(uuid)
     document.set_value('system_path', path)
     
     saved_document = manager.get_database_entry_uuid(uuid)
