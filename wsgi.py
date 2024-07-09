@@ -19,11 +19,9 @@ logger = logging.getLogger('assas_app')
 app = init_app()
 
 app.secret_key = 'super secret key'
-#app.config.update(SECRET_KEY=os.getenv("SECRET_KEY"))
 
 login_manager = LoginManager()
     
-#dash_app.index_string = html_layout
 login_manager.init_app(app)
 login_manager.login_view = '/assas_app/login'
 
@@ -36,4 +34,4 @@ def load_user(username):
 if __name__ == '__main__':
 
     app.logger.addHandler(handler)
-    app.run(host='0.0.0.0', debug=True, ssl_context='adhoc')
+    app.run(host='0.0.0.0', debug=True)
