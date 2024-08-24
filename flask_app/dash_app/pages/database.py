@@ -9,6 +9,7 @@ from dash import Dash, dash_table, html, dcc, Input, Output, callback, State
 from flask import current_app as flask_app
 from zipfile import ZipFile
 from uuid import uuid4
+from pathlib import Path
 
 from assasdb import AssasDatabaseManager
 from ..components import content_style, conditional_table_style
@@ -29,7 +30,7 @@ operators = [['ge ', '>='],
              ['contains '],
              ['datestartswith ']]
 
-table_data = AssasDatabaseManager(flask_app.config).get_database_entries()
+table_data = AssasDatabaseManager(flask_app.config).get_all_database_entries()
 
 ALL = len(table_data)
 PAGE_SIZE = 30
@@ -79,8 +80,9 @@ layout = html.Div([
         {'name': '_id', 'id': '_id', 'hideable': True},
         {'name': 'uuid', 'id': 'system_uuid', 'hideable': True},
         {'name': 'Path', 'id': 'system_path', 'hideable': True},
+        {'name': 'Result', 'id': 'system_result', 'hideable': True},
         {'name': 'Index', 'id': 'system_index', 'selectable': True},
-        {'name': 'Size', 'id': 'system_size', 'selectable': True},
+        {'name': 'Size (GB)', 'id': 'system_size', 'selectable': True},
         {'name': 'Date', 'id': 'system_date', 'selectable': True},
         {'name': 'User', 'id': 'system_user', 'selectable': True},
         {'name': 'File', 'id': 'system_download', 'selectable': True},
@@ -88,7 +90,7 @@ layout = html.Div([
         {'name': 'Name', 'id': 'meta_name', 'selectable': True},
         ],
         markdown_options={'html': True},
-        hidden_columns=['', '_id', 'system_uuid', 'system_path'],
+        hidden_columns=['', '_id', 'system_uuid', 'system_path', 'system_result'],
         data=table_data.to_dict('records'),
         style_cell={
             'fontSize': 17,
@@ -157,12 +159,9 @@ def reload_page(clicks):
     
     logger.debug(f'reload page {clicks}')
     
-    global table_data
-    
-    manager = AssasDatabaseManager(flask_app.config)
-    
-    table_data = manager.get_database_entries()
-    
+    global table_data    
+    table_data = AssasDatabaseManager(flask_app.config).get_all_database_entries()
+   
     return f'table_data (shape {table_data.shape}, size {table_data.size})'
 
 def generate_archive(path_to_zip, file_path_list):
@@ -200,14 +199,14 @@ def start_download(clicks, rows, ids, data):
         os.makedirs(download_folder)
         
     selected_data = [data[i] for i in rows]    
-    file_list = [data_item['system_path']+'/result/dataset.h5' for data_item in selected_data]
+    file_list = [data_item['system_result'] for data_item in selected_data]
     
     zip_file = download_folder + '/download_' + uuid + '.zip'
     logger.info(f'generate archive {zip_file}')
     
     zip_file = generate_archive(zip_file, file_list)
     
-    logger.debug(f'clicks {clicks} rows {str(rows)} files {file_list} zip {zip_file}')   
+    logger.debug(f'clicks {clicks} rows {str(rows)} files {file_list} zip {zip_file}')
         
     return dcc.send_file(zip_file)
 
@@ -358,11 +357,8 @@ def cell_clicked_download(active_cell, data):
         col = active_cell['column_id']
         
         if col == 'system_download':
-            
-            path = row_data['system_path']
-            logger.info(f'start download for {path}')
-            
-            return dcc.send_file(row_data['system_path']+'/result/dataset.h5')
+          
+            return dcc.send_file(row_data['system_result'])
         
         else:
             

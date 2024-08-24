@@ -3,11 +3,14 @@ class Config(object):
     
     DEBUG = True
     DEVELOPMENT = True
-    LSDF_ARCHIVE = r'/mnt/ASSAS/upload/'
+    LSDF_ARCHIVE = r'/mnt/ASSAS/upload_datahub/'
     LOCAL_ARCHIVE = r'/root/upload/'
     PYTHON_VERSION = r'/opt/python/3.11.8/bin/python3.11'
-    ASTEC_ROOT = r'/root/astecV3.1.1_linux64/astecV3.1.1/code/proc/astec.py' 
+    ASTEC_ROOT = r'/root/astecV3.1.1_linux64/astecV3.1.1'
+    ASTEC_COMPUTER = r'linux_64'
+    ASTEC_COMPILER = r'release'
     ASTEC_PARSER = r'/root/assas-data-hub/assas_database/assasdb/assas_astec_parser.py'
+    CONNECTIONSTRING = r'mongodb://localhost:27017/'
     
     #SECRET_KEY = 'do-i-really-need-this'
     #FLASK_HTPASSWD_PATH = '/secret/.htpasswd'

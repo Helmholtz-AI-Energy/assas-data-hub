@@ -11,7 +11,9 @@ logger = logging.getLogger('assas_app')
 
 dash.register_page(__name__, path_template='/details/<report_id>')
 
-def meta_info_table(document):
+def meta_info_table(
+    document: dict
+):
     
     general_header = [
             html.Thead(html.Tr([html.Th('General')]))
@@ -49,7 +51,7 @@ def layout(report_id=None):
             ],style = content_style())
     else:
         database_manager = AssasDatabaseManager(flask_app.config)
-        document = database_manager.get_database_entry(report_id)
+        document = database_manager.get_database_entry_by_id(report_id)
         logger.info('document %s' % (document))
     
         return html.Div([    
