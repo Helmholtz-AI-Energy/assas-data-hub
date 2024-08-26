@@ -34,11 +34,23 @@ The upload of ASTEC data is supported through an upload application under ``tool
 3. Installation of ``Python3.10+`` and ``rysnc``
 4. Define the ASTEC archive directory tree
 
-The commandline interface of the upload application requires the following parameter:
+The commandline interface of the upload application requires the following parameters:
 
-* --user: KIT internal batch which has access to the LSDF
-* --source: Path to the directory tree which will be uploaded (ASTEC Project directory)
-* --archive: Sub path to the actual ASTEC archive inside the directory tree, or a list of sub paths 
+* --user (-u): KIT internal batch which has access to the LSDF
+* --source (-s): Path to the directory tree which will be uploaded (ASTEC Project directory)
+* --archive (-a): Sub path to the actual ASTEC archive inside the directory tree, or a list of sub paths 
+
+The upload application can be executed via commandline as follows:
+
+```console
+$ python tools/assas_data_uploader.py -u my_user -s my_source_path -a my_archive_path
+```
+
+If there is a project tree with several ASTEC runs, one can define a list of archive paths:
+
+```console
+$ python tools/assas_data_uploader.py -u my_user -s my_source_path -a my_archive_path_1, my_archive_path_2, ....
+```
 
 <div align="center">
     <img src="./flask_app/dash_app/assets/assas_data_upload.png" height="200px"></img>
