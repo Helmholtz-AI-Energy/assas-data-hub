@@ -3,7 +3,9 @@ class Config(object):
     
     DEBUG = True
     DEVELOPMENT = True
-    LSDF_ARCHIVE = r'/mnt/ASSAS/upload_datahub/'
+    LSDF_ARCHIVE = r'/mnt/ASSAS/upload_test/'
+    UPLOAD_DIRECTORY = r'/mnt/ASSAS/upload_test/uploads/'
+    UPLOAD_FILE = r'/mnt/ASSAS/upload_test/uploads/uploads.txt'
     LOCAL_ARCHIVE = r'/root/upload/'
     PYTHON_VERSION = r'/opt/python/3.11.8/bin/python3.11'
     ASTEC_ROOT = r'/root/astecV3.1.1_linux64/astecV3.1.1'

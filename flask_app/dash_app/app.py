@@ -20,9 +20,10 @@ navbar = dbc.Navbar(
             html.A(
                 # Use row and col to control vertical alignment of logo / brand
                 dbc.Row(
-                    [                     
+                    [
+                        dbc.Col(html.Img(src=encode_svg_image('assas_logo.svg'), height='60px', width='120px', style={'border':'1px grey solid'}), width=6),
                         dbc.Col(html.Img(src=encode_svg_image('kit_logo.drawio.svg'), height='60px', width='120px', style={'border':'1px grey solid'}), width=6),
-                        dbc.Col(html.Img(src=encode_svg_image('assas_logo.svg'), height='60px', width='60px', style={'border':'1px grey solid'}), width=3),
+                        dbc.Col(html.Img(src=encode_svg_image('ASSAS logo.svg'), height='60px', width='100px', style={'border':'1px grey solid'}), width=3),
                         dbc.Col(dbc.NavbarBrand('ASSAS Data Hub', className='ms-2'), width=3),                                           
                     ],
                     align='center',
@@ -35,7 +36,7 @@ navbar = dbc.Navbar(
             [
                 dbc.NavItem(dbc.NavLink('Home', href='/assas_app/home', active='exact')),
                 dbc.NavItem(dbc.NavLink('Database', href='/assas_app/database', active='exact')),
-                dbc.NavItem(dbc.NavLink('Upload', href='/assas_app/upload', active='exact')),
+                #dbc.NavItem(dbc.NavLink('Upload', href='/assas_app/upload', active='exact')),
                 dbc.NavItem(dbc.NavLink('About', href='/assas_app/about', active='exact')),
                 dbc.DropdownMenu(
                     nav=True,
@@ -88,8 +89,8 @@ def init_dashboard(server):
         assets_folder=assets_folder,
         long_callback_manager=long_callback_manager,
         #background_callback_manager=background_callback_manager
-    )    
-  
+    )
+    
     # Create Dash Layout
     dash_app.layout = html.Div([
         navbar,

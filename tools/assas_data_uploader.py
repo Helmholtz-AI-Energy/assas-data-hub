@@ -19,7 +19,7 @@ class Duration(namedtuple('Duration', 'weeks, days, hours, minutes, seconds')):
 
     def _get_formatted_units(
         self
-    ):
+    )-> str:
         
         for unit_name, value in self._asdict().items():
             if value > 0:
@@ -32,17 +32,26 @@ class AssasDataUploader:
     def __init__(
         self,
         user: str,
+        name: str,
+        description: str,
         source_path: str,
-        runs: int = 1,
-        target_path: str = '/lsdf/kit/scc/projects/ASSAS/upload_test'
+        astec_archive_paths: List[str],
+        target_path: str = '/lsdf/kit/scc/projects/ASSAS/upload_test',
     ) -> None:
         
-        self.upload_id = str(uuid.uuid4())
-        self.runs = runs
+        self.upload_uuid = str(uuid.uuid4())
+                
+        self.user = user
+        self.name = name
+        self.description = description
         self.source_path = source_path
+        self.astec_archive_paths = astec_archive_paths
+        self.target_path = target_path
+                
+        self.create_folder_command = ['ssh', f'{self.user}@os-login.lsdf.kit.edu', f'mkdir -v {target_path}/{self.upload_uuid}']
+        self.upload_command = ['rsync', '-avP', f'{source_path}', f'{self.user}@os-login.lsdf.kit.edu:{target_path}/{self.upload_uuid}']
         
-        self.create_folder_command = ['ssh', f'{user}@os-login.lsdf.kit.edu', f'mkdir -v {target_path}/{self.upload_id}']
-        self.upload_command = ['rsync', '-avP', f'{source_path}', f'{user}@os-login.lsdf.kit.edu:{target_path}/{self.upload_id}']
+        self.notify_command = ['ssh', f'{self.user}@os-login.lsdf.kit.edu', f'echo "{self.upload_uuid}" >> {target_path}/uploads/uploads.txt']
         
         self.save_upload_info()
         
@@ -57,15 +66,19 @@ class AssasDataUploader:
         duration_string = AssasDataUploader.get_duration(duration_in_seconds)
                
         print(f'Upload took {duration_string}')
-        
+        self.notify_upload()
+   
     def save_upload_info(
         self        
-    ):
+    )-> None:
         upload_info = {}
-        upload_info['upload_id'] = self.upload_id
-        upload_info['runs'] = self.runs
+        upload_info['upload_uuid'] = self.upload_uuid
+        upload_info['user'] = self.user
+        upload_info['name'] = self.name
+        upload_info['description'] = self.description
+        upload_info['archive_paths'] = self.astec_archive_paths
         
-        with open(f'{source_path}/upload_info.pickle', 'w') as file:
+        with open(f'{source_path}/upload_info.pickle', 'wb') as file:
             pickle.dump(upload_info, file)
    
     def execute_command(
@@ -104,6 +117,15 @@ class AssasDataUploader:
 
         return self.execute_command(self.create_folder_command)
     
+    def notify_upload(
+        self
+    )-> bool:
+        
+        return self.execute_command(self.notify_command)
+
+def list_of_strings(arg):
+    
+    return arg.split(',')
     
 if __name__ == "__main__":
     
@@ -126,21 +148,41 @@ if __name__ == "__main__":
     )
     
     argparser.add_argument(
-        '-r',
-        '--runs',
-        type=int,
-        help='indicates if source path contains several runs',
-        default=1,
+        '-n',
+        '--name',
+        type=str,
+        help='name of the corresponding astec archives',
+        required=True,
+    )
+        
+    argparser.add_argument(
+        '-d',
+        '--description',
+        type=str,
+        help='description of the corresponding astec archives',
+        required=True,
+    )
+    
+    argparser.add_argument(
+        '-a',
+        '--archives',
+        type=list_of_strings,
+        help='sub path of astec binary archive',
+        required=True,  
     )
     
     args = argparser.parse_args()
     
     user = args.user
+    name = args.name
+    description = args.description
     source_path = args.source
-    runs = args.runs
-  
+    archive_paths = args.archives
+    
     AssasDataUploader(
         user=user,
+        name=name,
+        description=description,
         source_path=source_path,
-        runs=runs
+        astec_archive_paths=archive_paths
     )      

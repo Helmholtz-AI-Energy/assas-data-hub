@@ -10,7 +10,9 @@ from dash import dcc, callback
 from flask_app.users_mgt import create_admin_user, User, AssasUserManager
 from flask_login import logout_user, current_user, LoginManager
 
-#logging.basicConfig(level=logging.INFO)
+from assasdb import AssasUploadWatchdog
+
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('assas_app')
 
 logging.basicConfig(
@@ -40,5 +42,10 @@ def load_user(username):
 
 if __name__ == '__main__':
 
+    upload_watchdog = AssasUploadWatchdog(app.config)
+    upload_watchdog.start()
+    
     app.logger.addHandler(handler)
     app.run(host='0.0.0.0', debug=True)
+    
+    upload_watchdog.stop()

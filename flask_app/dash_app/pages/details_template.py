@@ -20,9 +20,9 @@ def meta_info_table(
         ]
     
     general_body = [html.Tbody([html.Tr([html.Td('Name'), html.Td(document['meta_name'])]),
-                                html.Tr([html.Td('Group'), html.Td(document['meta_group'])]),
-                                html.Tr([html.Td('Date'), html.Td(document['meta_date'])]),
-                                html.Tr([html.Td('Creator'), html.Td(document['meta_creator'])]),
+                                #html.Tr([html.Td('Group'), html.Td(document['meta_group'])]),
+                                #html.Tr([html.Td('Date'), html.Td(document['meta_date'])]),
+                                #html.Tr([html.Td('Creator'), html.Td(document['meta_creator'])]),
                                 html.Tr([html.Td('Description'), html.Td(document['meta_description'])])
                             ])]
     
@@ -52,7 +52,7 @@ def layout(report_id=None):
     else:
         database_manager = AssasDatabaseManager(flask_app.config)
         document = database_manager.get_database_entry_by_id(report_id)
-        logger.info('document %s' % (document))
+        logger.info('Found document %s' % (document))
     
         return html.Div([    
             meta_info_table(document)            
