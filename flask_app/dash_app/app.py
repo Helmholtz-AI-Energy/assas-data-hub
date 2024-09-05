@@ -21,10 +21,10 @@ navbar = dbc.Navbar(
                 # Use row and col to control vertical alignment of logo / brand
                 dbc.Row(
                     [
-                        dbc.Col(html.Img(src=encode_svg_image('assas_logo.svg'), height='60px', width='120px', style={'border':'1px grey solid'}), width=6),
-                        dbc.Col(html.Img(src=encode_svg_image('kit_logo.drawio.svg'), height='60px', width='120px', style={'border':'1px grey solid'}), width=6),
-                        dbc.Col(html.Img(src=encode_svg_image('ASSAS logo.svg'), height='60px', width='100px', style={'border':'1px grey solid'}), width=3),
-                        dbc.Col(dbc.NavbarBrand('ASSAS Data Hub', className='ms-2'), width=3),                                           
+                        #dbc.Col(html.Img(src=encode_svg_image('assas_logo.svg'), height='60px', width='120px', style={'border':'1px grey solid'}), width=6),
+                        dbc.Col(html.Img(src=encode_svg_image('assas_logo_mod.svg'), height='60px', width='120px', style={'border':'1px grey solid'}), width=4),
+                        dbc.Col(html.Img(src=encode_svg_image('kit_logo.drawio.svg'), height='60px', width='120px', style={'border':'1px grey solid'}), width=4),
+                        dbc.Col(dbc.NavbarBrand('ASSAS Data Hub', className='ms-2'), width=3),                                 
                     ],
                     align='center',
                     className='g-0',

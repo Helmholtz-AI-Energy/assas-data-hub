@@ -36,34 +36,36 @@ def get_data_files(uuid):
     
     return send_file(filepath)
 
-#thread_event = threading.Event()
 
-#def backgroundTask():
-#    while thread_event.is_set():
-#        print('Background task running!')
-#        sleep(5)
+thread_event = threading.Event()
 
-#@app.route("/assas_app/process_uploads")
-#@flask_async
-#def process_uploads():
+def backgroundTask():
     
-#    logger.info(f'Handle request for processing uploads')
-    
-#    manager = AssasDatabaseManager(app.config)
-#    manager.process_uploads()
-#    manager.convert_archives_to_hdf5()
+    while thread_event.is_set():
         
-#    return jsonify({'thread_name': 'Conversion', 'Result': True})
+        print('Background task running!')
+        manager = AssasDatabaseManager(app.config)
+        #manager.process_uploads()
+        manager.convert_archives_to_hdf5()
+        
 
-#@app.route('/assas_app/process_uploads/<task_id>', methods=['GET'])
-#def foo_results(task_id):
-#    """
-#        Return results of asynchronous task.
-#        If this request returns a 202 status code, it means that task hasn't finished yet.
-#        """
-#    task = tasks.get(task_id)
-#    if task is None:
-#        abort(404)
-#    if 'result' not in task:
-#        return {'TaskID': task_id}, 202
-#    return task['result']
+@app.route("/assas_app/conversion_start", methods=["POST"])
+def startBackgroundTask():
+    try:
+        thread_event.set()
+        
+        thread = threading.Thread(target=backgroundTask)
+        thread.start()
+
+        return "Background task started!"
+    except Exception as error:
+        return str(error)
+    
+@app.route("/assas_app/conversion_stop", methods=["POST"])
+def stopBackgroundTask():
+    try:
+        thread_event.clear()
+
+        return "Background task stopped!"
+    except Exception as error:
+        return str(error)
