@@ -31,6 +31,7 @@ class AssasDataUploader:
     
     def __init__(
         self,
+        upload_uuid: str,
         user: str,
         name: str,
         description: str,
@@ -39,7 +40,15 @@ class AssasDataUploader:
         target_path: str = '/lsdf/kit/scc/projects/ASSAS/upload_test',
     ) -> None:
         
-        self.upload_uuid = str(uuid.uuid4())
+        notify_upload = False
+        
+        if upload_uuid is None:
+            self.upload_uuid = str(uuid.uuid4())
+            resume = True
+            print(f'Generate new upload uuid {self.upload_uuid}')
+        else:
+            self.upload_uuid = upload_uuid
+            print(f'Use existing upload_uuid {self.upload_uuid}')
                 
         self.user = user
         self.name = name
@@ -57,7 +66,10 @@ class AssasDataUploader:
         
         start_time = time.time()
         
-        self.create_folder_on_server()
+        if notify_upload:
+            print('Create new folder on server')
+            self.create_folder_on_server()
+        
         self.upload_archive()
         
         end_time = time.time()
@@ -66,7 +78,10 @@ class AssasDataUploader:
         duration_string = AssasDataUploader.get_duration(duration_in_seconds)
                
         print(f'Upload took {duration_string}')
-        self.notify_upload()
+        
+        if notify_upload:
+            print('Notify new upload')
+            self.notify_upload()
    
     def save_upload_info(
         self        
@@ -80,6 +95,10 @@ class AssasDataUploader:
         
         with open(f'{source_path}/upload_info.pickle', 'wb') as file:
             pickle.dump(upload_info, file)
+        
+        print(f'Upload information:')
+        for key, value in upload_info.items():
+            print(f'{key}: {value}')
    
     def execute_command(
         self,
@@ -125,7 +144,7 @@ class AssasDataUploader:
 
 def list_of_strings(arg):
     
-    return arg.split(',')
+    return arg.split(', ')
     
 if __name__ == "__main__":
     
@@ -171,8 +190,18 @@ if __name__ == "__main__":
         required=True,  
     )
     
+    argparser.add_argument(
+        '-i',
+        '--uuid',
+        type=str,
+        help='uuid of upload in case of resuming an upload',
+        required=False,
+        default=None
+    )
+    
     args = argparser.parse_args()
     
+    upload_uuid = args.uuid
     user = args.user
     name = args.name
     description = args.description
@@ -180,9 +209,11 @@ if __name__ == "__main__":
     archive_paths = args.archives
     
     AssasDataUploader(
+        upload_uuid=upload_uuid,
         user=user,
         name=name,
         description=description,
         source_path=source_path,
         astec_archive_paths=archive_paths
-    )      
+    )
+ 

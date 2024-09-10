@@ -29,10 +29,9 @@ app = init_app()
 
 app.secret_key = 'super secret key'
 
-login_manager = LoginManager()
-    
+login_manager = LoginManager(app)
 login_manager.init_app(app)
-login_manager.login_view = '/assas_app/login'
+login_manager.login_view = '/index'
 
 create_admin_user()
 
