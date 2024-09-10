@@ -11,16 +11,18 @@ logger = logging.getLogger('assas_app')
 
 dash.register_page(__name__, path_template='/details/<report_id>')
 
-def meta_info_table(document):
+def meta_info_table(
+    document: dict
+):
     
     general_header = [
             html.Thead(html.Tr([html.Th('General')]))
         ]
     
     general_body = [html.Tbody([html.Tr([html.Td('Name'), html.Td(document['meta_name'])]),
-                                html.Tr([html.Td('Group'), html.Td(document['meta_group'])]),
-                                html.Tr([html.Td('Date'), html.Td(document['meta_date'])]),
-                                html.Tr([html.Td('Creator'), html.Td(document['meta_creator'])]),
+                                #html.Tr([html.Td('Group'), html.Td(document['meta_group'])]),
+                                #html.Tr([html.Td('Date'), html.Td(document['meta_date'])]),
+                                #html.Tr([html.Td('Creator'), html.Td(document['meta_creator'])]),
                                 html.Tr([html.Td('Description'), html.Td(document['meta_description'])])
                             ])]
     
@@ -49,8 +51,8 @@ def layout(report_id=None):
             ],style = content_style())
     else:
         database_manager = AssasDatabaseManager(flask_app.config)
-        document = database_manager.get_database_entry(report_id)
-        logger.info('document %s' % (document))
+        document = database_manager.get_database_entry_by_id(report_id)
+        logger.info('Found document %s' % (document))
     
         return html.Div([    
             meta_info_table(document)            

@@ -23,7 +23,7 @@ from datetime import datetime
 from flask import current_app as flask_app
 
 from ..components import content_style
-from assasdb import AssasDatabaseManager, AssasDatabaseHandler, AssasDocumentFile, AssasDocumentFileStatus, AssasDatasetHandler
+from assasdb import AssasDatabaseManager, AssasDatabaseHandler, AssasDocumentFile, AssasDocumentFileStatus, AssasHdf5DatasetHandler
 
 app = dash.get_app()
 
@@ -313,73 +313,73 @@ def update_progress(set_progress, n_clicks, system, meta):
     
     manager = AssasDatabaseManager(flask_app.config)
     
-    document = AssasDocumentFile()
-    document.set_document(json.loads(system))
-    document.extend_document(json.loads(meta))
+    #document = AssasDocumentFile()
+    #document.set_document(json.loads(system))
+    #document.extend_document(json.loads(meta))
         
-    uuid = document.get_value('system_uuid')
-    full_path = document.get_value('system_path')
-    path = manager.storage_handler.get_dataset_archive_dir(uuid)
-    document.set_value('system_path', path)
+    #uuid = document.get_value('system_uuid')
+    #full_path = document.get_value('system_path')
+    #path = manager.storage_handler.get_dataset_archive_dir(uuid)
+    #document.set_value('system_path', path)
     
-    saved_document = manager.get_database_entry_uuid(uuid)
+    #saved_document = manager.get_database_entry_uuid(uuid)
   
-    logger.debug(f'number of clicks {n_clicks}, intermediate document: {document.get_document()}, saved document: {saved_document}')
+    #logger.debug(f'number of clicks {n_clicks}, intermediate document: {document.get_document()}, saved document: {saved_document}')
     
-    if saved_document is None:
+    #if saved_document is None:
         
-        result = f'1. added new archive (uuid {uuid}, path {path})'
-        result_list.append(result)
-        logger.info(result)
+    #    result = f'1. added new archive (uuid {uuid}, path {path})'
+    #    result_list.append(result)
+    #    logger.info(result)
 
-        set_progress((str(2), str(5)))
+    #    set_progress((str(2), str(5)))
         
-        if manager.process_archive(full_path):
+    #    if manager.process_archive(full_path):
             
-            result = f'2. processed archive (uuid {uuid}, path {path})'
-            result_list.append(result)
-            logger.info(result)
+    #        result = f'2. processed archive (uuid {uuid}, path {path})'
+    #        result_list.append(result)
+    #        logger.info(result)
             
-            set_progress((str(3), str(5)))
+    #        set_progress((str(3), str(5)))
                         
-            if manager.synchronize_archive(document.get_value('system_uuid')):
+    #        if manager.synchronize_archive(document.get_value('system_uuid')):
                 
-                set_progress((str(4), str(5)))
+    #            set_progress((str(4), str(5)))
                 
-                result = f'3. synchronized archive on LSDF (uuid {uuid}, path {path})'
-                result_list.append(result)
-                logger.info(result)
+    #            result = f'3. synchronized archive on LSDF (uuid {uuid}, path {path})'
+    #            result_list.append(result)
+    #            logger.info(result)
 
-                document.set_value('system_status', AssasDocumentFileStatus.ARCHIVED)
-                document = AssasDatasetHandler.update_meta_data(document)
-                manager.add_database_entry(document.get_document())
+    #            document.set_value('system_status', AssasDocumentFileStatus.ARCHIVED)
+    #            document = AssasHdf5DatasetHandler.update_meta_data(document)
+    #            manager.add_database_entry(document.get_document())
                 
-                result = f'4. added database entry (uuid {uuid}, path {path})'
-                result_list.append(result)
+    #            result = f'4. added database entry (uuid {uuid}, path {path})'
+    #            result_list.append(result)
             
-            else:
+    #        else:
                                 
-                result = f'3. ERROR when synchronizing archive on LSDF (uuid {uuid}, path {path})'
-                result_list.append(result)
-                logger.critical(result)
+    #            result = f'3. ERROR when synchronizing archive on LSDF (uuid {uuid}, path {path})'
+    #            result_list.append(result)
+    #            logger.critical(result)
             
-        else:
+    #    else:
             
-            result = f'2. ERROR when processing archive (uuid {uuid}, path {path})'
-            result_list.append(result)
-            logger.critical(result)
+    #         result = f'2. ERROR when processing archive (uuid {uuid}, path {path})'
+    #        result_list.append(result)
+    #        logger.critical(result)
+    #        
+    #        if manager.clear_archive(uuid):
+    #        
+    #            result = f'3. cleared local archive (uuid {uuid}, path {path})'
+    #            result_list.append(result)
+    #            logger.critical(result)
             
-            if manager.clear_archive(uuid):
+    #else:
+    #    
+    #    result = f'1. archive already processed (uuid {uuid}, path {path})'
+    #    result_list.append(result)  
             
-                result = f'3. cleared local archive (uuid {uuid}, path {path})'
-                result_list.append(result)
-                logger.critical(result)
-            
-    else:
-        
-        result = f'1. archive already processed (uuid {uuid}, path {path})'
-        result_list.append(result)  
-            
-    set_progress((str(5), str(5)))
+    #set_progress((str(5), str(5)))
     
     return html.Ul([html.Li(str(result)) for result in result_list])

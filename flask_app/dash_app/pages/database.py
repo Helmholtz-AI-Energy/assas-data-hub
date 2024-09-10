@@ -9,6 +9,7 @@ from dash import Dash, dash_table, html, dcc, Input, Output, callback, State
 from flask import current_app as flask_app
 from zipfile import ZipFile
 from uuid import uuid4
+from pathlib import Path
 
 from assasdb import AssasDatabaseManager
 from ..components import content_style, conditional_table_style
@@ -29,7 +30,7 @@ operators = [['ge ', '>='],
              ['contains '],
              ['datestartswith ']]
 
-table_data = AssasDatabaseManager(flask_app.config).get_database_entries()
+table_data = AssasDatabaseManager(flask_app.config).get_all_database_entries()
 
 ALL = len(table_data)
 PAGE_SIZE = 30
@@ -77,10 +78,13 @@ layout = html.Div([
         id='datatable-paging-and-sorting',
         columns=[
         {'name': '_id', 'id': '_id', 'hideable': True},
-        {'name': 'uuid', 'id': 'system_uuid', 'hideable': True},
+        {'name': 'Uuid', 'id': 'system_uuid', 'hideable': True},
+        {'name': 'Upload Uuid', 'id': 'system_upload_uuid', 'hideable': True},
         {'name': 'Path', 'id': 'system_path', 'hideable': True},
+        {'name': 'Result', 'id': 'system_result', 'hideable': True},
         {'name': 'Index', 'id': 'system_index', 'selectable': True},
         {'name': 'Size', 'id': 'system_size', 'selectable': True},
+        {'name': 'Size hdf5', 'id': 'system_size_hdf5', 'selectable': True},
         {'name': 'Date', 'id': 'system_date', 'selectable': True},
         {'name': 'User', 'id': 'system_user', 'selectable': True},
         {'name': 'File', 'id': 'system_download', 'selectable': True},
@@ -88,7 +92,7 @@ layout = html.Div([
         {'name': 'Name', 'id': 'meta_name', 'selectable': True},
         ],
         markdown_options={'html': True},
-        hidden_columns=['', '_id', 'system_uuid', 'system_path'],
+        hidden_columns=['', '_id', 'system_uuid', 'system_upload_uuid', 'system_path', 'system_result'],
         data=table_data.to_dict('records'),
         style_cell={
             'fontSize': 17,
@@ -98,12 +102,13 @@ layout = html.Div([
         merge_duplicate_headers= True,        
         
         style_header={
-            'backgroundColor': 'rgb(30, 30, 30)',
+            'backgroundColor': 'black',
             'color': 'white',
             'fontWeight': 'bold'
         },
+        
         style_data={
-            'backgroundColor': 'rgb(50, 50, 50)',
+            'backgroundColor': 'black',
             'color': 'white'
         },
         
@@ -151,21 +156,22 @@ layout = html.Div([
 
 @callback(
     Output('reload-contents', 'children'),
-    Input('reload_page', 'n_clicks'),
-)
-def reload_page(clicks):
+    Input('reload_page', 'n_clicks'))
+def reload_page(
+    clicks
+):
     
     logger.debug(f'reload page {clicks}')
     
-    global table_data
-    
-    manager = AssasDatabaseManager(flask_app.config)
-    
-    table_data = manager.get_database_entries()
-    
+    global table_data    
+    table_data = AssasDatabaseManager(flask_app.config).get_all_database_entries()
+   
     return f'table_data (shape {table_data.shape}, size {table_data.size})'
 
-def generate_archive(path_to_zip, file_path_list):
+def generate_archive(
+    path_to_zip,
+    file_path_list
+):
     
     with ZipFile(path_to_zip, 'w') as zip_object:
         
@@ -184,9 +190,13 @@ def generate_archive(path_to_zip, file_path_list):
     Input('download_selected', 'n_clicks'),  
     State('datatable-paging-and-sorting', 'derived_viewport_selected_rows'),
     State('datatable-paging-and-sorting', 'derived_viewport_selected_row_ids'),
-    State('datatable-paging-and-sorting', 'derived_viewport_data')
-)
-def start_download(clicks, rows, ids, data):
+    State('datatable-paging-and-sorting', 'derived_viewport_data'))
+def start_download(
+    clicks,
+    rows,
+    ids,
+    data
+):
     
     if (rows is None) or (ids is None) or len(rows) == 0:                                                                                                                                                                                                                      
         return dash.no_update    
@@ -200,14 +210,14 @@ def start_download(clicks, rows, ids, data):
         os.makedirs(download_folder)
         
     selected_data = [data[i] for i in rows]    
-    file_list = [data_item['system_path']+'/result/dataset.h5' for data_item in selected_data]
+    file_list = [data_item['system_result'] for data_item in selected_data]
     
     zip_file = download_folder + '/download_' + uuid + '.zip'
     logger.info(f'generate archive {zip_file}')
     
     zip_file = generate_archive(zip_file, file_list)
     
-    logger.debug(f'clicks {clicks} rows {str(rows)} files {file_list} zip {zip_file}')   
+    logger.debug(f'clicks {clicks} rows {str(rows)} files {file_list} zip {zip_file}')
         
     return dcc.send_file(zip_file)
 
@@ -215,9 +225,12 @@ def start_download(clicks, rows, ids, data):
     Output('download_selected', 'disabled'),     
     Input('datatable-paging-and-sorting', 'derived_viewport_selected_rows'),
     Input('datatable-paging-and-sorting', 'derived_viewport_selected_row_ids'),
-    State('datatable-paging-and-sorting', 'derived_viewport_data')
-)
-def selected_button(rows, ids, data):
+    State('datatable-paging-and-sorting', 'derived_viewport_data'))
+def selected_button(
+    rows,
+    ids,
+    data
+):
     
     if (rows is None) or (ids is None):                                                                                                                                                                                                                      
         return dash.no_update
@@ -227,7 +240,9 @@ def selected_button(rows, ids, data):
     
     return True
 
-def split_filter_part(filter_part):
+def split_filter_part(
+    filter_part
+):
     
     for operator_type in operators:
         for operator in operator_type:
@@ -257,7 +272,12 @@ def split_filter_part(filter_part):
     Input('datatable-paging-and-sorting', 'page_size'),
     Input('datatable-paging-and-sorting', 'sort_by'),
     Input('datatable-paging-and-sorting', 'filter_query'))
-def update_table(page_current, page_size, sort_by, filter):
+def update_table(
+    page_current,
+    page_size,
+    sort_by,
+    filter
+):
     
     filtering_expressions = filter.split(' && ')
     
@@ -295,7 +315,10 @@ def update_table(page_current, page_size, sort_by, filter):
     Output('datatable-paging-and-sorting', 'page_size'),
     Input('datatable-use-page-size', 'value'),
     Input('datatable-page-size', 'value'))
-def update_page_size(use_page_size, page_size_value):
+def update_page_size(
+    use_page_size, 
+    page_size_value
+):
     
     logger.debug(f'update page size, use page size {use_page_size} page size value {page_size_value}')
     
@@ -308,7 +331,10 @@ def update_page_size(use_page_size, page_size_value):
     Output('pagination-contents', 'children'),
     Input('pagination', 'active_page'),
     Input('pagination', 'max_value'))
-def change_page(page, value):
+def change_page(
+    page, 
+    value
+):
     
     logger.debug(f'page {page} value {value}')    
     
@@ -320,7 +346,9 @@ def change_page(page, value):
 @callback(
     Output('datatable-paging-and-sorting', 'page_current'),
     Input('pagination', 'active_page'))
-def change_page_table(page):
+def change_page_table(
+    page
+):
     
     logger.debug(f'page {page}')
     
@@ -333,7 +361,10 @@ def change_page_table(page):
     Output('datatable-page-size', 'style'),
     Input('datatable-use-page-size', 'value'),
     Input('datatable-page-size', 'value'))
-def update_page_count(use_page_size, page_size_value):
+def update_page_count(
+    use_page_size, 
+    page_size_value
+):
     
     logger.debug(f'update page count, use page size {use_page_size} page size value {page_size_value}')
     
@@ -349,7 +380,10 @@ def update_page_count(use_page_size, page_size_value):
     Output('download', 'data'),
     Input('datatable-paging-and-sorting', 'active_cell'),
     State('datatable-paging-and-sorting', 'derived_viewport_data'))
-def cell_clicked_download(active_cell, data):
+def cell_clicked_download(
+    active_cell, 
+    data
+):
     
     if active_cell:
         
@@ -359,10 +393,10 @@ def cell_clicked_download(active_cell, data):
         
         if col == 'system_download':
             
-            path = row_data['system_path']
-            logger.info(f'start download for {path}')
+            file_to_send = row_data['system_result']
+            logger.debug(f'File to send: {file_to_send}')
             
-            return dcc.send_file(row_data['system_path']+'/result/dataset.h5')
+            return dcc.send_file(file_to_send)
         
         else:
             
@@ -372,7 +406,10 @@ def cell_clicked_download(active_cell, data):
     Output('location', 'href'),
     Input('datatable-paging-and-sorting', 'active_cell'),
     State('datatable-paging-and-sorting', 'derived_viewport_data'))
-def cell_clicked_details(active_cell, data):
+def cell_clicked_details(
+    active_cell,
+    data
+):
     
     if active_cell:
         

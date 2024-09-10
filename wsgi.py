@@ -1,6 +1,7 @@
 '''Application entry point.'''
 import logging
 import os 
+import sys
 
 from logging.handlers import RotatingFileHandler
 from flask_app import init_app
@@ -9,23 +10,28 @@ from dash import dcc, callback
 from flask_app.users_mgt import create_admin_user, User, AssasUserManager
 from flask_login import logout_user, current_user, LoginManager
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger('assas_app')
-handler = RotatingFileHandler('assas_app.log', maxBytes=10000, backupCount=10)
-logger.addHandler(handler)
+from assasdb import AssasUploadWatchdog
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('assas_app')
+
+logging.basicConfig(
+    format = '%(asctime)s %(module)s %(levelname)s: %(message)s',
+    level = logging.INFO,
+    stream = sys.stdout)
+
+handler = RotatingFileHandler('assas_app.log', maxBytes=100000, backupCount=10)
+formatter = logging.Formatter('%(levelname)s - %(asctime)s - %(name)s: %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 app = init_app()
 
 app.secret_key = 'super secret key'
-#app.config.update(SECRET_KEY=os.getenv("SECRET_KEY"))
 
-login_manager = LoginManager()
-    
-#dash_app.index_string = html_layout
+login_manager = LoginManager(app)
 login_manager.init_app(app)
-login_manager.login_view = '/assas_app/login'
+login_manager.login_view = '/index'
 
 create_admin_user()
 
@@ -35,5 +41,10 @@ def load_user(username):
 
 if __name__ == '__main__':
 
+    upload_watchdog = AssasUploadWatchdog(app.config)
+    upload_watchdog.start()
+    
     app.logger.addHandler(handler)
-    app.run(host='0.0.0.0', debug=True, ssl_context='adhoc')
+    app.run(host='0.0.0.0', debug=True)
+    
+    upload_watchdog.stop()
