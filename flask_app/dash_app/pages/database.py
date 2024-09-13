@@ -163,10 +163,10 @@ def reload_page(
     
     logger.debug(f'reload page {clicks}')
     
-    global table_data    
+    global table_data
     table_data = AssasDatabaseManager(flask_app.config).get_all_database_entries()
    
-    return f'table_data (shape {table_data.shape}, size {table_data.size})'
+    return ''#f'table_data (shape {table_data.shape}, size {table_data.size})'
 
 def generate_archive(
     path_to_zip,

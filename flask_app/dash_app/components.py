@@ -15,8 +15,8 @@ def content_style():
     return {
                 'margin-top': '2rem',
                 'margin-bottom': '2rem',
-                'margin-left': '20rem',
-                'margin-right': '20rem',
+                'margin-left': '5rem',
+                'margin-right': '5rem',
                 'padding': '2rem 1rem',
                 'border':'4px grey solid',
             }

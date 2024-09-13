@@ -40,11 +40,11 @@ class AssasDataUploader:
         target_path: str = '/lsdf/kit/scc/projects/ASSAS/upload_test',
     ) -> None:
         
-        notify_upload = False
+        resuming_upload = False
         
         if upload_uuid is None:
             self.upload_uuid = str(uuid.uuid4())
-            resume = True
+            resuming_upload = True
             print(f'Generate new upload uuid {self.upload_uuid}')
         else:
             self.upload_uuid = upload_uuid
@@ -58,15 +58,14 @@ class AssasDataUploader:
         self.target_path = target_path
                 
         self.create_folder_command = ['ssh', f'{self.user}@os-login.lsdf.kit.edu', f'mkdir -v {target_path}/{self.upload_uuid}']
-        self.upload_command = ['rsync', '-avP', f'{source_path}', f'{self.user}@os-login.lsdf.kit.edu:{target_path}/{self.upload_uuid}']
-        
+        self.upload_command = ['rsync', '-avP', f'{source_path}', f'{self.user}@os-login.lsdf.kit.edu:{target_path}/{self.upload_uuid}']        
         self.notify_command = ['ssh', f'{self.user}@os-login.lsdf.kit.edu', f'echo "{self.upload_uuid}" >> {target_path}/uploads/uploads.txt']
         
         self.save_upload_info()
         
         start_time = time.time()
         
-        if notify_upload:
+        if not resuming_upload:
             print('Create new folder on server')
             self.create_folder_on_server()
         
@@ -79,7 +78,7 @@ class AssasDataUploader:
                
         print(f'Upload took {duration_string}')
         
-        if notify_upload:
+        if not resuming_upload:
             print('Notify new upload')
             self.notify_upload()
    
@@ -215,5 +214,4 @@ if __name__ == "__main__":
         description=description,
         source_path=source_path,
         astec_archive_paths=archive_paths
-    )
- 
+    )      

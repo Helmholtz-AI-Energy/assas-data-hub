@@ -16,7 +16,7 @@ def meta_info_table(
 ):
     
     general_header = [
-            html.Thead(html.Tr([html.Th('General')]))
+            html.Thead(html.Tr([html.Th('General Information')]))
         ]
     
     general_body = [html.Tbody([html.Tr([html.Td('Name'), html.Td(document['meta_name'])]),
@@ -27,7 +27,7 @@ def meta_info_table(
                             ])]
     
     data_header = [
-            html.Thead(html.Tr([html.Th('Data')]))
+            html.Thead(html.Tr([html.Th('Hdf5 Meta Data')]))
         ]
     
     data_body = [html.Tbody([html.Tr([html.Td('Variables'), html.Td(document['meta_data_variables'])]),
