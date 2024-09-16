@@ -40,11 +40,11 @@ class AssasDataUploader:
         target_path: str = '/lsdf/kit/scc/projects/ASSAS/upload_test',
     ) -> None:
         
-        resuming_upload = False
+        new_upload = False
         
         if upload_uuid is None:
             self.upload_uuid = str(uuid.uuid4())
-            resuming_upload = True
+            new_upload = True
             print(f'Generate new upload uuid {self.upload_uuid}')
         else:
             self.upload_uuid = upload_uuid
@@ -65,7 +65,7 @@ class AssasDataUploader:
         
         start_time = time.time()
         
-        if not resuming_upload:
+        if new_upload:
             print('Create new folder on server')
             self.create_folder_on_server()
         
@@ -78,7 +78,7 @@ class AssasDataUploader:
                
         print(f'Upload took {duration_string}')
         
-        if not resuming_upload:
+        if new_upload:
             print('Notify new upload')
             self.notify_upload()
    
@@ -214,4 +214,4 @@ if __name__ == "__main__":
         description=description,
         source_path=source_path,
         astec_archive_paths=archive_paths
-    )      
+    )
