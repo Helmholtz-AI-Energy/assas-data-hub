@@ -33,7 +33,17 @@ Entrypoint of the application is wsgi.py (Python Web Server Gateway Interface) a
 $ python wsgi.py
 ```
 
+The application starts as a custom flask app. Test version available under [http://assas.scc.kit.edu:5000/assas_app/home](http://assas.scc.kit.edu:5000/assas_app/home) on a virtual machine inside the KIT infrastructure.
+
 ### NoSQL Database
+
+Runs on ``CONNECTIONSTRING = r'mongodb://localhost:27017/'``.
+
+Restart NoSQL Database:
+
+```console
+$ service mongod restart
+```
 
 ### Mount lsdf share
 
@@ -49,9 +59,9 @@ $ sudo mount -t cifs -o vers=2.0,username='USER',uid=$(id -u),gid=$(id -g) //os.
 
 The upload of ASTEC data is supported through an upload application under ``tools/assas_data_uploader.py``. The use of the upload application requires the following:
 
-1. Create Partner- and Guest-KIT Account
-2. Access to the LSDF with this account
-3. Installation of ``Python3.10+`` and ``rysnc``
+1. Create Partner- and Guest-KIT Account: [https://www.scc.kit.edu/en/services/gup.php](https://www.scc.kit.edu/en/services/gup.php)
+2. Create Access to the LSDF with this Account: [https://www.lsdf.kit.edu/](https://www.lsdf.kit.edu/)
+3. Installation of ``Python3.10+`` and ``rysnc``: [https://wiki.ubuntuusers.de/rsync/](https://wiki.ubuntuusers.de/rsync/)
 4. Define the ASTEC archive directory tree
 
 The commandline interface of the upload application requires the following parameters:
