@@ -16,12 +16,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('assas_app')
 
 logging.basicConfig(
-    format = '%(asctime)s %(module)s %(levelname)s: %(message)s',
+    format = '%(asctime)s %(process)d %(module)s %(levelname)s: %(message)s',
     level = logging.INFO,
     stream = sys.stdout)
 
 handler = RotatingFileHandler('assas_app.log', maxBytes=100000, backupCount=10)
-formatter = logging.Formatter('%(levelname)s - %(asctime)s - %(name)s: %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(process)d - %(module)s - %(levelname)s: %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
@@ -41,10 +41,5 @@ def load_user(username):
 
 if __name__ == '__main__':
 
-    upload_watchdog = AssasUploadWatchdog(app.config)
-    upload_watchdog.start()
-    
     app.logger.addHandler(handler)
     app.run(host='0.0.0.0', debug=True)
-    
-    upload_watchdog.stop()
