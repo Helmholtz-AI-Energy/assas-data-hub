@@ -42,4 +42,4 @@ def load_user(username):
 if __name__ == '__main__':
 
     app.logger.addHandler(handler)
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

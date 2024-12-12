@@ -1,13 +1,28 @@
+#!/usr/bin/env python
 
+import sys
 import subprocess
 import argparse
 import uuid
 import time
 import pickle
+import logging
+import logging.handlers
 
 from pathlib import Path
 from collections import namedtuple
 from typing import List
+from datetime import datetime
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format = '%(asctime)s %(process)d %(module)s %(levelname)s: %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+    ]
+)
+
+logger = logging.getLogger("assas_data_uploader." + __name__)
 
 class Duration(namedtuple('Duration', 'weeks, days, hours, minutes, seconds')):
     
@@ -32,6 +47,7 @@ class AssasDataUploader:
     def __init__(
         self,
         upload_uuid: str,
+        resume: bool,
         user: str,
         name: str,
         description: str,
@@ -40,77 +56,89 @@ class AssasDataUploader:
         target_path: str = '/lsdf/kit/scc/projects/ASSAS/upload_test',
     ) -> None:
         
-        new_upload = False
+        self.folder_command = ['ssh', f'{user}@os-login.lsdf.kit.edu', f'mkdir -v {target_path}/{upload_uuid}']
+        self.upload_command = ['rsync', '-avP', f'{source_path}', f'{user}@os-login.lsdf.kit.edu:{target_path}/{upload_uuid}']      
+        self.notify_command = ['ssh', f'{user}@os-login.lsdf.kit.edu', f'touch {target_path}/{upload_uuid}/{upload_uuid}']
+        self.stat_command = ['ssh', f'{user}@os-login.lsdf.kit.edu', f'ls -l {target_path}/{upload_uuid}']
         
-        if upload_uuid is None:
-            self.upload_uuid = str(uuid.uuid4())
-            new_upload = True
-            print(f'Generate new upload uuid {self.upload_uuid}')
-        else:
-            self.upload_uuid = upload_uuid
-            print(f'Use existing upload_uuid {self.upload_uuid}')
-                
-        self.user = user
-        self.name = name
-        self.description = description
-        self.source_path = source_path
-        self.astec_archive_paths = astec_archive_paths
-        self.target_path = target_path
-                
-        self.create_folder_command = ['ssh', f'{self.user}@os-login.lsdf.kit.edu', f'mkdir -v {target_path}/{self.upload_uuid}']
-        self.upload_command = ['rsync', '-avP', f'{source_path}', f'{self.user}@os-login.lsdf.kit.edu:{target_path}/{self.upload_uuid}']        
-        self.notify_command = ['ssh', f'{self.user}@os-login.lsdf.kit.edu', f'echo "{self.upload_uuid}" >> {target_path}/uploads/uploads.txt']
-        
-        self.save_upload_info()
+        self.save_upload_info(
+            upload_uuid=upload_uuid,
+            user=user,
+            name=name,
+            description=description,
+            source_path=source_path,
+            astec_archive_paths=astec_archive_paths,
+        )
         
         start_time = time.time()
         
-        if new_upload:
-            print('Create new folder on server')
-            self.create_folder_on_server()
+        if not resume:
+            logger.info(f'Create new folder on server {target_path}/{upload_uuid}.')
+            self.execute_sub_process_log_stdout(self.folder_command)
+        else:
+            logger.info(f'Update existing folder on server {target_path}/{upload_uuid}.')
         
-        self.upload_archive()
+        self.execute_sub_process_log_stdout(self.upload_command)
         
-        end_time = time.time()
-        
+        end_time = time.time()        
         duration_in_seconds = end_time - start_time
-        duration_string = AssasDataUploader.get_duration(duration_in_seconds)
-               
-        print(f'Upload took {duration_string}')
+        duration_string = AssasDataUploader.get_duration(duration_in_seconds)               
+        logger.info(f'Upload took {duration_string}.')
         
-        if new_upload:
-            print('Notify new upload')
-            self.notify_upload()
+        if not resume:
+            logger.info(f'Notify new upload (upload_uuid = {upload_uuid}).')
+            self.execute_sub_process_log_stdout(self.notify_command)
+        else:
+            logger.info(f'Skip notification (upload_uuid = {upload_uuid}).')
+        
+        logger.info(f'Content of uploaded archive:')
+        self.execute_sub_process_log_stdout(self.stat_command)
    
     def save_upload_info(
-        self        
+        self,
+        upload_uuid: str,
+        user: str,
+        name: str,
+        description: str,
+        source_path: str,
+        astec_archive_paths: List[str],
+        update_file_name: str = 'upload_info.pickle',
     )-> None:
-        upload_info = {}
-        upload_info['upload_uuid'] = self.upload_uuid
-        upload_info['user'] = self.user
-        upload_info['name'] = self.name
-        upload_info['description'] = self.description
-        upload_info['archive_paths'] = self.astec_archive_paths
         
-        with open(f'{source_path}/upload_info.pickle', 'wb') as file:
+        upload_info = {}
+        upload_info['upload_uuid'] = upload_uuid
+        upload_info['user'] = user
+        upload_info['name'] = name
+        upload_info['description'] = description
+        upload_info['archive_paths'] = astec_archive_paths
+        
+        logger.info(f'Dump upload information into {source_path}/{update_file_name}.')
+        with open(f'{source_path}/{update_file_name}', 'wb') as file:
             pickle.dump(upload_info, file)
         
-        print(f'Upload information:')
+        logger.info(f'Upload information:')
         for key, value in upload_info.items():
-            print(f'{key}: {value}')
-   
-    def execute_command(
+            logger.info(f'{key}: {value}')
+    
+    def execute_sub_process_log_stdout(
         self,
         command_list: List[str]
     )-> bool:
-        
+
         try:
-            with subprocess.Popen(command_list) as process: process.wait()
-        except:
-            return False
+            
+            process = subprocess.Popen(command_list, stdout=subprocess.PIPE)
+            logger.debug(f'Execute command_list {command_list}.')
+            
+            while process.poll() is None:
+                line = process.stdout.readline()
+                logger.debug(str(line))
         
-        return True
-    
+        except e:
+            
+            logger.error(f'Caught exeption when executing command: {str(e)}.')
+            raise
+
     @staticmethod
     def get_duration(
         seconds
@@ -122,30 +150,15 @@ class AssasDataUploader:
         weeks, days = divmod(days, 7)
         
         return Duration(weeks, days, hours, minutes, seconds)
-    
-    def upload_archive(
-        self
-    )-> bool:
-        
-        return self.execute_command(self.upload_command)
-    
-    def create_folder_on_server(
-        self
-    )-> bool:
 
-        return self.execute_command(self.create_folder_command)
-    
-    def notify_upload(
-        self
-    )-> bool:
-        
-        return self.execute_command(self.notify_command)
 
 def list_of_strings(arg):
     
     return arg.split(', ')
     
 if __name__ == "__main__":
+    
+    instance_uuid = uuid.uuid4()
     
     argparser = argparse.ArgumentParser()
     
@@ -200,18 +213,33 @@ if __name__ == "__main__":
     
     args = argparser.parse_args()
     
-    upload_uuid = args.uuid
     user = args.user
     name = args.name
     description = args.description
     source_path = args.source
     archive_paths = args.archives
     
+    resume = False
+    if args.uuid is None:
+        upload_uuid = str(instance_uuid)
+    else:
+        upload_uuid = args.uuid
+        resume = True
+
+    file_handler = logging.FileHandler(f'{upload_uuid}_assas_data_uploader.log', 'a')
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+    
+    logger.addHandler(file_handler)
+
     AssasDataUploader(
         upload_uuid=upload_uuid,
+        resume = resume,
         user=user,
         name=name,
         description=description,
         source_path=source_path,
         astec_archive_paths=archive_paths
-    )
+    )      

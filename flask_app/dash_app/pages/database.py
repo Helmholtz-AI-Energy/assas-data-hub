@@ -204,7 +204,7 @@ def start_download(
     uuid = str(uuid4())
     logger.info(f'started download (id = {uuid})')
     
-    download_folder = os.getcwd() + '/tmp'
+    download_folder = '/root/tmp'
     if not os.path.exists(download_folder):
         logger.info(f'create {download_folder}')
         os.makedirs(download_folder)
@@ -218,7 +218,7 @@ def start_download(
     zip_file = generate_archive(zip_file, file_list)
     
     logger.debug(f'clicks {clicks} rows {str(rows)} files {file_list} zip {zip_file}')
-        
+    
     return dcc.send_file(zip_file)
 
 @callback(
