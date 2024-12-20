@@ -55,14 +55,33 @@ $ sudo mount -t cifs -o vers=2.0,username='USER',uid=$(id -u),gid=$(id -g) //os.
 
 ### Reverse-proxy configuration
 
-## Upload ASTEC data
+## Upload of ASTEC data
 
-The upload of ASTEC data is supported through an upload application under ``tools/assas_data_uploader.py``. The use of the upload application requires the following:
+The upload of ASTEC data is supported through an upload application under ``tools/assas_data_uploader.py``.  
 
-1. Create Partner- and Guest-KIT Account: [https://www.scc.kit.edu/en/services/gup.php](https://www.scc.kit.edu/en/services/gup.php)
-2. Create Access to the LSDF with this Account: [https://www.lsdf.kit.edu/](https://www.lsdf.kit.edu/)
-3. Installation of ``Python3.10+`` and ``rysnc``: [https://wiki.ubuntuusers.de/rsync/](https://wiki.ubuntuusers.de/rsync/)
-4. Define the ASTEC archive directory tree
+### Required Access and Configuration
+
+The use of the upload application requires the following:
+
+1. Request of a Partner- and Guest-KIT Account ([https://www.scc.kit.edu/en/services/gup.php](https://www.scc.kit.edu/en/services/gup.php))
+2. Access to the LSDF with this Account ([https://www.lsdf.kit.edu/](https://www.lsdf.kit.edu/))
+3. Configure a password-less ssh login to the login server of the LSDF ([https://www.lsdf.kit.edu/docs/ssh/#using-ssh-on-linux-or-mac-os](https://www.lsdf.kit.edu/docs/ssh/#using-ssh-on-linux-or-mac-os))  
+   Create a new key pair ``key`` and ``key.pub`` with the following command:
+    ```console
+    $ ssh-keygen
+    ```
+    Transfer the public key to the login server of the LSDF with the following command:
+    ```console
+    $ ssh-copy-id -i ~/.ssh/key.pub <USERNAME>@os-login.lsdf.kit.edu
+    ```
+    Add the private key as idenitiy on the local machine in executing the following command:
+    ```console
+    $ ssh-add ~/.ssh/key
+    ```
+4. Installation of ``Python3.10+`` and ``rysnc`` on the local machine ([https://www.python.org/downloads/](https://www.python.org/downloads/) and [https://wiki.ubuntuusers.de/rsync/](https://wiki.ubuntuusers.de/rsync/))
+5. Definition of the upload parameters of the ASTEC archive according to the commandline interface described in the next section
+
+### Commandline Interface
 
 The commandline interface of the upload application requires the following parameters:
 
@@ -108,8 +127,9 @@ The database view displays a list with all available datasets and provides the f
 * ``Status``: Status of the uploaded dataset
 * ``Name``: Given name of the uploaded dataset
 
-By click on the column cell ``File`` the user can download 
-By click on the parameter ``Name`` the user comes to a detailed view with following meta information about the dataset:
+By click on the column cell ``File`` the user can download the hdf5 file.  
+
+By click on the parameter ``Name`` the user comes to a detailed view with following meta information about the dataset.
 
 ### General
 
