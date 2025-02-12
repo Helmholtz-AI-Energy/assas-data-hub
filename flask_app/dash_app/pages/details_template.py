@@ -30,13 +30,13 @@ def meta_info_table(
             html.Thead(html.Tr([html.Th('Hdf5 Meta Data')]))
         ]
     
-    data_body = [html.Tbody([html.Tr([html.Td('Variables'), html.Td(document['meta_data_variables'])]),
-                             html.Tr([html.Td('Channels'), html.Td(document['meta_data_channels'])]),
-                             html.Tr([html.Td('Meshes'), html.Td(document['meta_data_meshes'])]),
-                             html.Tr([html.Td('Samples'), html.Td(document['meta_data_samples'])])
-                            ])]
+    #data_body = [html.Tbody([html.Tr([html.Td('Variables'), html.Td(document['meta_data_variables'])]),
+    #                         html.Tr([html.Td('Channels'), html.Td(document['meta_data_channels'])]),
+    #                         html.Tr([html.Td('Meshes'), html.Td(document['meta_data_meshes'])]),
+    #                         html.Tr([html.Td('Samples'), html.Td(document['meta_data_samples'])])
+    #                        ])]
     
-    table = general_header + general_body + data_header + data_body
+    table = general_header + general_body + data_header# + data_body
     
     return dbc.Table(table, striped=True, bordered=True, hover=True, responsive=True)
 
@@ -50,10 +50,9 @@ def layout(report_id=None):
             html.Div('The content is generated for each _id.'),
             ],style = content_style())
     else:
-        database_manager = AssasDatabaseManager(flask_app.config)
-        document = database_manager.get_database_entry_by_id(report_id)
-        logger.info('Found document %s' % (document))
-    
-        return html.Div([    
-            meta_info_table(document)            
+        document = AssasDatabaseManager().get_database_entry_by_id(report_id)
+        logger.info(f'Found document {document}')
+
+        return html.Div([
+            meta_info_table(document)
         ],style=content_style())

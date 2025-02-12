@@ -10,8 +10,6 @@ from dash import dcc, callback
 from flask_app.users_mgt import create_admin_user, User, AssasUserManager
 from flask_login import logout_user, current_user, LoginManager
 
-from assasdb import AssasUploadWatchdog
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('assas_app')
 

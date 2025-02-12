@@ -161,7 +161,6 @@ if __name__ == "__main__":
     instance_uuid = uuid.uuid4()
     
     argparser = argparse.ArgumentParser()
-    
     argparser.add_argument(
         '-u',
         '--user',
@@ -169,39 +168,34 @@ if __name__ == "__main__":
         help='user name with access to LSDF',
         required=True,
     )    
-    
     argparser.add_argument(
         '-s',
         '--source',
         type=str,
         help='source path of astec archive',
         required=True,
-    )
-    
+    )    
     argparser.add_argument(
         '-n',
         '--name',
         type=str,
         help='name of the corresponding astec archives',
         required=True,
-    )
-        
+    )        
     argparser.add_argument(
         '-d',
         '--description',
         type=str,
         help='description of the corresponding astec archives',
         required=True,
-    )
-    
+    )    
     argparser.add_argument(
         '-a',
         '--archives',
         type=list_of_strings,
         help='sub path of astec binary archive',
         required=True,  
-    )
-    
+    )    
     argparser.add_argument(
         '-i',
         '--uuid',
@@ -209,8 +203,7 @@ if __name__ == "__main__":
         help='uuid of upload in case of resuming an upload',
         required=False,
         default=None
-    )
-    
+    )    
     args = argparser.parse_args()
     
     user = args.user
@@ -242,4 +235,4 @@ if __name__ == "__main__":
         description=description,
         source_path=source_path,
         astec_archive_paths=archive_paths
-    )      
+    )

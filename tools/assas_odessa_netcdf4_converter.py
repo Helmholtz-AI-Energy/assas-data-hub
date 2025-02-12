@@ -15,7 +15,7 @@ from typing import List, Union
 from os.path import join, dirname, abspath, basename
 from pathlib import Path
 
-from assas_tools import get_duration
+from tools.assas_utils import get_duration
 
 logger = logging.getLogger("assas." + __name__)
 
