@@ -71,7 +71,7 @@ layout = html.Div([
             disabled=False,
         ),
     html.Div('Reloaded page', id='reload-contents')
-    ], style={'width': '100%','padding-left':'10%', 'padding-right':'25%'}),
+    ], style={'width': '100%','padding-left':'5%', 'padding-right':'25%'}),
     dcc.Download(id='download_button'),
     html.Hr(),
     dash_table.DataTable(
