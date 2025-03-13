@@ -82,7 +82,7 @@ class AssasDataUploader:
         
         end_time = time.time()        
         duration_in_seconds = end_time - start_time
-        duration_string = AssasDataUploader.get_duration(duration_in_seconds)               
+        duration_string = AssasDataUploader.get_duration(duration_in_seconds)
         logger.info(f'Upload took {duration_string}.')
         
         if not resume:

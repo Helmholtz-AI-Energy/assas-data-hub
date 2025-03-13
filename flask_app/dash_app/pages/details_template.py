@@ -30,11 +30,16 @@ def meta_info_table(
             html.Thead(html.Tr([html.Th('NetCDF4 Variable Name'), html.Th('Dimensions'), html.Th('Shape')]))
         ]
     
+    meta_data_variables = document.get('meta_data_variables')
+    
+    if meta_data_variables is None:
+        table = general_header + general_body
+        return dbc.Table(table, striped=True, bordered=True, hover=True, responsive=True)
+    
     data_meta = []
-    for meta_data in document['meta_data_variables']:
+    for meta_data in meta_data_variables:
         logger.debug(f'meta_data entry: {meta_data}')
         data_meta.append(html.Tr([html.Td(meta_data['Name']), html.Td(meta_data['Dimensions']), html.Td(meta_data['Shape'])]))
-    
     data_body = [html.Tbody(data_meta)]
     
     table = general_header + general_body + data_header + data_body
