@@ -65,25 +65,30 @@ The use of the upload application requires the following:
 
 1. Request of a Partner- and Guest-KIT Account ([https://www.scc.kit.edu/en/services/gup.php](https://www.scc.kit.edu/en/services/gup.php))
 2. Access to the LSDF with this Account ([https://www.lsdf.kit.edu/](https://www.lsdf.kit.edu/))
-3. Configure a password-less ssh login to the login server of the LSDF ([https://www.lsdf.kit.edu/docs/ssh/#using-ssh-on-linux-or-mac-os](https://www.lsdf.kit.edu/docs/ssh/#using-ssh-on-linux-or-mac-os))  
+3. Configure a password-less ssh login to the login server of the LSDF ([https://www.lsdf.kit.edu/docs/ssh/#using-ssh-on-linux-or-mac-os](https://www.lsdf.kit.edu/docs/ssh/#using-ssh-on-linux-or-mac-os)). The password-less configuration is mandatory to perform the upload. The application will not start without a password-less configuration.
    Create a new key pair ``key`` and ``key.pub`` with the following command:
-    ```console
-    $ ssh-keygen
-    ```
-    Transfer the public key to the login server of the LSDF with the following command:
-    ```console
-    $ ssh-copy-id -i ~/.ssh/key.pub <USERNAME>@os-login.lsdf.kit.edu
-    ```
-    Add the private key as idenitiy on the local machine in executing the following command:
-    ```console
-    $ ssh-add ~/.ssh/key
-    ```
+   ```console
+   $ ssh-keygen
+   ```
+   This command creates a key pair at the same location of command execution. The generated key pair has to be used for the next commands. Please check that the path to the key is correct. Transfer the public key to the login server of the LSDF with the following command:
+   ```console
+   $ ssh-copy-id -i ./key.pub <USERNAME>@os-login.lsdf.kit.edu
+   ```
+   Add the private key as idenitiy on the local machine in executing the following command:
+   ```console
+   $ ssh-add ./key
+   ```
+   Please test the password-less configuration before continuing with the next steps by executing the command:
+   ```console
+   $ ssh <USERNAME>@os-login.lsdf.kit.edu
+   ```
+   This command should open the terminal to the LSDF without asking for a password.
 4. Installation of ``Python3.10+`` and ``rysnc`` on the local machine ([https://www.python.org/downloads/](https://www.python.org/downloads/) and [https://wiki.ubuntuusers.de/rsync/](https://wiki.ubuntuusers.de/rsync/))
 5. Definition of the upload parameters of the ASTEC archive according to the commandline interface described in the next section
 
-### Commandline Interface
+### Command-line Interface
 
-The commandline interface of the upload application requires the following parameters:
+The command-line interface of the upload application requires the following parameter:
 
 * --user (-u): KIT internal batch which has access to the LSDF
 * --source (-s): Path to the directory tree which will be uploaded (ASTEC Project directory)
@@ -94,12 +99,13 @@ The commandline interface of the upload application requires the following param
 The commandline interface of the upload application has the following optional parameter:
 
 * --uuid (-i): Upload identifier of an upload process which was already started
+* --debug (-l): Enable debug logging of the application
 
-Note: This parameter can be used to resume an interrupted or failed upload. One must determine the upload uuid from the standard output of the upload application. 
+The parameter --uuid can be used to resume an interrupted or failed upload. One must determine the upload uuid from the standard output of the upload application or from the log file.
 
 ### Examples
 
-The upload application can be executed via commandline as follows:
+The upload application can be executed via command-line as follows:
 
 ```console
 $ python tools/assas_data_uploader.py -u my_user -s my_source_path -n my_name -d my_description -a my_archive_path
@@ -114,6 +120,8 @@ $ python tools/assas_data_uploader.py -u my_user -s my_source_path -n my_name -d
 <div align="center">
     <img src="./flask_app/dash_app/assets/assas_data_upload.png" height="200px"></img>
 </div>
+
+The application produces a log file for each execution. The name of the logfile starts with the upload uuid.
 
 ## Database view
 

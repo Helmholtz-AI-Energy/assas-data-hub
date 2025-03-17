@@ -7,7 +7,7 @@ from urllib.parse import urlencode
 from flask import redirect, render_template, send_file, request, jsonify
 from flask import current_app as app
 
-from assasdb import AssasDatabaseManager, AssasHdf5DatasetHandler
+from assasdb import AssasDatabaseManager
 
 logger = logging.getLogger('assas_app')
 
@@ -54,7 +54,8 @@ def query_data():
     filepath = document['system_result']
     
     logger.info(f'Handle request of {filepath}')
-    array = AssasHdf5DatasetHandler.get_variable_data_from_hdf5(filepath, variable)
+    #array = AssasHdf5DatasetHandler.get_variable_data_from_hdf5(filepath, variable)
+    array = np.zeros((1,2))
     
     return jsonify({'data_shape': np.shape(array), 'data': array.tolist()})
 

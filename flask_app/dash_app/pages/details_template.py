@@ -13,10 +13,10 @@ dash.register_page(__name__, path_template='/details/<report_id>')
 
 def meta_info_table(
     document: dict
-):
-    
+)-> dbc.Table:
+
     general_header = [
-            html.Thead(html.Tr([html.Th('General Information')]))
+            html.Thead(html.Tr([html.Th('NetCDF4 Dataset Attribute'), html.Th('Value')]))
         ]
     
     general_body = [html.Tbody([html.Tr([html.Td('Name'), html.Td(document['meta_name'])]),
@@ -24,17 +24,23 @@ def meta_info_table(
                                 #html.Tr([html.Td('Date'), html.Td(document['meta_date'])]),
                                 #html.Tr([html.Td('Creator'), html.Td(document['meta_creator'])]),
                                 html.Tr([html.Td('Description'), html.Td(document['meta_description'])])
-                            ])]
+        ])]
     
     data_header = [
-            html.Thead(html.Tr([html.Th('Hdf5 Meta Data')]))
+            html.Thead(html.Tr([html.Th('NetCDF4 Variable Name'), html.Th('Dimensions'), html.Th('Shape')]))
         ]
     
-    data_body = [html.Tbody([html.Tr([html.Td('Variables'), html.Td(document['meta_data_variables'])]),
-                             html.Tr([html.Td('Channels'), html.Td(document['meta_data_channels'])]),
-                             html.Tr([html.Td('Meshes'), html.Td(document['meta_data_meshes'])]),
-                             html.Tr([html.Td('Samples'), html.Td(document['meta_data_samples'])])
-                            ])]
+    meta_data_variables = document.get('meta_data_variables')
+    
+    if meta_data_variables is None:
+        table = general_header + general_body
+        return dbc.Table(table, striped=True, bordered=True, hover=True, responsive=True)
+    
+    data_meta = []
+    for meta_data in meta_data_variables:
+        logger.debug(f'meta_data entry: {meta_data}')
+        data_meta.append(html.Tr([html.Td(meta_data['Name']), html.Td(meta_data['Dimensions']), html.Td(meta_data['Shape'])]))
+    data_body = [html.Tbody(data_meta)]
     
     table = general_header + general_body + data_header + data_body
     
@@ -50,10 +56,9 @@ def layout(report_id=None):
             html.Div('The content is generated for each _id.'),
             ],style = content_style())
     else:
-        database_manager = AssasDatabaseManager(flask_app.config)
-        document = database_manager.get_database_entry_by_id(report_id)
-        logger.info('Found document %s' % (document))
-    
-        return html.Div([    
-            meta_info_table(document)            
+        document = AssasDatabaseManager().get_database_entry_by_id(report_id)
+        logger.info(f'Found document {document}')
+
+        return html.Div([
+            meta_info_table(document)
         ],style=content_style())

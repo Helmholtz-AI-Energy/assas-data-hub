@@ -30,7 +30,7 @@ operators = [['ge ', '>='],
              ['contains '],
              ['datestartswith ']]
 
-table_data = AssasDatabaseManager(flask_app.config).get_all_database_entries()
+table_data = AssasDatabaseManager().get_all_database_entries()
 
 ALL = len(table_data)
 PAGE_SIZE = 30
@@ -51,7 +51,7 @@ layout = html.Div([
                 previous_next=True,
                 max_value=PAGE_COUNT, 
                 fully_expanded=False,
-                size='lg'                
+                size='lg'
                 )
     ], style={'width': '100%','padding-left':'30%', 'padding-right':'25%'}),
     html.Hr(),
@@ -71,7 +71,7 @@ layout = html.Div([
             disabled=False,
         ),
     html.Div('Reloaded page', id='reload-contents')
-    ], style={'width': '100%','padding-left':'10%', 'padding-right':'25%'}),
+    ], style={'width': '100%','padding-left':'5%', 'padding-right':'25%'}),
     dcc.Download(id='download_button'),
     html.Hr(),
     dash_table.DataTable(
@@ -83,11 +83,11 @@ layout = html.Div([
         {'name': 'Path', 'id': 'system_path', 'hideable': True},
         {'name': 'Result', 'id': 'system_result', 'hideable': True},
         {'name': 'Index', 'id': 'system_index', 'selectable': True},
-        {'name': 'Size', 'id': 'system_size', 'selectable': True},
+        {'name': 'Size binary', 'id': 'system_size', 'selectable': True},
         {'name': 'Size hdf5', 'id': 'system_size_hdf5', 'selectable': True},
         {'name': 'Date', 'id': 'system_date', 'selectable': True},
         {'name': 'User', 'id': 'system_user', 'selectable': True},
-        {'name': 'File', 'id': 'system_download', 'selectable': True},
+        {'name': 'Download', 'id': 'system_download', 'selectable': True},
         {'name': 'Status', 'id': 'system_status', 'selectable': True},
         {'name': 'Name', 'id': 'meta_name', 'selectable': True},
         ],
@@ -99,7 +99,7 @@ layout = html.Div([
             'padding': '2px',
             'textAlign': 'center'
         },
-        merge_duplicate_headers= True,        
+        merge_duplicate_headers= True,
         
         style_header={
             'backgroundColor': 'black',
@@ -127,7 +127,7 @@ layout = html.Div([
         
         is_focused=True,
         
-        style_data_conditional=conditional_table_style(),        
+        style_data_conditional=conditional_table_style(),
     ),
     html.Hr(),
     dcc.Location(id='location'),
@@ -164,7 +164,7 @@ def reload_page(
     logger.debug(f'reload page {clicks}')
     
     global table_data
-    table_data = AssasDatabaseManager(flask_app.config).get_all_database_entries()
+    table_data = AssasDatabaseManager().get_all_database_entries()
    
     return ''#f'table_data (shape {table_data.shape}, size {table_data.size})'
 

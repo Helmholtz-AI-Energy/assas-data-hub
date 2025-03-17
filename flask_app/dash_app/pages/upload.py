@@ -23,7 +23,7 @@ from datetime import datetime
 from flask import current_app as flask_app
 
 from ..components import content_style
-from assasdb import AssasDatabaseManager, AssasDatabaseHandler, AssasDocumentFile, AssasDocumentFileStatus, AssasHdf5DatasetHandler
+from assasdb import AssasDatabaseManager, AssasDatabaseHandler, AssasDocumentFile, AssasDocumentFileStatus
 
 app = dash.get_app()
 
@@ -276,7 +276,7 @@ def callback_on_completion(status: du.UploadStatus):
         ('%.2f' % status.total_size_mb) + ' MB',
         'test user',
         'Download',
-        AssasDocumentFileStatus.UPLOADED       
+        AssasDocumentFileStatus.UPLOADED
     )
     
     logger.debug(f'uploaded file with id {status.upload_id} {status.uploaded_files} {document.get_document()}')
@@ -311,7 +311,7 @@ def update_progress(set_progress, n_clicks, system, meta):
     
     set_progress((str(1), str(5)))
     
-    manager = AssasDatabaseManager(flask_app.config)
+    manager = AssasDatabaseManager()
     
     #document = AssasDocumentFile()
     #document.set_document(json.loads(system))
