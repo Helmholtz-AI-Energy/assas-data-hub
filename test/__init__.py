@@ -1,0 +1,1 @@
+from .assas_data_uploader_test import AssasDataUploaderTest
