@@ -211,7 +211,7 @@ if __name__ == "__main__":
     argparser.add_argument(
         '-l',
         '--debug',
-        help = 'enable debug logging for conversion',
+        help = 'enable debug logging for upload',
         required = False,
         action = 'store_true'
     )
