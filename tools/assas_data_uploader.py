@@ -140,7 +140,7 @@ class AssasDataUploader:
         
         except Exception as exception:
             
-            logger.error(f'Caught exeption when executing command: {str(exception)}')
+            logger.error(f'Caught exception when executing command: {str(exception)}')
             raise
 
     @staticmethod
