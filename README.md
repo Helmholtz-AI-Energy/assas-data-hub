@@ -66,18 +66,27 @@ The use of the upload application requires the following:
 1. Request of a Partner- and Guest-KIT Account ([https://www.scc.kit.edu/en/services/gup.php](https://www.scc.kit.edu/en/services/gup.php))
 2. Access to the LSDF with this Account ([https://www.lsdf.kit.edu/](https://www.lsdf.kit.edu/))
 3. Configure a password-less ssh login to the login server of the LSDF ([https://www.lsdf.kit.edu/docs/ssh/#using-ssh-on-linux-or-mac-os](https://www.lsdf.kit.edu/docs/ssh/#using-ssh-on-linux-or-mac-os)). The password-less configuration is mandatory to perform the upload. The application will not start without a password-less configuration.
-   Create a new key pair ``key`` and ``key.pub`` with the following command:
+   Create a new ssh key pair with the following command:
    ```console
    $ ssh-keygen
    ```
-   This command creates a key pair at the same location of command execution. The generated key pair has to be used for the next commands. Please check that the path to the key is correct. Transfer the public key to the login server of the LSDF with the following command:
+   This command creates a ssh key pair. For further usage it is recommended to just type enter two times and use the standard key name and no passphrase. The generated key pair is then placed at the standard location ``~/.ssh/id_rsa.pub`` and ``~/.ssh/id_rsa``. The generated key pair has to be used for the next commands. Please check that the path to the keys is correct. Transfer this public key to the login server of the LSDF with the following command:
    ```console
-   $ ssh-copy-id -i ./key.pub <USERNAME>@os-login.lsdf.kit.edu
+   $ ssh-copy-id -i ~/.ssh/id_rsa.pub <USERNAME>@os-login.lsdf.kit.edu
    ```
    Add the private key as idenitiy on the local machine in executing the following command:
    ```console
-   $ ssh-add ./key
+   $ ssh-add ~/.ssh/id_rsa
    ```
+   Note: Depending on your system it might be the case that your authentication agent is not started. You will get a message like ``Could not open a connection to your authentication agent.``. In this case you can restart the ssh-agent with the following command:
+   ```console
+   $ eval `ssh-agent -s`
+   ```
+   Depending on your operating system, you can also start your authentication agent with the following command:
+   ```console
+   $ ssh-agent /bin/sh
+   ```
+   If the authentication agent is started, the command ``ssh-add ~/.ssh/id_rsa`` can be executed again.
    Please test the password-less configuration before continuing with the next steps by executing the command:
    ```console
    $ ssh <USERNAME>@os-login.lsdf.kit.edu

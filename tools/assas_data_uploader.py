@@ -71,8 +71,10 @@ class AssasDataUploader:
             logger.info(f'Create new folder on server {target_path}/{upload_uuid}.')
             self.execute_sub_process_log_stdout(self.folder_command)
 
+        logger.info(f'Start uploading files on server into folder {target_path}/{upload_uuid}.')
         self.execute_sub_process_log_stdout(self.upload_command)
-
+        logger.info(f'Upload command finished.')
+        
         if resume:
             logger.info(f'Notify upload to reload (upload_uuid = {upload_uuid}).')
             self.execute_sub_process_log_stdout(self.notify_reload_command)
