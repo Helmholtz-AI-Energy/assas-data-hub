@@ -68,8 +68,8 @@ class AssasDataUploader:
         if resume:
             logger.info(f'Update existing folder on server {target_path}/{upload_uuid}.')
         else:
+            self.execute_sub_process_log_stdout_check_stderr(self.folder_command)
             logger.info(f'Create new folder on server {target_path}/{upload_uuid}.')
-            self.execute_sub_process_log_stdout(self.folder_command)
 
         logger.info(f'Start uploading files on server into folder {target_path}/{upload_uuid}.')
         self.execute_sub_process_log_stdout(self.upload_command)
@@ -125,15 +125,35 @@ class AssasDataUploader:
 
         try:
             
+            process = subprocess.Popen(command_list, stdout=subprocess.PIPE)
+            logger.debug(f'Execute command_list {command_list}.')
+            
+            while process.poll() is None:
+                line = process.stdout.readline()
+                line_string = str(line)
+                if str(line_string) != "b''":
+                    logger.debug(str(line_string))
+        
+        except Exception as exception:
+            
+            logger.error(f'Caught exeption when executing command: {str(exception)}.')
+            raise
+    
+    def execute_sub_process_log_stdout_check_stderr(
+        self,
+        command_list: List[str]
+    )-> bool:
+
+        try:
+            
             process = subprocess.Popen(command_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logger.debug(f'Execute command_list {command_list}.')
             
             while process.poll() is None:
-                
                 line = process.stdout.readline()
                 line_error = process.stderr.readline()
-                
                 logger.debug(str(line))
+                logger.debug(str(line_error))
                 
                 if 'Permission denied (publickey,password)' in str(line_error):
                     

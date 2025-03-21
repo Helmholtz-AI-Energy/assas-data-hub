@@ -54,6 +54,15 @@ class AssasDataUploaderTest(unittest.TestCase):
         
         self.assertTrue(execute_command(command_list))
         
+    def test_upload_multiple_archives_debug(self):
+        
+        source = '/root/assas-data-hub/assas_database/test/data/archive_tree/.'
+        archives = '/sample_1/LOCA_12P_CL_1300_LIKE.bin, /sample_2/LOCA_12P_CL_1300_LIKE.bin, /sample_3/LOCA_12P_CL_1300_LIKE.bin'
+        
+        command_list = ['python', f'{self.application_path}', '-u', f'{self.user}', '-n', f'{self.name}', '-d', f'{self.description}', '-s', f'{source}', '-a', f'{archives}', '--debug']
+        
+        self.assertTrue(execute_command(command_list))
+    
     def test_upload_multiple_archives(self):
         
         source = '/root/assas-data-hub/assas_database/test/data/archive_tree/.'

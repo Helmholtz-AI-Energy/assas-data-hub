@@ -100,10 +100,10 @@ The use of the upload application requires the following:
 The command-line interface of the upload application requires the following parameter:
 
 * --user (-u): KIT internal batch which has access to the LSDF
-* --source (-s): Path to the directory tree which will be uploaded (ASTEC Project directory)
+* --source (-s): Absolute path to the directory tree which has to be uploaded (ASTEC Project directory)
 * --name (-n): Corresponding name of the archive visible in the database
 * --description (-d): Corresponding description of the archive visible in the database
-* --archives (-a): Sub path to the actual ASTEC archive inside the directory tree, or a list of sub paths
+* --archives (-a): Sub path to the actual ASTEC archive inside the directory tree, or a list of sub paths for multiple archives
 
 The commandline interface of the upload application has the following optional parameter:
 
