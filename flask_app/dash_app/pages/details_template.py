@@ -27,7 +27,7 @@ def meta_info_table(
         ])]
     
     data_header = [
-            html.Thead(html.Tr([html.Th('NetCDF4 Variable Name'), html.Th('Dimensions'), html.Th('Shape')]))
+            html.Thead(html.Tr([html.Th('NetCDF4 Variable Name'), html.Th('Domain'), html.Th('Dimensions'), html.Th('Shape')]))
         ]
     
     meta_data_variables = document.get('meta_data_variables')
@@ -39,7 +39,7 @@ def meta_info_table(
     data_meta = []
     for meta_data in meta_data_variables:
         logger.debug(f'meta_data entry: {meta_data}')
-        data_meta.append(html.Tr([html.Td(meta_data['Name']), html.Td(meta_data['Dimensions']), html.Td(meta_data['Shape'])]))
+        data_meta.append(html.Tr([html.Td(meta_data['name']), html.Td(meta_data['domain']), html.Td(meta_data['dimensions']), html.Td(meta_data['shape'])]))
     data_body = [html.Tbody(data_meta)]
     
     table = general_header + general_body + data_header + data_body

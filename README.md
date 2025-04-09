@@ -148,6 +148,15 @@ By click on the column cell ``File`` the user can download the hdf5 file.
 
 By click on the parameter ``Name`` the user comes to a detailed view with following meta information about the dataset.
 
+### Status
+
+A database entry can have the following states:
+
+* ``UPLOADED``: Direct after the upload the database entry is in this state.
+* ``CONVERTING``: After the upload the conversion and post-processing will be started automatically.
+* ``VALID``: If the conversion and the post-processing were successful the database entry is in a valid state.
+* ``INVALID``: If the conversion and the post-processing were unsuccessful the database entry is in a valid state.
+
 ### General
 
 * Name (same as on the database view)
@@ -155,7 +164,7 @@ By click on the parameter ``Name`` the user comes to a detailed view with follow
 
 ### Data
 
-The following meta information is extarcted during the upload and conversion process:
+The following meta information is extracted during the upload and conversion process:
 
 * Variables: List of extracted variables
 * Channels: Number of ectracted channels
