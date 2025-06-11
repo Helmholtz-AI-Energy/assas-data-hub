@@ -31,6 +31,8 @@ operators = [['ge ', '>='],
              ['datestartswith ']]
 
 table_data = AssasDatabaseManager().get_all_database_entries()
+table_data['system_download'] = [f'<a href="/assas_app/hdf5_file?uuid={entry.system_uuid}">hdf5 file</a>' for entry in table_data.itertuples()]
+table_data['meta_name'] = [f'<a href="/assas_app/details/{entry.system_uuid}">{entry.meta_name}</a>' for entry in table_data.itertuples()]
 
 ALL = len(table_data)
 PAGE_SIZE = 30
@@ -63,14 +65,14 @@ layout = html.Div([
             n_clicks=0, 
             disabled=True,
         ),
-    dbc.Button(
-            'Refresh', 
-            id='reload_page', 
-            className='me-2', 
-            n_clicks=0, 
-            disabled=False,
-        ),
-    html.Div('Reloaded page', id='reload-contents')
+    #dbc.Button(
+    #        'Refresh', 
+    #        id='reload_page', 
+    #        className='me-2', 
+    #        n_clicks=0, 
+    #        disabled=False,
+    #    ),
+    #html.Div('Reloaded page', id='reload-contents')
     ], style={'width': '100%','padding-left':'5%', 'padding-right':'25%'}),
     dcc.Download(id='download_button'),
     html.Hr(),
@@ -87,9 +89,9 @@ layout = html.Div([
         {'name': 'Size hdf5', 'id': 'system_size_hdf5', 'selectable': True},
         {'name': 'Date', 'id': 'system_date', 'selectable': True},
         {'name': 'User', 'id': 'system_user', 'selectable': True},
-        {'name': 'Download', 'id': 'system_download', 'selectable': True},
+        {'name': 'Download', 'id': 'system_download', 'selectable': True, 'presentation': 'markdown'},#, "type": 'text', "presentation": 'markdown'},
         {'name': 'Status', 'id': 'system_status', 'selectable': True},
-        {'name': 'Name', 'id': 'meta_name', 'selectable': True},
+        {'name': 'Name', 'id': 'meta_name', 'selectable': True, 'presentation': 'markdown'},
         ],
         markdown_options={'html': True},
         hidden_columns=['', '_id', 'system_uuid', 'system_upload_uuid', 'system_path', 'system_result'],
@@ -97,7 +99,8 @@ layout = html.Div([
         style_cell={
             'fontSize': 17,
             'padding': '2px',
-            'textAlign': 'center'
+            'textAlign': 'center',
+            'font-family':'sans-serif',
         },
         merge_duplicate_headers= True,
         
@@ -128,9 +131,11 @@ layout = html.Div([
         is_focused=True,
         
         style_data_conditional=conditional_table_style(),
+        css=[dict(selector= "p", rule= "margin: 0; text-align: center")]
     ),
     html.Hr(),
     dcc.Location(id='location'),
+    dcc.Location(id='location2'),
     dcc.Download(id='download'),
     html.Br(),
     dcc.Checklist(
@@ -151,22 +156,22 @@ layout = html.Div([
         style={'color': 'grey'},
         disabled=False,
     ),
-    html.Div('Select a page', id='pagination-contents'),    
+    html.Div('Select a page', id='pagination-contents'),
 ],style=content_style())
 
-@callback(
-    Output('reload-contents', 'children'),
-    Input('reload_page', 'n_clicks'))
-def reload_page(
-    clicks
-):
-    
-    logger.debug(f'reload page {clicks}')
-    
-    global table_data
-    table_data = AssasDatabaseManager().get_all_database_entries()
-   
-    return ''#f'table_data (shape {table_data.shape}, size {table_data.size})'
+#@callback(
+#    Output('reload-contents', 'children'),
+#    Input('reload_page', 'n_clicks'))
+#def reload_page(
+#    clicks
+#):
+#    
+#    logger.debug(f'reload page {clicks}')
+#    
+#    global table_data
+#    table_data = AssasDatabaseManager().get_all_database_entries()
+#   
+#    return ''#f'table_data (shape {table_data.shape}, size {table_data.size})'
 
 def generate_archive(
     path_to_zip,
@@ -198,8 +203,8 @@ def start_download(
     data
 ):
     
-    if (rows is None) or (ids is None) or len(rows) == 0:                                                                                                                                                                                                                      
-        return dash.no_update    
+    if (rows is None) or (ids is None) or len(rows) == 0:
+        return dash.no_update
     
     uuid = str(uuid4())
     logger.info(f'started download (id = {uuid})')
@@ -222,7 +227,7 @@ def start_download(
     return dcc.send_file(zip_file)
 
 @callback(
-    Output('download_selected', 'disabled'),     
+    Output('download_selected', 'disabled'),
     Input('datatable-paging-and-sorting', 'derived_viewport_selected_rows'),
     Input('datatable-paging-and-sorting', 'derived_viewport_selected_row_ids'),
     State('datatable-paging-and-sorting', 'derived_viewport_data'))
@@ -232,7 +237,7 @@ def selected_button(
     data
 ):
     
-    if (rows is None) or (ids is None):                                                                                                                                                                                                                      
+    if (rows is None) or (ids is None):
         return dash.no_update
         
     if len(rows) > 0:
@@ -336,9 +341,9 @@ def change_page(
     value
 ):
     
-    logger.debug(f'page {page} value {value}')    
+    logger.debug(f'page {page} value {value}')
     
-    if page:        
+    if page:
         return f'Page selected: {page}/{value}'
     
     return f'Page selected: 1/{value}'
@@ -352,8 +357,8 @@ def change_page_table(
     
     logger.debug(f'page {page}')
     
-    if page:        
-        return (page - 1)    
+    if page:
+        return (page - 1)
     return 0
 
 @callback(
@@ -368,7 +373,7 @@ def update_page_count(
     
     logger.debug(f'update page count, use page size {use_page_size} page size value {page_size_value}')
     
-    if len(use_page_size) > 1 and page_size_value is not None:                
+    if len(use_page_size) > 1 and page_size_value is not None:
         return int(len(table_data) / page_size_value) + 1,{'color': 'black'}
     
     if page_size_value is None:
@@ -376,31 +381,40 @@ def update_page_count(
     
     return int(len(table_data) / PAGE_SIZE) + 1,{'color': 'grey'}
 
-@callback(
-    Output('download', 'data'),
-    Input('datatable-paging-and-sorting', 'active_cell'),
-    State('datatable-paging-and-sorting', 'derived_viewport_data'))
-def cell_clicked_download(
-    active_cell, 
-    data
-):
+# @callback(
+#     Output('location2', 'href'),
+#     Input('datatable-paging-and-sorting', 'active_cell'),
+#     State('datatable-paging-and-sorting', 'derived_viewport_data'))
+# def cell_clicked_download(
+#     active_cell, 
+#     data
+# ):
     
-    if active_cell:
+#     if active_cell:
         
-        row = active_cell['row']
-        row_data = data[row]
-        col = active_cell['column_id']
+#         row = active_cell['row']
+#         row_data = data[row]
+#         col = active_cell['column_id']
         
-        if col == 'system_download':
-            
-            file_to_send = row_data['system_result']
-            logger.debug(f'File to send: {file_to_send}')
-            
-            return dcc.send_file(file_to_send)
+#         print(f'active cell {active_cell}')
         
-        else:
+#         if col == 'system_download':
             
-            return dash.no_update
+#             file_to_send = row_data['system_result']
+#             system_uuid = row_data['system_uuid']
+            
+#             logger.info(f'File to send: {file_to_send}, system_uuid: {system_uuid}.')
+            
+#             url = f'/assas_app/hdf5_file?uuid={system_uuid}'
+#             logger.info(f'Open url {url} to start download via flask route.')
+            
+#             return url
+#             #return dcc.send_file(file_to_send)
+        
+#         else:
+#             return dash.no_update
+    
+#     return dash.no_update
         
 @callback(
     Output('location', 'href'),
@@ -422,3 +436,5 @@ def cell_clicked_details(
             return url
         else:
             return dash.no_update
+    
+    return dash.no_update

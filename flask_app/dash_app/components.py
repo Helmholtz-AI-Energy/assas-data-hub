@@ -24,8 +24,8 @@ def content_style():
 def conditional_table_style(): 
 
     return [
-                {'if': {'column_id': 'system_index'}, 'backgroundColor': 'grey', 'text_align':'center', 'color':'black'},
-                {'if': {'column_id': 'system_download'}, 'backgroundColor': 'grey', 'textAlign':'center', 'textDecoration': 'underline', 'cursor': 'pointer', 'color': 'blue'},
+                {'if': {'column_id': 'system_index'}, 'backgroundColor': 'grey', 'textAlign':' center', 'color':'black'},
+                {'if': {'column_id': 'system_download'}, 'backgroundColor': 'grey', 'textAlign': 'center', 'textDecoration': 'underline', 'cursor': 'pointer', 'color': 'blue'},
                 {'if': {'column_id': 'meta_name'}, 'backgroundColor': 'grey', 'color': 'blue', 'textAlign': 'center', 'textDecoration': 'underline', 'cursor': 'pointer', 'color': 'blue'}
         ]
     

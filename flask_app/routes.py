@@ -6,6 +6,7 @@ import numpy as np
 from urllib.parse import urlencode
 from flask import redirect, render_template, send_file, request, jsonify
 from flask import current_app as app
+from pathlib import Path
 
 from assasdb import AssasDatabaseManager
 
@@ -27,18 +28,25 @@ def get_data_file():
     args = request.args
     system_uuid = uuid.UUID(args.get('uuid', type=str))
     
-    manager = AssasDatabaseManager(app.config)
+    manager = AssasDatabaseManager()
     document = manager.get_database_entry_by_uuid(system_uuid)
     filepath = document['system_result']
+    file = Path(filepath)
     
-    logger.info(f'Handle request of {filepath}')
+    if file.exists():
     
-    return send_file(filepath)
+        logger.info(f'Handle request of {str(file)}.')
+    
+        return send_file(
+            path_or_file = filepath,
+            download_name = f'dataset_{system_uuid}.h5',
+            as_attachment = True,
+        )
 
 @app.route('/assas_app/query_data', methods=['GET'])
 def query_data():
     
-    args = request.args    
+    args = request.args
     logger.info(f'Received request with arguments: {args}')
 
     system_uuid = uuid.UUID(args.get('uuid', type=str))
@@ -49,7 +57,7 @@ def query_data():
    
     logger.info(f'{system_uuid} {variable} {tstart} {tend}')
     
-    manager = AssasDatabaseManager(app.config)
+    manager = AssasDatabaseManager()
     document = manager.get_database_entry_by_uuid(system_uuid)
     filepath = document['system_result']
     

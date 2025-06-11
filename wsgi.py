@@ -10,12 +10,12 @@ from dash import dcc, callback
 from flask_app.users_mgt import create_admin_user, User, AssasUserManager
 from flask_login import logout_user, current_user, LoginManager
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger('assas_app')
 
 logging.basicConfig(
     format = '%(asctime)s %(process)d %(module)s %(levelname)s: %(message)s',
-    level = logging.INFO,
+    level = logging.DEBUG,
     stream = sys.stdout)
 
 handler = RotatingFileHandler('assas_app.log', maxBytes=100000, backupCount=10)

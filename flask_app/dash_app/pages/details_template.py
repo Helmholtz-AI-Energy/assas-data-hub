@@ -40,15 +40,16 @@ def meta_info_table(
     for meta_data in meta_data_variables:
         logger.debug(f'meta_data entry: {meta_data}')
         data_meta.append(html.Tr([html.Td(meta_data['name']), html.Td(meta_data['domain']), html.Td(meta_data['dimensions']), html.Td(meta_data['shape'])]))
+    
     data_body = [html.Tbody(data_meta)]
     
     table = general_header + general_body + data_header + data_body
     
     return dbc.Table(table, striped=True, bordered=True, hover=True, responsive=True)
 
-def layout(report_id=None):
+def layout(report_id = None):
     
-    logger.info('report_id %s' % (report_id))
+    logger.info(f'report_id {report_id}')
     
     if (report_id == 'none') or (report_id is None):
         return html.Div([
@@ -56,7 +57,7 @@ def layout(report_id=None):
             html.Div('The content is generated for each _id.'),
             ],style = content_style())
     else:
-        document = AssasDatabaseManager().get_database_entry_by_id(report_id)
+        document = AssasDatabaseManager().get_database_entry_by_uuid(report_id)
         logger.info(f'Found document {document}')
 
         return html.Div([
