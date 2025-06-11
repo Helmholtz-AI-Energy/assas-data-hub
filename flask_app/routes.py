@@ -43,6 +43,24 @@ def get_data_file():
             as_attachment = True,
         )
 
+@app.route('/assas_app/hdf5_download', methods=['GET'])
+def get_download_archive():
+    
+    args = request.args
+    system_uuid = args.get('uuid', type=str)
+    filepath = f'/root/tmp/download_{system_uuid}.zip'
+    file = Path(filepath)
+    
+    if file.exists():
+    
+        logger.info(f'Handle request of {str(file)}.')
+    
+        return send_file(
+            path_or_file = filepath,
+            download_name = f'archive_{system_uuid}.zip',
+            as_attachment = True,
+        )
+
 @app.route('/assas_app/query_data', methods=['GET'])
 def query_data():
     

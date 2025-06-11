@@ -134,8 +134,8 @@ layout = html.Div([
         css=[dict(selector= "p", rule= "margin: 0; text-align: center")]
     ),
     html.Hr(),
-    dcc.Location(id='location'),
-    dcc.Location(id='location2'),
+    #dcc.Location(id='location'),
+    dcc.Location(id='location_download'),
     dcc.Download(id='download'),
     html.Br(),
     dcc.Checklist(
@@ -191,7 +191,7 @@ def generate_archive(
         return None       
 
 @callback(
-    Output('download_button', 'data'),
+    Output('location_download', 'href'),
     Input('download_selected', 'n_clicks'),  
     State('datatable-paging-and-sorting', 'derived_viewport_selected_rows'),
     State('datatable-paging-and-sorting', 'derived_viewport_selected_row_ids'),
@@ -214,7 +214,7 @@ def start_download(
         logger.info(f'create {download_folder}')
         os.makedirs(download_folder)
         
-    selected_data = [data[i] for i in rows]    
+    selected_data = [data[i] for i in rows]
     file_list = [data_item['system_result'] for data_item in selected_data]
     
     zip_file = download_folder + '/download_' + uuid + '.zip'
@@ -224,7 +224,8 @@ def start_download(
     
     logger.debug(f'clicks {clicks} rows {str(rows)} files {file_list} zip {zip_file}')
     
-    return dcc.send_file(zip_file)
+    return f'/assas_app/hdf5_download?uuid={uuid}'
+    #return dcc.send_file(zip_file)
 
 @callback(
     Output('download_selected', 'disabled'),
@@ -371,7 +372,7 @@ def update_page_count(
     page_size_value
 ):
     
-    logger.debug(f'update page count, use page size {use_page_size} page size value {page_size_value}')
+    logger.debug(f'Update page count, use page size {use_page_size} page size value {page_size_value}')
     
     if len(use_page_size) > 1 and page_size_value is not None:
         return int(len(table_data) / page_size_value) + 1,{'color': 'black'}
@@ -416,25 +417,25 @@ def update_page_count(
     
 #     return dash.no_update
         
-@callback(
-    Output('location', 'href'),
-    Input('datatable-paging-and-sorting', 'active_cell'),
-    State('datatable-paging-and-sorting', 'derived_viewport_data'))
-def cell_clicked_details(
-    active_cell,
-    data
-):
-    
-    if active_cell:
-        
-        row = active_cell['row']
-        row_data = data[row]
-        col = active_cell['column_id']
-        
-        if col == 'meta_name':
-            url = '/assas_app/details/' + str(row_data['_id'])
-            return url
-        else:
-            return dash.no_update
-    
-    return dash.no_update
+#@callback(
+#    Output('location', 'href'),
+#    Input('datatable-paging-and-sorting', 'active_cell'),
+#    State('datatable-paging-and-sorting', 'derived_viewport_data'))
+#def cell_clicked_details(
+#    active_cell,
+#    data
+#):
+#    
+#    if active_cell:
+#        
+#        row = active_cell['row']
+#        row_data = data[row]
+#        col = active_cell['column_id']
+#        
+#        if col == 'meta_name':
+#            url = '/assas_app/details/' + str(row_data['_id'])
+#            return url
+#        else:
+#            return dash.no_update
+#    
+#    return dash.no_update
