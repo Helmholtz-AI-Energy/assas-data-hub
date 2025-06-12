@@ -53,7 +53,7 @@ navbar = dbc.Navbar(
             vertical=False,
             pills=True,
             ),
-            dbc.NavbarToggler(id='navbar-toggler', n_clicks=0),            
+            dbc.NavbarToggler(id='navbar-toggler', n_clicks=0),
         ]
     ),    
     color='dark',
@@ -95,7 +95,7 @@ def init_dashboard(server):
     dash_app.layout = html.Div([
         navbar,
         html.Hr(),
-        dash.page_container    
+        dash.page_container
         ],id='dash-container')
     
     return dash_app.server

@@ -16,6 +16,8 @@ from ..components import content_style, conditional_table_style
 
 logger = logging.getLogger('assas_app')
 
+print("database page executed ONCE")
+
 colors = {
     'background': '#111111',
     'text': '#7FDBFF'
@@ -30,9 +32,30 @@ operators = [['ge ', '>='],
              ['contains '],
              ['datestartswith ']]
 
-table_data = AssasDatabaseManager().get_all_database_entries()
-table_data['system_download'] = [f'<a href="/assas_app/hdf5_file?uuid={entry.system_uuid}">hdf5 file</a>' for entry in table_data.itertuples()]
-table_data['meta_name'] = [f'<a href="/assas_app/details/{entry.system_uuid}">{entry.meta_name}</a>' for entry in table_data.itertuples()]
+def update_table_data()-> pd.DataFrame:
+     
+     logger.info('Load daqtabase entries to table')
+     
+     database_manager = AssasDatabaseManager()
+     
+     table_data_local = database_manager.get_all_database_entries()
+     table_data_local['system_download'] = [f'<a href="/assas_app/hdf5_file?uuid={entry.system_uuid}">hdf5 file</a>' for entry in table_data_local.itertuples()]
+     table_data_local['meta_name'] = [f'<a href="/assas_app/details/{entry.system_uuid}">{entry.meta_name}</a>' for entry in table_data_local.itertuples()]
+     
+     return table_data_local
+
+def get_database_size() -> str:
+    
+    database_manager = AssasDatabaseManager()
+    size = database_manager.get_overall_database_size()
+    
+    if size is None or len(size) == 0:
+        return '0 B'
+    
+    return size
+
+table_data = update_table_data()
+database_size = get_database_size()
 
 ALL = len(table_data)
 PAGE_SIZE = 30
@@ -58,21 +81,34 @@ layout = html.Div([
     ], style={'width': '100%','padding-left':'30%', 'padding-right':'25%'}),
     html.Hr(),
     html.Div([
-    dbc.Button(
-            'Download', 
-            id='download_selected', 
-            className='me-2', 
-            n_clicks=0, 
-            disabled=True,
-        ),
-    #dbc.Button(
-    #        'Refresh', 
-    #        id='reload_page', 
-    #        className='me-2', 
-    #        n_clicks=0, 
-    #        disabled=False,
-    #    ),
-    #html.Div('Reloaded page', id='reload-contents')
+        dbc.Row([
+            dbc.Col(html.H4("Download selected datasets:")),
+            dbc.Col(html.H4("Refresh datasets on page:")),
+            dbc.Col(html.H4("Database parameters:")),
+    ]),
+    dbc.Row([
+        dbc.Col(dbc.Button(
+                    'Download', 
+                    id='download_selected', 
+                    className='me-2', 
+                    n_clicks=0, 
+                    disabled=True,
+                    style = {'fontSize': 20, 'textAlign': 'center', 'margin-bottom': '1%', 'margin-left': '5%'}
+                    #style = {'margin-left': '1%','margin-right': '1%','width': '10%','fontSize': 20, 'textAlign': 'center', 'margin-bottom': '1%'}
+                    ),
+            ),
+        dbc.Col(dbc.Button(
+                    'Refresh', 
+                    id='reload_page', 
+                    className='me-2', 
+                    n_clicks=0, 
+                    disabled=False,
+                    style = {'fontSize': 20, 'textAlign': 'center', 'margin-bottom': '1%'}
+                    #style = {'margin-left': '1%','margin-right': '1%','width': '10%','fontSize': 20, 'textAlign': 'center'}
+                    ),
+                ),
+        dbc.Col(html.H4(f"Disk size on LSDF is {database_size}"), style={'textAlign': 'left', 'padding-top': '0.5%'}),
+    ]),
     ], style={'width': '100%','padding-left':'5%', 'padding-right':'25%'}),
     dcc.Download(id='download_button'),
     html.Hr(),
@@ -89,7 +125,7 @@ layout = html.Div([
         {'name': 'Size hdf5', 'id': 'system_size_hdf5', 'selectable': True},
         {'name': 'Date', 'id': 'system_date', 'selectable': True},
         {'name': 'User', 'id': 'system_user', 'selectable': True},
-        {'name': 'Download', 'id': 'system_download', 'selectable': True, 'presentation': 'markdown'},#, "type": 'text', "presentation": 'markdown'},
+        {'name': 'Download', 'id': 'system_download', 'selectable': True, 'presentation': 'markdown'},
         {'name': 'Status', 'id': 'system_status', 'selectable': True},
         {'name': 'Name', 'id': 'meta_name', 'selectable': True, 'presentation': 'markdown'},
         ],
@@ -159,20 +195,6 @@ layout = html.Div([
     html.Div('Select a page', id='pagination-contents'),
 ],style=content_style())
 
-#@callback(
-#    Output('reload-contents', 'children'),
-#    Input('reload_page', 'n_clicks'))
-#def reload_page(
-#    clicks
-#):
-#    
-#    logger.debug(f'reload page {clicks}')
-#    
-#    global table_data
-#    table_data = AssasDatabaseManager().get_all_database_entries()
-#   
-#    return ''#f'table_data (shape {table_data.shape}, size {table_data.size})'
-
 def generate_archive(
     path_to_zip,
     file_path_list
@@ -188,11 +210,11 @@ def generate_archive(
         return path_to_zip
     else:
         logger.info(f'ZIP file %s not created {path_to_zip}')
-        return None       
+        return None
 
 @callback(
     Output('location_download', 'href'),
-    Input('download_selected', 'n_clicks'),  
+    Input('download_selected', 'n_clicks'),
     State('datatable-paging-and-sorting', 'derived_viewport_selected_rows'),
     State('datatable-paging-and-sorting', 'derived_viewport_selected_row_ids'),
     State('datatable-paging-and-sorting', 'derived_viewport_data'))
@@ -222,10 +244,9 @@ def start_download(
     
     zip_file = generate_archive(zip_file, file_list)
     
-    logger.debug(f'clicks {clicks} rows {str(rows)} files {file_list} zip {zip_file}')
+    logger.debug(f'clicks: {clicks}, rows: {str(rows)}, files: {file_list}, zip: {zip_file}')
     
     return f'/assas_app/hdf5_download?uuid={uuid}'
-    #return dcc.send_file(zip_file)
 
 @callback(
     Output('download_selected', 'disabled'),
@@ -250,14 +271,21 @@ def split_filter_part(
     filter_part
 ):
     
+    logger.info(f'Operators: {operators}')
+    logger.info(f'Filter part: {filter_part}')
+    
     for operator_type in operators:
+        
         for operator in operator_type:
+            
             if operator in filter_part:
+                
                 name_part, value_part = filter_part.split(operator, 1)
                 name = name_part[name_part.find('{') + 1: name_part.rfind('}')]
 
                 value_part = value_part.strip()
                 v0 = value_part[0]
+                
                 if (v0 == value_part[-1] and v0 in (''', ''', '`')):
                     value = value_part[1: -1].replace('\\' + v0, v0)
                 else:
@@ -277,33 +305,41 @@ def split_filter_part(
     Input('datatable-paging-and-sorting', 'page_current'),
     Input('datatable-paging-and-sorting', 'page_size'),
     Input('datatable-paging-and-sorting', 'sort_by'),
-    Input('datatable-paging-and-sorting', 'filter_query'))
+    Input('datatable-paging-and-sorting', 'filter_query'),
+    Input('reload_page', 'n_clicks'))
 def update_table(
     page_current,
     page_size,
     sort_by,
-    filter
+    filter,
+    n_clicks
 ):
+    dataframe = update_table_data()
     
     filtering_expressions = filter.split(' && ')
     
-    dff = table_data
-    
-    for filter_part in filtering_expressions:
-        col_name, operator, filter_value = split_filter_part(filter_part)
+    logger.info(f'filtering_expressions: {filtering_expressions}')
+    logger.info(f'page_current: {page_current}, page_size: {page_size}, sort_by: {sort_by}, filter: {filter}, n_clicks: {n_clicks}')
 
+    for filter_part in filtering_expressions:
+        
+        col_name, operator, filter_value = split_filter_part(filter_part)
+        
+        logger.info(f'filter_part: {filter_part}, col_name: {col_name}, operator: {operator}, filter_value: {filter_value}')
+        
         if operator in ('eq', 'ne', 'lt', 'le', 'gt', 'ge'):
             # these operators match pandas series operator method names
-            dff = dff.loc[getattr(dff[col_name], operator)(filter_value)]
+            dataframe = dataframe.loc[getattr(dataframe[col_name], operator)(filter_value)]
         elif operator == 'contains':
-            dff = dff.loc[dff[col_name].str.contains(filter_value)]
+            dataframe = dataframe.loc[dataframe[col_name].str.contains(filter_value)]
         elif operator == 'datestartswith':
             # this is a simplification of the front-end filtering logic,
             # only works with complete fields in standard format
-            dff = dff.loc[dff[col_name].str.startswith(filter_value)]
+            dataframe = dataframe.loc[dataframe[col_name].str.startswith(filter_value)]
 
     if len(sort_by):
-        dff = dff.sort_values(
+        
+        dataframe = dataframe.sort_values(
             [col['column_id'] for col in sort_by],
             ascending=[
                 col['direction'] == 'asc'
@@ -315,7 +351,7 @@ def update_table(
     page = page_current
     size = page_size
     
-    return dff.iloc[page * size: (page + 1) * size].to_dict('records')
+    return dataframe.iloc[page * size: (page + 1) * size].to_dict('records')
 
 @callback(
     Output('datatable-paging-and-sorting', 'page_size'),
@@ -326,7 +362,7 @@ def update_page_size(
     page_size_value
 ):
     
-    logger.debug(f'update page size, use page size {use_page_size} page size value {page_size_value}')
+    logger.debug(f'update page size, use_page_size: {use_page_size}, page_size_value: {page_size_value}')
     
     if len(use_page_size) == 0 or page_size_value is None:
         return PAGE_SIZE
@@ -342,7 +378,7 @@ def change_page(
     value
 ):
     
-    logger.debug(f'page {page} value {value}')
+    logger.debug(f'page: {page}, value: {value}')
     
     if page:
         return f'Page selected: {page}/{value}'
@@ -372,70 +408,12 @@ def update_page_count(
     page_size_value
 ):
     
-    logger.debug(f'Update page count, use page size {use_page_size} page size value {page_size_value}')
+    logger.debug(f'Update page count, use page size: {use_page_size}, page size value {page_size_value}.')
     
     if len(use_page_size) > 1 and page_size_value is not None:
         return int(len(table_data) / page_size_value) + 1,{'color': 'black'}
     
     if page_size_value is None:
-        return int(len(table_data) / PAGE_SIZE) + 1,{'color': 'grey'}      
+        return int(len(table_data) / PAGE_SIZE) + 1,{'color': 'grey'}
     
     return int(len(table_data) / PAGE_SIZE) + 1,{'color': 'grey'}
-
-# @callback(
-#     Output('location2', 'href'),
-#     Input('datatable-paging-and-sorting', 'active_cell'),
-#     State('datatable-paging-and-sorting', 'derived_viewport_data'))
-# def cell_clicked_download(
-#     active_cell, 
-#     data
-# ):
-    
-#     if active_cell:
-        
-#         row = active_cell['row']
-#         row_data = data[row]
-#         col = active_cell['column_id']
-        
-#         print(f'active cell {active_cell}')
-        
-#         if col == 'system_download':
-            
-#             file_to_send = row_data['system_result']
-#             system_uuid = row_data['system_uuid']
-            
-#             logger.info(f'File to send: {file_to_send}, system_uuid: {system_uuid}.')
-            
-#             url = f'/assas_app/hdf5_file?uuid={system_uuid}'
-#             logger.info(f'Open url {url} to start download via flask route.')
-            
-#             return url
-#             #return dcc.send_file(file_to_send)
-        
-#         else:
-#             return dash.no_update
-    
-#     return dash.no_update
-        
-#@callback(
-#    Output('location', 'href'),
-#    Input('datatable-paging-and-sorting', 'active_cell'),
-#    State('datatable-paging-and-sorting', 'derived_viewport_data'))
-#def cell_clicked_details(
-#    active_cell,
-#    data
-#):
-#    
-#    if active_cell:
-#        
-#        row = active_cell['row']
-#        row_data = data[row]
-#        col = active_cell['column_id']
-#        
-#        if col == 'meta_name':
-#            url = '/assas_app/details/' + str(row_data['_id'])
-#            return url
-#        else:
-#            return dash.no_update
-#    
-#    return dash.no_update
