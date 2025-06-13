@@ -2,6 +2,7 @@
 import logging
 import uuid
 import numpy as np
+import shutil
 
 from urllib.parse import urlencode
 from flask import redirect, render_template, send_file, request, jsonify
@@ -9,6 +10,8 @@ from flask import current_app as app
 from pathlib import Path
 
 from assasdb import AssasDatabaseManager
+
+TMP_FOLDER = '/root/tmp'
 
 logger = logging.getLogger('assas_app')
 
@@ -48,18 +51,27 @@ def get_download_archive():
     
     args = request.args
     system_uuid = args.get('uuid', type=str)
-    filepath = f'/root/tmp/download_{system_uuid}.zip'
+    
+    temp_folder = f'{TMP_FOLDER}/download_{system_uuid}'
+    filepath = f'{temp_folder}/download_{system_uuid}.zip'
     file = Path(filepath)
     
     if file.exists():
     
         logger.info(f'Handle request of {str(file)}.')
     
-        return send_file(
+        response = send_file(
             path_or_file = filepath,
-            download_name = f'archive_{system_uuid}.zip',
+            download_name = f'download_{system_uuid}.zip',
             as_attachment = True,
         )
+        
+        return response
+ 
+    else:
+        
+        logger.error(f'File not found: {filepath}.')
+        return "File not found", 404
 
 @app.route('/assas_app/query_data', methods=['GET'])
 def query_data():

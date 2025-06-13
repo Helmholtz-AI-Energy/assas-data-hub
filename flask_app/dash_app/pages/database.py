@@ -4,19 +4,23 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import numpy as np
 import logging
+import shutil
+import time
+import requests
 
-from dash import Dash, dash_table, html, dcc, Input, Output, callback, State
+from dash import Dash, dash_table, html, dcc, Input, Output, callback, State, callback_context
 from flask import current_app as flask_app
 from zipfile import ZipFile
 from uuid import uuid4
 from pathlib import Path
+from typing import List
 
 from assasdb import AssasDatabaseManager
 from ..components import content_style, conditional_table_style
 
 logger = logging.getLogger('assas_app')
 
-print("database page executed ONCE")
+TMP_FOLDER = '/root/tmp'
 
 colors = {
     'background': '#111111',
@@ -33,18 +37,31 @@ operators = [['ge ', '>='],
              ['datestartswith ']]
 
 def update_table_data()-> pd.DataFrame:
+    ''' 
+    Update the table data from the database.
+    
+    Returns:
+        pd.DataFrame: DataFrame with the table data.
+    '''
      
-     logger.info('Load daqtabase entries to table')
+    logger.info('Load daqtabase entries to table')
      
-     database_manager = AssasDatabaseManager()
+    database_manager = AssasDatabaseManager()
      
-     table_data_local = database_manager.get_all_database_entries()
-     table_data_local['system_download'] = [f'<a href="/assas_app/hdf5_file?uuid={entry.system_uuid}">hdf5 file</a>' for entry in table_data_local.itertuples()]
-     table_data_local['meta_name'] = [f'<a href="/assas_app/details/{entry.system_uuid}">{entry.meta_name}</a>' for entry in table_data_local.itertuples()]
+    table_data_local = database_manager.get_all_database_entries()
+    table_data_local['system_download'] = [f'<a href="/assas_app/hdf5_file?uuid={entry.system_uuid}">hdf5 file</a>' for entry in table_data_local.itertuples()]
+    table_data_local['meta_name'] = [f'<a href="/assas_app/details/{entry.system_uuid}">{entry.meta_name}</a>' for entry in table_data_local.itertuples()]
      
-     return table_data_local
+    return table_data_local
 
 def get_database_size() -> str:
+    ''' 
+    Get the overall size of the ASSAS database.
+    
+    Returns:
+        str: Overall size of the database in a human-readable format.
+    '''
+    
     
     database_manager = AssasDatabaseManager()
     size = database_manager.get_overall_database_size()
@@ -81,21 +98,26 @@ layout = html.Div([
     ], style={'width': '100%','padding-left':'30%', 'padding-right':'25%'}),
     html.Hr(),
     html.Div([
-        dbc.Row([
-            dbc.Col(html.H4("Download selected datasets:")),
+    dbc.Row([
+            dbc.Col(html.H4("Select datasets for download:")),
             dbc.Col(html.H4("Refresh datasets on page:")),
             dbc.Col(html.H4("Database parameters:")),
     ]),
     dbc.Row([
-        dbc.Col(dbc.Button(
-                    'Download', 
-                    id='download_selected', 
-                    className='me-2', 
-                    n_clicks=0, 
-                    disabled=True,
-                    style = {'fontSize': 20, 'textAlign': 'center', 'margin-bottom': '1%', 'margin-left': '5%'}
-                    #style = {'margin-left': '1%','margin-right': '1%','width': '10%','fontSize': 20, 'textAlign': 'center', 'margin-bottom': '1%'}
-                    ),
+        dbc.Col(dcc.Loading(
+                children=[
+                    dbc.Button(
+                        'Get Download Link', 
+                        id='download_selected', 
+                        className='me-2', 
+                        n_clicks=0, 
+                        disabled=True,
+                        style = {'fontSize': 20, 'textAlign': 'center', 'margin-bottom': '1%', 'margin-left': '5%'}
+                        ),
+                ],
+                type='circle',
+                fullscreen=False
+                ),
             ),
         dbc.Col(dbc.Button(
                     'Refresh', 
@@ -104,13 +126,18 @@ layout = html.Div([
                     n_clicks=0, 
                     disabled=False,
                     style = {'fontSize': 20, 'textAlign': 'center', 'margin-bottom': '1%'}
-                    #style = {'margin-left': '1%','margin-right': '1%','width': '10%','fontSize': 20, 'textAlign': 'center'}
                     ),
                 ),
         dbc.Col(html.H4(f"Disk size on LSDF is {database_size}"), style={'textAlign': 'left', 'padding-top': '0.5%'}),
     ]),
+    dbc.Row([
+        dbc.Col(html.Div('Status', id='download_status', style={'fontSize': 20, 'textAlign': 'left', 'padding-top': '0.5%'})),
+    ]),
+    dbc.Row([
+        dbc.Col(html.Div('Link', id='download_link', style={'fontSize': 20,  'textAlign': 'left', 'padding-top': '0.5%'})), 
+    ]),
     ], style={'width': '100%','padding-left':'5%', 'padding-right':'25%'}),
-    dcc.Download(id='download_button'),
+    dcc.Location(id='download_location', refresh=True),
     html.Hr(),
     dash_table.DataTable(
         id='datatable-paging-and-sorting',
@@ -170,9 +197,6 @@ layout = html.Div([
         css=[dict(selector= "p", rule= "margin: 0; text-align: center")]
     ),
     html.Hr(),
-    #dcc.Location(id='location'),
-    dcc.Location(id='location_download'),
-    dcc.Download(id='download'),
     html.Br(),
     dcc.Checklist(
         id='datatable-use-page-size',
@@ -195,28 +219,88 @@ layout = html.Div([
     html.Div('Select a page', id='pagination-contents'),
 ],style=content_style())
 
-def generate_archive(
-    path_to_zip,
-    file_path_list
-):
+def copy_and_zip_files(
+    file_info: List[tuple],
+    destination_folder,
+    zip_file_name
+)-> str:
+    '''
+    Copies a list of files to a destination folder and zips them into an archive.
     
-    with ZipFile(path_to_zip, 'w') as zip_object:
+    Args:
+        file_list (list): List of file paths to copy.
+        destination_folder (str): Path to the destination folder.
+        zip_file_name (str): Name of the resulting zip file.
         
-        for file_path in file_path_list:
-            zip_object.write(file_path)
-            
-    if os.path.exists(path_to_zip):
-        logger.info(f'ZIP file %s created {path_to_zip}')
-        return path_to_zip
+    Returns:
+        str: Path to the created zip file.
+    '''
+    # Ensure the destination folder exists
+    if not os.path.exists(destination_folder):
+        os.makedirs(destination_folder)
+    
+    # Copy files to the destination folder
+    for file_path, file_uuid in file_info:
+        if os.path.exists(file_path):
+            destination_path = Path(destination_folder) / (f'{file_uuid}_' + Path(file_path).name)
+            logger.info(f"Copying {file_path} to {destination_path}")
+            # Copy the file to the destination folder with a new name
+            shutil.copy(file_path, destination_path)
+        else:
+            logger.warning(f"File not found: {file_path}")
+    
+    file_list = [os.path.join(destination_folder, f'{file_uuid}_' + Path(file_path).name) for file_path, file_uuid in file_info]
+    logger.info(f"Files copied to {destination_folder}: {file_list}")
+    
+    # Create the zip file
+    zip_file_path = os.path.join(destination_folder, zip_file_name)
+    with ZipFile(zip_file_path, 'w') as zip_object:
+        for file_path in file_list:
+            file_name = Path(file_path).name
+            destination_path = os.path.join(destination_folder, file_name)
+            if os.path.exists(destination_path):
+                zip_object.write(destination_path, arcname=file_name)
+    
+    # Verify if the zip file was created
+    if os.path.exists(zip_file_path):
+        logger.info(f"ZIP file created: {zip_file_path}")
+        return zip_file_path
     else:
-        logger.info(f'ZIP file %s not created {path_to_zip}')
+        logger.error(f"Failed to create ZIP file: {zip_file_path}")
         return None
 
+def clean_tmp_folder(
+    parent_folder: str):
+    """
+    Deletes all folders within a specified parent folder.
+
+    Args:
+        parent_folder (str): Path to the parent folder.
+    """
+    try:
+        parent_path = Path(parent_folder)
+        if not parent_path.exists():
+            logger.info(f"Parent folder {parent_folder} does not exist.")
+            return
+
+        # Iterate through all items in the parent folder
+        for item in parent_path.iterdir():
+            if item.is_dir():  # Check if the item is a folder
+                logger.info(f"Deleting folder: {item}")
+                shutil.rmtree(item)  # Delete the folder and its contents
+
+        logger.info(f"All folders in {parent_folder} have been deleted.")
+    
+    except Exception as e:
+        logger.error(f"Failed to delete folders in {parent_folder}: {e}")
+
 @callback(
-    Output('location_download', 'href'),
+    Output('download_selected', 'disabled'),
+    Output('download_status', 'children'),
+    Output('download_link', 'children'),
     Input('download_selected', 'n_clicks'),
-    State('datatable-paging-and-sorting', 'derived_viewport_selected_rows'),
-    State('datatable-paging-and-sorting', 'derived_viewport_selected_row_ids'),
+    Input('datatable-paging-and-sorting', 'derived_viewport_selected_rows'),
+    Input('datatable-paging-and-sorting', 'derived_viewport_selected_row_ids'),
     State('datatable-paging-and-sorting', 'derived_viewport_data'))
 def start_download(
     clicks,
@@ -224,49 +308,64 @@ def start_download(
     ids,
     data
 ):
+    logger.info(f'Starting download with clicks: {clicks}, rows: {rows}, ids: {ids}')
+    triggered_id = callback_context.triggered[0]['prop_id'].split('.')[0] if callback_context.triggered else None
+    logger.info(f"Triggered by: {triggered_id}")
     
-    if (rows is None) or (ids is None) or len(rows) == 0:
-        return dash.no_update
-    
-    uuid = str(uuid4())
-    logger.info(f'started download (id = {uuid})')
-    
-    download_folder = '/root/tmp'
-    if not os.path.exists(download_folder):
-        logger.info(f'create {download_folder}')
-        os.makedirs(download_folder)
-        
-    selected_data = [data[i] for i in rows]
-    file_list = [data_item['system_result'] for data_item in selected_data]
-    
-    zip_file = download_folder + '/download_' + uuid + '.zip'
-    logger.info(f'generate archive {zip_file}')
-    
-    zip_file = generate_archive(zip_file, file_list)
-    
-    logger.debug(f'clicks: {clicks}, rows: {str(rows)}, files: {file_list}, zip: {zip_file}')
-    
-    return f'/assas_app/hdf5_download?uuid={uuid}'
-
-@callback(
-    Output('download_selected', 'disabled'),
-    Input('datatable-paging-and-sorting', 'derived_viewport_selected_rows'),
-    Input('datatable-paging-and-sorting', 'derived_viewport_selected_row_ids'),
-    State('datatable-paging-and-sorting', 'derived_viewport_data'))
-def selected_button(
-    rows,
-    ids,
-    data
-):
+    no_href_link = html.A("Download link will be available here.", href=None, style={"color": "red"})
     
     if (rows is None) or (ids is None):
-        return dash.no_update
+        return False, 'No rows selected for download.', no_href_link
         
     if len(rows) > 0:
-        return False
+        
+        logger.info(f'Disabled is False, Selected rows: {rows}, ids: {ids}')
+        
+        if triggered_id == 'download_selected':
+            
+            logger.info(f'Download button was pressed: {clicks}, rows: {rows}')
     
-    return True
-
+            uuid = str(uuid4())
+            logger.info(f'Started download (id = {uuid}).')
+            
+            clean_tmp_folder(
+                parent_folder = TMP_FOLDER
+            )
+            
+            destination_folder = f'{TMP_FOLDER}/download_{uuid}'
+            
+            selected_data = [data[i] for i in rows]
+            file_paths = [data_item['system_result'] for data_item in selected_data]
+            file_uuids = [data_item['system_uuid'] for data_item in selected_data]
+            file_info = list(zip(file_paths, file_uuids))
+            
+            zip_file_name = f'download_{uuid}.zip'
+            
+            logger.info(f'file paths: {file_paths}')
+            logger.info(f'file uuids: {file_uuids}')
+            logger.info(f'destination folder: {destination_folder}')
+            
+            copy_and_zip_files(
+                file_info = file_info,
+                destination_folder = destination_folder,
+                zip_file_name = zip_file_name
+            )
+            
+            flask_url = f"/assas_app/hdf5_download?uuid={uuid}"
+            clickable_link = html.A(f"Click here to download the zip archive", href=flask_url, target="_blank")
+            
+            return False, f'Zipped archive ready for download.', clickable_link
+        
+        else:
+            
+            logger.info(f'No download button was pressed, just selected rows: {rows}, ids: {ids}')
+            return False, 'Press button to generate download link.', no_href_link
+    
+    else:
+        
+        logger.info(f'Disabled is True, Selected rows: {rows}, ids: {ids}')
+        return True, 'No rows selected for download.', no_href_link
+    
 def split_filter_part(
     filter_part
 ):
@@ -396,6 +495,7 @@ def change_page_table(
     
     if page:
         return (page - 1)
+    
     return 0
 
 @callback(
@@ -411,9 +511,9 @@ def update_page_count(
     logger.debug(f'Update page count, use page size: {use_page_size}, page size value {page_size_value}.')
     
     if len(use_page_size) > 1 and page_size_value is not None:
-        return int(len(table_data) / page_size_value) + 1,{'color': 'black'}
+        return int(len(table_data) / page_size_value) + 1, {'color': 'black'}
     
     if page_size_value is None:
-        return int(len(table_data) / PAGE_SIZE) + 1,{'color': 'grey'}
+        return int(len(table_data) / PAGE_SIZE) + 1, {'color': 'grey'}
     
-    return int(len(table_data) / PAGE_SIZE) + 1,{'color': 'grey'}
+    return int(len(table_data) / PAGE_SIZE) + 1, {'color': 'grey'}
