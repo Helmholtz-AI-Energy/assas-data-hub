@@ -10,7 +10,8 @@ from dash.dependencies import Input, Output
 
 from assasdb import AssasDatabaseManager
 from .components import encode_svg_image
-from flask_login import current_user
+from flask import redirect, request, session
+from ..auth_utils import auth, is_authenticated, get_current_user
 
 logger = logging.getLogger('assas_app')
 
@@ -38,17 +39,17 @@ navbar = dbc.Navbar(
                 dbc.NavItem(dbc.NavLink('Database', href='/assas_app/database', active='exact')),
                 #dbc.NavItem(dbc.NavLink('Upload', href='/assas_app/upload', active='exact')),
                 dbc.NavItem(dbc.NavLink('About', href='/assas_app/about', active='exact')),
-                dbc.DropdownMenu(
-                    nav=True,
-                    in_navbar=True,
-                    label='User',
-                    children=[
-                        dbc.DropdownMenuItem('Profile', href='/assas_app/profile'),
-                        dbc.DropdownMenuItem('Admin', href='/assas_app/admin'),
-                        dbc.DropdownMenuItem(divider=True),
-                        dbc.DropdownMenuItem('Logout', href='/assas_app/logout'),
-                    ],
-                ),
+                #dbc.DropdownMenu(
+                #    nav=True,
+                #    in_navbar=True,
+                #    label='User',
+                #    children=[
+                #        dbc.DropdownMenuItem('Profile', href='/assas_app/profile'),
+                #        dbc.DropdownMenuItem('Admin', href='/assas_app/admin'),
+                #        dbc.DropdownMenuItem(divider=True),
+                #        dbc.DropdownMenuItem('Logout', href='/assas_app/logout'),
+                #    ],
+                #),
             ],
             vertical=False,
             pills=True,
@@ -79,16 +80,32 @@ def init_dashboard(server):
     #background_callback_manager = DiskcacheManager(
     #    cache, cache_by=[lambda: launch_uid], expire=60,
     #)
+    # Protect Dash pages
+    @server.before_request
+    @auth.login_required
+    def restrict_access():
+        """
+        Restrict access to Dash pages for unauthenticated users.
+        """
+        logger.info('Checking authentication for Dash app access.')
+        currrent_user = get_current_user()
+        logger.info(f'Current user: {currrent_user}')
+        
+        if not is_authenticated() and request.path.startswith('/assas_app/'):
+            return redirect('/login')  # Redirect unauthenticated users to the login page
     
     dash_app = dash.Dash(
         server=server,
-        routes_pathname_prefix='/assas_app/',
+        url_base_pathname='/assas_app/',
+        title='ASSAS Data Hub',
+        #routes_pathname_prefix='/assas_app/',
         external_stylesheets=[dbc.themes.BOOTSTRAP],
         use_pages=True,
         pages_folder=pages_folder,
         assets_folder=assets_folder,
         long_callback_manager=long_callback_manager,
         #background_callback_manager=background_callback_manager
+        suppress_callback_exceptions = True
     )
     
     # Create Dash Layout
@@ -98,4 +115,4 @@ def init_dashboard(server):
         dash.page_container
         ],id='dash-container')
     
-    return dash_app.server
+    return dash_app

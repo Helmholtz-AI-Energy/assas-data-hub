@@ -5,7 +5,9 @@ from dash import html, dcc
 
 from ..components import encode_svg_image
 
-layout = dbc.Container([
+def layout():
+    """Layout for the Error 404 page."""
+    return dbc.Container([
     html.Br(),
     dbc.Container([
         dcc.Location(id='err404', refresh=True),
@@ -19,4 +21,4 @@ layout = dbc.Container([
             dbc.Container(id='outputState', children='Error 404 - Page not found')
         ], className='form-group'),
     ], className='jumbotron')
-])
+    ])

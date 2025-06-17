@@ -48,6 +48,7 @@ def meta_info_table(
     return dbc.Table(table, striped=True, bordered=True, hover=True, responsive=True)
 
 def layout(report_id = None):
+    """Layout for the details template page."""
     
     logger.info(f'report_id {report_id}')
     

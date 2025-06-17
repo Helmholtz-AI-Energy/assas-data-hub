@@ -1,9 +1,12 @@
 import os
+import secrets
 
 '''Initialize Flask app.'''
 from flask import Flask
 from flask.app import Flask
 from flask.config import Config
+
+from .auth_utils import auth
 
 class AttrConfig(Config):
     def __getattr__(self, key):
@@ -23,6 +26,8 @@ class CustomFlask(Flask):
 def init_app():
     '''Construct core Flask application with embedded Dash app.'''
     app = CustomFlask(__name__, instance_relative_config=False)
+    
+    app.secret_key = secrets.token_hex(16)
     
     app.config.from_object('config.Config')
     

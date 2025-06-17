@@ -82,7 +82,13 @@ PAGE_COUNT = ALL / PAGE_SIZE
 
 dash.register_page(__name__, path='/database')
 
-layout = html.Div([
+def layout():
+    '''
+    Layout for the ASSAS Database page.
+    Returns:
+        html.Div: The layout of the ASSAS Database page.
+    '''
+    return html.Div([
     html.H2('ASSAS Database - Training Dataset Index'),
     dbc.Alert('Search interface for the available ASSAS training datasets', color='primary', style={'textAlign': 'center'}),
     html.Hr(),
@@ -147,6 +153,7 @@ layout = html.Div([
         {'name': 'Upload Uuid', 'id': 'system_upload_uuid', 'hideable': True},
         {'name': 'Path', 'id': 'system_path', 'hideable': True},
         {'name': 'Result', 'id': 'system_result', 'hideable': True},
+        {'name': 'Samples', 'id': 'system_number_of_samples', 'hideable': True},
         {'name': 'Index', 'id': 'system_index', 'selectable': True},
         {'name': 'Size binary', 'id': 'system_size', 'selectable': True},
         {'name': 'Size hdf5', 'id': 'system_size_hdf5', 'selectable': True},
@@ -157,7 +164,7 @@ layout = html.Div([
         {'name': 'Name', 'id': 'meta_name', 'selectable': True, 'presentation': 'markdown'},
         ],
         markdown_options={'html': True},
-        hidden_columns=['', '_id', 'system_uuid', 'system_upload_uuid', 'system_path', 'system_result'],
+        hidden_columns=['', '_id', 'system_uuid', 'system_upload_uuid', 'system_path', 'system_result', 'system_number_of_samples'],
         data=table_data.to_dict('records'),
         style_cell={
             'fontSize': 17,
@@ -217,7 +224,7 @@ layout = html.Div([
         disabled=False,
     ),
     html.Div('Select a page', id='pagination-contents'),
-],style=content_style())
+    ],style=content_style())
 
 def copy_and_zip_files(
     file_info: List[tuple],
