@@ -115,4 +115,4 @@ def init_dashboard(server):
         dash.page_container
         ],id='dash-container')
     
-    return dash_app
+    return dash_app.server
