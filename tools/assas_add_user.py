@@ -1,5 +1,9 @@
+import logging
+
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
+
+logger = logging.getLogger('assas_app')
 
 # MongoDB connection setup
 client = MongoClient('mongodb://localhost:27017/')  # Replace with your MongoDB connection string
@@ -11,7 +15,7 @@ users = [
     {
         "username": "admin",
         "password": generate_password_hash("admin"),
-        "email": "admin@example.com",
+        "email": "jonas.dressner@kit.edu",
         "institute": "KIT (SCC)",
         "role": "Administrator"
     },
@@ -25,12 +29,14 @@ users = [
     {
         "username": "markus",
         "password": generate_password_hash("assas123"),
-        "email": "markus@example.com",
-        "institute": "Markus Institute",
+        "email": "markus.goetz@kit.edu",
+        "institute": "KIT (SCC)",
         "role": "Researcher"
     }
 ]
 
 # Insert users into the collection
+users_collection.delete_many({})  # Clear existing users
 users_collection.insert_many(users)
-print("Users inserted successfully!")
+
+logger.info("Users inserted successfully.")

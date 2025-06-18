@@ -25,7 +25,7 @@ navbar = dbc.Navbar(
                         #dbc.Col(html.Img(src=encode_svg_image('assas_logo.svg'), height='60px', width='120px', style={'border':'1px grey solid'}), width=6),
                         dbc.Col(html.Img(src=encode_svg_image('assas_logo_mod.svg'), height='60px', width='120px', style={'border':'1px grey solid'}), width=4),
                         dbc.Col(html.Img(src=encode_svg_image('kit_logo.drawio.svg'), height='60px', width='120px', style={'border':'1px grey solid'}), width=4),
-                        dbc.Col(dbc.NavbarBrand('ASSAS Data Hub', className='ms-2'), width=3),                                 
+                        dbc.Col(dbc.NavbarBrand('ASSAS Data Hub', className='ms-2'), width=3),
                     ],
                     align='center',
                     className='g-0',
@@ -80,6 +80,7 @@ def init_dashboard(server):
     #background_callback_manager = DiskcacheManager(
     #    cache, cache_by=[lambda: launch_uid], expire=60,
     #)
+    
     # Protect Dash pages
     @server.before_request
     @auth.login_required

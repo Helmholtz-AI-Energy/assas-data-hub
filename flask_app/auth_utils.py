@@ -14,27 +14,7 @@ client = MongoClient('mongodb://localhost:27017/')  # Replace with your MongoDB 
 db = client['assas']  # Database name
 users_collection = db['users']  # Collection name
 
-# User credentials with additional information
-users = {
-    "admin": {
-        "password": generate_password_hash("admin"),
-        "email": "jonas.dressner@kit.edu",
-        "institute": "KIT (SCC)",
-        "role": "Administrator"
-    },
-    "jonas": {
-        "password": generate_password_hash("r.adio_1"),
-        "email": "jonas.dressner@kit.edu",
-        "institute": "KIT (SCC)",
-        "role": "Researcher"
-    },
-    "markus": {
-        "password": generate_password_hash("assas123"),
-        "email": "markus@example.com",
-        "institute": "Markus Institute",
-        "role": "Researcher"
-    }
-}
+users = users_collection.find()
 
 @auth.verify_password
 def verify_password(username_or_email, password):

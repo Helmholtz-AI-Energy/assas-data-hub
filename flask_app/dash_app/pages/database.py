@@ -44,7 +44,7 @@ def update_table_data()-> pd.DataFrame:
         pd.DataFrame: DataFrame with the table data.
     '''
      
-    logger.info('Load daqtabase entries to table')
+    logger.info('Load database entries to table.')
      
     database_manager = AssasDatabaseManager()
      
