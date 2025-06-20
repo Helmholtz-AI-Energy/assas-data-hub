@@ -28,7 +28,7 @@ users = [
     },
     {
         "username": "markus",
-        "password": generate_password_hash("assas123"),
+        "password": generate_password_hash("assas2025"),
         "email": "markus.goetz@kit.edu",
         "institute": "KIT (SCC)",
         "role": "Researcher"
@@ -38,5 +38,9 @@ users = [
 # Insert users into the collection
 users_collection.delete_many({})  # Clear existing users
 users_collection.insert_many(users)
+
+users = users_collection.find()
+for user in users:
+    logger.info(f"Inserted user: {user['username']} with email: {user['email']} and role: {user['role']}")
 
 logger.info("Users inserted successfully.")

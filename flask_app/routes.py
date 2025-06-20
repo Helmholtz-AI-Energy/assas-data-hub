@@ -65,11 +65,11 @@ def from_app_to_home():
     
     return redirect('/assas_app/home')
 
-#@app.route('/assas_app/')
-#@auth.login_required
-#def from_app_with_slash_to_home():
-#    
-#    return redirect('/assas_app/home')
+@app.route('/assas_app/')
+@auth.login_required
+def from_app_with_slash_to_home():
+    
+    return redirect('/assas_app/home')
 
 @app.route('/assas_app/hdf5_file', methods=['GET'])
 @auth.login_required
@@ -152,7 +152,7 @@ def query_data():
     
     return jsonify({'meta_data_variables': meta_data_variables,})
 
-@app.route('/index')
-@auth.login_required
-def index():
-    return render_template('index_login.html')
+#@app.route('/index')
+#@auth.login_required
+#def index():
+#    return render_template('index_login.html')
