@@ -17,21 +17,28 @@ users = [
         "password": generate_password_hash("admin"),
         "email": "jonas.dressner@kit.edu",
         "institute": "KIT (SCC)",
-        "role": "Administrator"
+        "role": "Administrator",
     },
     {
         "username": "jonas",
         "password": generate_password_hash("r.adio_1"),
         "email": "jonas.dressner@kit.edu",
         "institute": "KIT (SCC)",
-        "role": "Researcher"
+        "role": "Researcher",
     },
     {
         "username": "markus",
         "password": generate_password_hash("assas2025"),
         "email": "markus.goetz@kit.edu",
         "institute": "KIT (SCC)",
-        "role": "Researcher"
+        "role": "Researcher",
+    },
+    {
+        "username": "jure",
+        "password": generate_password_hash("assas2025"),
+        "email": "jure.brence@ijs.si",
+        "institute": "JSI (Slovenia)",
+        "role": "Researcher",
     }
 ]
 
