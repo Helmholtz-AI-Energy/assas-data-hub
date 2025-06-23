@@ -107,7 +107,7 @@ def layout():
     dbc.Row([
             dbc.Col(html.H4("Select datasets for download:")),
             dbc.Col(html.H4("Refresh datasets on page:")),
-            dbc.Col(html.H4("Database parameters:")),
+            dbc.Col(html.H4("LSDF database parameters:")),
     ]),
     dbc.Row([
         dbc.Col(dcc.Loading(
@@ -134,10 +134,12 @@ def layout():
                     style = {'fontSize': 20, 'textAlign': 'center', 'margin-bottom': '1%'}
                     ),
                 ),
-        dbc.Col(html.H4(f"Disk size on LSDF is {database_size}"), style={'textAlign': 'left', 'padding-top': '0.5%'}),
+        dbc.Col(html.H5(f"Used storage: {database_size}"), style={'textAlign': 'left', 'padding-top': '0.5%'}),
     ]),
     dbc.Row([
         dbc.Col(html.Div('Status', id='download_status', style={'fontSize': 20, 'textAlign': 'left', 'padding-top': '0.5%'})),
+        dbc.Col(html.Div(id='refresh_status', style={'fontSize': 20, 'textAlign': 'left', 'padding-top': '0.5%'})),
+        dbc.Col(html.H5('Current storage limit: 100 TB'), style={'textAlign': 'left', 'padding-top': '0.5%'}),
     ]),
     dbc.Row([
         dbc.Col(html.Div('Link', id='download_link', style={'fontSize': 20,  'textAlign': 'left', 'padding-top': '0.5%'})), 
