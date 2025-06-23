@@ -2,6 +2,7 @@
 import logging
 import uuid
 import numpy as np
+import shutil
 
 from flask import session, redirect, render_template, send_file, request, jsonify, url_for
 from flask import current_app as app
@@ -120,6 +121,13 @@ def get_download_archive():
             download_name = f'download_{system_uuid}.zip',
             as_attachment = True,
         )
+        
+        try:
+            shutil.rmtree(temp_folder)
+            logger.info(f'Temporary folder {temp_folder} has been deleted.')
+        
+        except Exception as e:
+            logger.error(f'Error deleting file {filepath}: {e}')
         
         return response
  

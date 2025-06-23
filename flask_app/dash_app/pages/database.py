@@ -279,7 +279,8 @@ def copy_and_zip_files(
         return None
 
 def clean_tmp_folder(
-    parent_folder: str):
+    parent_folder: str
+)-> None:
     """
     Deletes all folders within a specified parent folder.
 
@@ -336,10 +337,6 @@ def start_download(
     
             uuid = str(uuid4())
             logger.info(f'Started download (id = {uuid}).')
-            
-            clean_tmp_folder(
-                parent_folder = TMP_FOLDER
-            )
             
             destination_folder = f'{TMP_FOLDER}/download_{uuid}'
             
