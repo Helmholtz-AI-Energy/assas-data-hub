@@ -12,8 +12,6 @@ from .auth_utils import auth, users  # Assuming users is a dictionary defined in
 
 from assasdb import AssasDatabaseManager
 
-TMP_FOLDER = '/root/tmp'
-
 logger = logging.getLogger('assas_app')
 
 @app.route('/login')
@@ -108,8 +106,10 @@ def get_download_archive():
     args = request.args
     system_uuid = args.get('uuid', type=str)
     
-    temp_folder = f'{TMP_FOLDER}/download_{system_uuid}'
-    filepath = f'{temp_folder}/download_{system_uuid}.zip'
+    tmp_folder = app.config['TMP_FOLDER']
+    tmp_download_folder = f'{tmp_folder}/download_{system_uuid}'
+    
+    filepath = f'{tmp_download_folder}/download_{system_uuid}.zip'
     file = Path(filepath)
     
     if file.exists():
@@ -123,8 +123,8 @@ def get_download_archive():
         )
         
         try:
-            shutil.rmtree(temp_folder)
-            logger.info(f'Temporary folder {temp_folder} has been deleted.')
+            shutil.rmtree(tmp_download_folder)
+            logger.info(f'Temporary folder {tmp_download_folder} has been deleted.')
         
         except Exception as e:
             logger.error(f'Error deleting file {filepath}: {e}')

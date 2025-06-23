@@ -3,6 +3,7 @@ class Config(object):
     
     DEBUG = True
     DEVELOPMENT = True
+    TMP_FOLDER = r'/var/tmp/assas_data_hub'
     LSDF_ARCHIVE = r'/mnt/ASSAS/upload_test/'
     UPLOAD_DIRECTORY = r'/mnt/ASSAS/upload_test/uploads/'
     UPLOAD_FILE = r'/mnt/ASSAS/upload_test/uploads/uploads.txt'

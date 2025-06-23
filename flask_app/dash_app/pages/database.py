@@ -9,7 +9,7 @@ import time
 import requests
 
 from dash import Dash, dash_table, html, dcc, Input, Output, callback, State, callback_context
-from flask import current_app as flask_app
+from flask import current_app as app
 from zipfile import ZipFile
 from uuid import uuid4
 from pathlib import Path
@@ -19,8 +19,6 @@ from assasdb import AssasDatabaseManager
 from ..components import content_style, conditional_table_style
 
 logger = logging.getLogger('assas_app')
-
-TMP_FOLDER = '/root/tmp'
 
 colors = {
     'background': '#111111',
@@ -122,7 +120,7 @@ def layout():
                         ),
                 ],
                 type='circle',
-                fullscreen=False
+                fullscreen=False,
                 ),
             ),
         dbc.Col(dbc.Button(
@@ -325,12 +323,18 @@ def start_download(
     no_href_link = html.A("Download link will be available here.", href=None, style={"color": "red"})
     
     if (rows is None) or (ids is None):
+        
         return False, 'No rows selected for download.', no_href_link
         
     if len(rows) > 0:
         
         logger.info(f'Disabled is False, Selected rows: {rows}, ids: {ids}')
         
+        if len(rows) > 20:
+            
+            logger.info(f'Too many rows selected for download: {len(rows)}. Limit is 20.')
+            return True, 'Too many rows selected for download. Limit is to 20 rows.', no_href_link
+            
         if triggered_id == 'download_selected':
             
             logger.info(f'Download button was pressed: {clicks}, rows: {rows}')
@@ -338,7 +342,11 @@ def start_download(
             uuid = str(uuid4())
             logger.info(f'Started download (id = {uuid}).')
             
-            destination_folder = f'{TMP_FOLDER}/download_{uuid}'
+            tmp_folder = app.config['TMP_FOLDER']
+            logger.info(f'Temporary folder: {tmp_folder}.')
+            
+            destination_folder = f'{tmp_folder}/download_{uuid}'
+            logger.info(f'Temporary download folder: {destination_folder}.')
             
             selected_data = [data[i] for i in rows]
             file_paths = [data_item['system_result'] for data_item in selected_data]
@@ -360,12 +368,12 @@ def start_download(
             flask_url = f"/assas_app/hdf5_download?uuid={uuid}"
             clickable_link = html.A(f"Click here to download the zip archive", href=flask_url, target="_blank")
             
-            return False, f'Zipped archive ready for download.', clickable_link
+            return True, f'Zipped archive ready for download.', clickable_link
         
         else:
             
             logger.info(f'No download button was pressed, just selected rows: {rows}, ids: {ids}')
-            return False, 'Press button to generate download link.', no_href_link
+            return True, 'Press button to generate download link.', no_href_link
     
     else:
         
