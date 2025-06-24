@@ -39,6 +39,27 @@ users = [
         "email": "jure.brence@ijs.si",
         "institute": "JSI (Slovenia)",
         "role": "Researcher",
+    },
+    {
+        "username": "anastasia",
+        "password": generate_password_hash("assas2025"),
+        "email": "anastasia.stakhanova@kit.edu",
+        "institute": "KIT (INR)",
+        "role": "Researcher",
+    },
+    {
+        "username": "alessandro",
+        "password": generate_password_hash("assas2025"),
+        "email": "a.longhi@tudelft.nl",
+        "institute": "TU Delft (Netherlands)",
+        "role": "Researcher",
+    },
+    {
+        "username": "marcello",
+        "password": generate_password_hash("assas2025"),
+        "email": "marcello.savini2@unibo.it",
+        "institute": "University of Bologna (Italy)",
+        "role": "Researcher",
     }
 ]
 
