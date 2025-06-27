@@ -60,6 +60,13 @@ users = [
         "email": "marcello.savini2@unibo.it",
         "institute": "University of Bologna (Italy)",
         "role": "Researcher",
+    },
+    {
+        "username": "bastien",
+        "password": generate_password_hash("assas2025"),
+        "email": "bastien.poubeau@asnr.fr",
+        "institute": "ASNR (France)",
+        "role": "Researcher",
     }
 ]
 
