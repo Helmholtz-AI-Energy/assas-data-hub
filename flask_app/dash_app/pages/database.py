@@ -22,6 +22,23 @@ from typing import List
 from assasdb import AssasDatabaseManager, AssasDatabaseHandler
 from ..components import content_style, conditional_table_style
 
+# Define a common style dictionary
+COMMON_STYLE = {
+    "fontSize": "18px",
+    "textAlign": "center",
+    "margin": "1% auto",
+    "padding": "10px",
+    "width": "100%",
+    "fontFamily": "arial, sans-serif",
+}
+
+# Define responsive layout using Bootstrap classes
+RESPONSIVE_STYLE = {
+    "width": "100%",
+    "padding-left": "5%",
+    "padding-right": "5%",
+}
+
 logger = logging.getLogger("assas_app")
 
 colors = {"background": "#111111", "text": "#7FDBFF"}
@@ -90,6 +107,7 @@ def get_database_size() -> str:
 
 table_data = update_table_data()
 database_size = get_database_size()
+now = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
 
 ALL = len(table_data)
 PAGE_SIZE = 30
@@ -109,125 +127,351 @@ def layout():
     """
     return html.Div(
         [
-            html.H2("ASSAS Database - Training Dataset Index"),
+            html.H2(
+                "ASSAS Database - Training Dataset Index",
+                style={**COMMON_STYLE, "fontSize": "48px", "fontWeight": "bold"},
+            ),
             dbc.Alert(
-                "Search interface for the available ASSAS training datasets",
+                "Welcome to the ASSAS Database page! Use this interface to search, view"
+                ",and download datasets from the ASSAS training dataset index. "
+                "You can navigate through the available datasets using the pagination "
+                "controls below, refresh the dataset list, and access detailed storage "
+                "parameters. Click on the download link for valid datasets to retrieve "
+                "the corresponding files.",
                 color="primary",
-                style={"textAlign": "center"},
+                style={**COMMON_STYLE},
             ),
             html.Hr(),
             html.Div(
                 [
-                    dbc.Pagination(
-                        id="pagination",
-                        first_last=True,
-                        previous_next=True,
-                        max_value=PAGE_COUNT,
-                        fully_expanded=False,
-                        size="lg",
+                    dbc.Row(
+                        dbc.Col(
+                            dbc.Pagination(
+                                id="pagination",
+                                first_last=True,
+                                previous_next=True,
+                                max_value=PAGE_COUNT,
+                                fully_expanded=False,
+                                size="lg",
+                            ),
+                            width="auto",
+                        ),
+                        justify="center",
                     )
                 ],
-                style={"width": "100%", "padding-left": "30%", "padding-right": "25%"},
+                style={**RESPONSIVE_STYLE},
             ),
             html.Hr(),
             html.Div(
                 [
-                    dbc.Row(
-                        [
-                            dbc.Col(html.H4("Select datasets for download:")),
-                            dbc.Col(html.H4("Refresh datasets on page:")),
-                            dbc.Col(html.H4("LSDF database parameters:")),
-                        ]
-                    ),
-                    dbc.Row(
-                        [
-                            dbc.Col(
-                                dcc.Loading(
-                                    children=[
-                                        dbc.Button(
-                                            "Get Download Link",
-                                            id="download_selected",
-                                            className="me-2",
-                                            n_clicks=0,
-                                            disabled=True,
-                                            style={
-                                                "fontSize": 20,
-                                                "textAlign": "center",
-                                                "margin-bottom": "1%",
-                                                "margin-left": "5%",
-                                            },
-                                        ),
-                                    ],
-                                    type="circle",
-                                    fullscreen=False,
-                                ),
-                            ),
-                            dbc.Col(
-                                dbc.Button(
-                                    "Refresh",
-                                    id="reload_page",
-                                    className="me-2",
-                                    n_clicks=0,
-                                    disabled=False,
-                                    style={
-                                        "fontSize": 20,
-                                        "textAlign": "center",
-                                        "margin-bottom": "1%",
-                                    },
-                                ),
-                            ),
-                            dbc.Col(
-                                html.H5(f"Used storage: {database_size}"),
-                                style={"textAlign": "left", "padding-top": "0.5%"},
-                            ),
-                        ]
-                    ),
-                    dbc.Row(
-                        [
-                            dbc.Col(
-                                html.Div(
-                                    "Status",
-                                    id="download_status",
-                                    style={
-                                        "fontSize": 20,
-                                        "textAlign": "left",
-                                        "padding-top": "0.5%",
-                                    },
-                                )
-                            ),
-                            dbc.Col(
-                                html.Div(
-                                    id="refresh_status",
-                                    style={
-                                        "fontSize": 20,
-                                        "textAlign": "left",
-                                        "padding-top": "0.5%",
-                                    },
-                                )
-                            ),
-                            dbc.Col(
-                                html.H5("Current storage limit: 100 TB"),
-                                style={"textAlign": "left", "padding-top": "0.5%"},
-                            ),
-                        ]
-                    ),
-                    dbc.Row(
-                        [
-                            dbc.Col(
-                                html.Div(
-                                    "Link",
-                                    id="download_link",
-                                    style={
-                                        "fontSize": 20,
-                                        "textAlign": "left",
-                                        "padding-top": "0.5%",
-                                    },
-                                )
-                            ),
-                        ]
+                    dbc.Button(
+                        "Database Tools",
+                        id="toggle-section",
+                        className="me-2",
+                        n_clicks=0,
+                        size="lg",
+                        style={
+                            **COMMON_STYLE,
+                            "width": "100%",
+                            "padding": "5px",
+                            "fontSize": "14px",
+                            "fontWeight": "bold",
+                        },
+                        color="primary",
+                        title="Click to toggle the section below.",
                     ),
                 ],
-                style={"width": "100%", "padding-left": "5%", "padding-right": "25%"},
+                style={
+                    **COMMON_STYLE,
+                    "textAlign": "center",
+                    "margin": "1% auto",
+                    "padding": "10px",
+                    "width": "100%",
+                },
+            ),
+            dbc.Collapse(
+                html.Div(
+                    [
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    html.H4(
+                                        "Select datasets for download:",
+                                        style={
+                                            **COMMON_STYLE,
+                                            "textAlign": "center",
+                                            "fontWeight": "bold",
+                                        },
+                                    ),
+                                    width=4,
+                                    style={
+                                        "border": "1px solid lightgrey",
+                                        "borderRadius": "2%",
+                                        "padding": "2%",
+                                    },
+                                ),
+                                dbc.Col(
+                                    html.H4(
+                                        "Refresh datasets on page:",
+                                        style={
+                                            **COMMON_STYLE,
+                                            "textAlign": "center",
+                                            "fontWeight": "bold",
+                                        },
+                                    ),
+                                    width=4,
+                                    style={
+                                        "border": "1px solid lightgrey",
+                                        "borderRadius": "2%",
+                                        "padding": "2%",
+                                    },
+                                ),
+                                dbc.Col(
+                                    html.H4(
+                                        "LSDF database parameters:",
+                                        style={
+                                            **COMMON_STYLE,
+                                            "textAlign": "center",
+                                            "fontWeight": "bold",
+                                        },
+                                    ),
+                                    width=4,
+                                    style={
+                                        "border": "1px solid lightgrey",
+                                        "borderRadius": "2%",
+                                        "padding": "2%",
+                                    },
+                                ),
+                            ]
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    children=[
+                                        dcc.Loading(
+                                            children=[
+                                                dbc.Button(
+                                                    "Get Download Link",
+                                                    id="download_selected",
+                                                    className="me-2",
+                                                    n_clicks=0,
+                                                    disabled=True,
+                                                    size="lg",
+                                                    style={
+                                                        **COMMON_STYLE,
+                                                        "width": "100%",
+                                                        "padding": "5px",
+                                                        "fontSize": "14px",
+                                                    },
+                                                    title="Select datasets in "
+                                                    " the table to enable"
+                                                    " this button.",
+                                                ),
+                                            ],
+                                            type="circle",
+                                            fullscreen=False,
+                                        ),
+                                        html.Div(
+                                            "Select datasets to download.",
+                                            id="download_selected_info",
+                                            style={
+                                                **COMMON_STYLE,
+                                                "margin-top": "10px",
+                                                "fontSize": "14px",
+                                                "textAlign": "center",
+                                            },
+                                        ),
+                                        dcc.Loading(
+                                            children=[
+                                                html.P(
+                                                    "Note: You can select multiple "
+                                                    "datasets, but the download is "
+                                                    "limited to 20 datasets at a time.",
+                                                    style={
+                                                        **COMMON_STYLE,
+                                                        "fontSize": "12px",
+                                                        "color": "grey",
+                                                        "textAlign": "center",
+                                                    },
+                                                )
+                                            ],
+                                            type="circle",
+                                            fullscreen=False,
+                                        ),
+                                    ],
+                                    width=4,
+                                    style={
+                                        "border": "1px solid lightgrey",
+                                        "borderRadius": "2%",
+                                        "padding": "2%",
+                                        "display": "block",
+                                        "textAlign": "center",
+                                    },
+                                ),
+                                dbc.Col(
+                                    children=[
+                                        dbc.Button(
+                                            "Refresh",
+                                            id="reload_page",
+                                            className="me-2",
+                                            n_clicks=0,
+                                            disabled=False,
+                                            size="lg",
+                                            style={
+                                                **COMMON_STYLE,
+                                                "width": "80%",
+                                                "padding": "5px",
+                                                "fontSize": "14px",
+                                            },
+                                            title="Click to refresh the dataset list.",
+                                        ),
+                                        html.Div(
+                                            f"Number of datasets loaded: "
+                                            f"{len(table_data)}",
+                                            id="dataset_count",
+                                            style={
+                                                **COMMON_STYLE,
+                                                "margin-top": "10px",
+                                                "fontSize": "14px",
+                                                "textAlign": "center",
+                                            },
+                                        ),
+                                        dcc.Loading(
+                                            children=[
+                                                html.P(
+                                                    f"Database updated at: {now}",
+                                                    id="database_update_time",
+                                                    style={
+                                                        **COMMON_STYLE,
+                                                        "fontSize": "12px",
+                                                        "color": "grey",
+                                                        "textAlign": "center",
+                                                    },
+                                                )
+                                            ],
+                                            type="circle",
+                                            fullscreen=False,
+                                        ),
+                                    ],
+                                    width=4,
+                                    style={
+                                        "border": "1px solid lightgrey",
+                                        "borderRadius": "2%",
+                                        "padding": "2%",
+                                        "display": "block",
+                                        "textAlign": "center",
+                                    },
+                                ),
+                                dbc.Col(
+                                    dbc.Table(
+                                        [
+                                            html.Thead(
+                                                dbc.Row(
+                                                    [
+                                                        dbc.Col(
+                                                            html.Th("Parameter"),
+                                                            width=6,
+                                                            style={
+                                                                "textAlign": "center"
+                                                            },
+                                                        ),
+                                                        dbc.Col(
+                                                            html.Th("Value"),
+                                                            width=6,
+                                                            style={
+                                                                "textAlign": "center"
+                                                            },
+                                                        ),
+                                                    ]
+                                                )
+                                            ),
+                                            html.Tbody(
+                                                [
+                                                    dbc.Row(
+                                                        [
+                                                            dbc.Col(
+                                                                html.Td("Used Storage"),
+                                                                width=6,
+                                                                style={
+                                                                    "align": "center"
+                                                                },
+                                                            ),
+                                                            dbc.Col(
+                                                                html.Td(
+                                                                    f"{database_size}"
+                                                                ),
+                                                                width=6,
+                                                                style={
+                                                                    "align": "center"
+                                                                },
+                                                            ),
+                                                        ]
+                                                    ),
+                                                    dbc.Row(
+                                                        [
+                                                            dbc.Col(
+                                                                html.Td(
+                                                                    "Current Storage "
+                                                                    "Limit"
+                                                                ),
+                                                                width=6,
+                                                                style={
+                                                                    "align": "center"
+                                                                },
+                                                            ),
+                                                            dbc.Col(
+                                                                html.Td("100 TB"),
+                                                                width=6,
+                                                                style={
+                                                                    "align": "center"
+                                                                },
+                                                            ),
+                                                        ]
+                                                    ),
+                                                ]
+                                            ),
+                                        ],
+                                        bordered=True,
+                                        striped=True,
+                                        hover=True,
+                                        responsive=True,
+                                        style={**COMMON_STYLE, "margin-left": "10%"},
+                                    ),
+                                    width=4,
+                                    style={
+                                        "border": "1px solid lightgrey",
+                                        "borderRadius": "2%",
+                                        "padding": "2%",
+                                    },
+                                ),
+                            ]
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    html.Div(
+                                        "Link",
+                                        id="download_link",
+                                        style={
+                                            **COMMON_STYLE,
+                                            "textAlign": "center",
+                                            "fontWeight": "bold",
+                                        },
+                                    ),
+                                    width=4,
+                                    style={
+                                        "border": "1px solid lightgrey",
+                                        "borderRadius": "2%",
+                                        "padding": "2%",
+                                    },
+                                ),
+                            ]
+                        ),
+                    ],
+                    style=RESPONSIVE_STYLE,
+                ),
+                id="collapse-section",
+                is_open=False,  # Initially collapsed
             ),
             dcc.Location(id="download_location", refresh=True),
             html.Hr(),
@@ -246,6 +490,11 @@ def layout():
                     {
                         "name": "Samples",
                         "id": "system_number_of_samples",
+                        "hideable": True,
+                    },
+                    {
+                        "name": "Completed Samples",
+                        "id": "system_number_of_samples_completed",
                         "hideable": True,
                     },
                     {"name": "Index", "id": "system_index", "selectable": True},
@@ -276,8 +525,14 @@ def layout():
                     "system_path",
                     "system_result",
                     "system_number_of_samples",
+                    "system_number_of_samples_completed",
                 ],
                 data=table_data.to_dict("records"),
+                style_table={
+                    "overflowX": "auto",  # Horizontal scrolling for wide tables
+                    "width": "100%",  # Full width for responsiveness
+                    "margin": "0 auto",  # Center the table
+                },
                 style_cell={
                     "fontSize": 17,
                     "padding": "2px",
@@ -326,6 +581,25 @@ def layout():
         ],
         style=content_style(),
     )
+
+
+@callback(
+    Output("collapse-section", "is_open"),
+    Input("toggle-section", "n_clicks"),
+    prevent_initial_call=True,
+)
+def toggle_section(n_clicks):
+    """Toggle the visibility of the database tools section.
+
+    Args:
+        n_clicks (int): Number of clicks on the toggle button.
+
+    Returns:
+        bool: True if the section should be open, False if it should be closed.
+
+    """
+    logger.info(f"Toggle section clicked {n_clicks} times.")
+    return n_clicks % 2 == 1  # Toggle between open and closed
 
 
 def copy_and_zip_files(
@@ -410,7 +684,7 @@ def clean_tmp_folder(parent_folder: str) -> None:
 
 @callback(
     Output("download_selected", "disabled"),
-    Output("download_status", "children"),
+    Output("download_selected_info", "children"),
     Output("download_link", "children"),
     Input("download_selected", "n_clicks"),
     Input("datatable-paging-and-sorting", "derived_viewport_selected_rows"),
