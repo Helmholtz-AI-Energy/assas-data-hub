@@ -155,6 +155,7 @@ def layout():
                                 size="lg",
                             ),
                             width="auto",
+                            style={"fontFamily": "arial, sans-serif"},
                         ),
                         justify="center",
                     )
@@ -537,13 +538,14 @@ def layout():
                     "fontSize": 17,
                     "padding": "2px",
                     "textAlign": "center",
-                    "font-family": "sans-serif",
+                    "fontFamily": "arial, sans-serif",
                 },
                 merge_duplicate_headers=True,
                 style_header={
                     "backgroundColor": "black",
                     "color": "white",
                     "fontWeight": "bold",
+                    "fontFamily": "arial, sans-serif",
                 },
                 style_data={"backgroundColor": "black", "color": "white"},
                 row_selectable="multi",
