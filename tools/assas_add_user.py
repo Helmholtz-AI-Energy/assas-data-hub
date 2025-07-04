@@ -67,6 +67,13 @@ users = [
         "email": "bastien.poubeau@asnr.fr",
         "institute": "ASNR (France)",
         "role": "Researcher",
+    },
+    {
+        "username": "joan",
+        "password": generate_password_hash("assas2025"),
+        "email": "joan.fontanet@ciemat.es",
+        "institute": "Ciemat (Spain)",
+        "role": "Researcher",
     }
 ]
 
