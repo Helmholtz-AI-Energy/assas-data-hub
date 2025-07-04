@@ -34,6 +34,13 @@ users = [
         "role": "Researcher",
     },
     {
+        "username": "charlie",
+        "password": generate_password_hash("assas2025"),
+        "email": "charlotte.debus@kit.edu",
+        "institute": "KIT (SCC)",
+        "role": "Researcher",
+    },
+    {
         "username": "jure",
         "password": generate_password_hash("assas2025"),
         "email": "jure.brence@ijs.si",
