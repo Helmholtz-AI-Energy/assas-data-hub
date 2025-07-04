@@ -1,0 +1,23 @@
+# pyproject.toml
+[tool.ruff]
+line-length = 88
+select = [
+    "D", # Enable all pydocstyle (PEP 257) checks
+    "E",
+    "F",
+    "W"
+]
+ignore = []
+exclude = [
+    "assas_database/",
+    "doc/",
+    "test/",
+    "tools/",
+]
+[tool.black]
+line-length = 88
+exclude = '''
+/(
+    assasdb/data/|
+    assasdb/tools/jobs/|
+)'''
