@@ -14,7 +14,7 @@ from dash import dash, html
 from dash.long_callback import DiskcacheLongCallbackManager
 
 from .components import encode_svg_image
-from flask import redirect, request
+from flask import redirect, request, Response
 from ..auth_utils import auth, is_authenticated, get_current_user
 
 logger = logging.getLogger("assas_app")
@@ -90,7 +90,7 @@ navbar = dbc.Navbar(
 )
 
 
-def init_dashboard(server):
+def init_dashboard(server: object) -> object:
     """Create a Plotly Dash dashboard.
 
     Args:
@@ -119,7 +119,7 @@ def init_dashboard(server):
     # Protect Dash pages
     @server.before_request
     @auth.login_required
-    def restrict_access():
+    def restrict_access() -> Response:
         """Restrict access to Dash pages for unauthenticated users."""
         logger.info("Checking authentication for Dash app access.")
         currrent_user = get_current_user()

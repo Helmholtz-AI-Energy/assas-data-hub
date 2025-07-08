@@ -87,7 +87,7 @@ def meta_info_table(document: dict) -> dbc.Table:
     return dbc.Table(table, striped=True, bordered=True, hover=True, responsive=True)
 
 
-def layout(report_id=None):
+def layout(report_id: str | None = None) -> html.Div:
     """Layout for the details template page."""
     logger.info(f"report_id {report_id}")
 

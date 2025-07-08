@@ -118,7 +118,7 @@ PAGE_COUNT = ALL / PAGE_SIZE
 dash.register_page(__name__, path="/database")
 
 
-def layout():
+def layout() -> html.Div:
     """Layout for the ASSAS Database page.
 
     Returns:
@@ -590,7 +590,7 @@ def layout():
     Input("toggle-section", "n_clicks"),
     prevent_initial_call=True,
 )
-def toggle_section(n_clicks):
+def toggle_section(n_clicks: int) -> bool:
     """Toggle the visibility of the database tools section.
 
     Args:
@@ -605,7 +605,7 @@ def toggle_section(n_clicks):
 
 
 def copy_and_zip_files(
-    file_info: List[tuple], destination_folder, zip_file_name
+    file_info: List[tuple], destination_folder: str, zip_file_name: str
 ) -> str:
     """Copy a list of files to a destination folder and zips them into an archive.
 
@@ -693,14 +693,14 @@ def clean_tmp_folder(parent_folder: str) -> None:
     Input("datatable-paging-and-sorting", "derived_viewport_selected_row_ids"),
     State("datatable-paging-and-sorting", "derived_viewport_data"),
 )
-def start_download(clicks, rows, ids, data):
+def start_download(clicks: int, rows: List, ids: List, data: List) -> tuple:
     """Start the download process for selected rows in the data table.
 
     Args:
         clicks (int): Number of clicks on the download button.
-        rows (list): List of selected row indices.
-        ids (list): List of selected row IDs.
-        data (list): Data of the data table.
+        rows (List): List of selected row indices.
+        ids (List): List of selected row IDs.
+        data (List): Data of the data table.
 
     Returns:
         tuple: A tuple containing:
@@ -787,7 +787,7 @@ def start_download(clicks, rows, ids, data):
         return True, "No rows selected for download.", no_href_link
 
 
-def split_filter_part(filter_part) -> List[str]:
+def split_filter_part(filter_part: str) -> List[str]:
     """Split a filter part into name, operator, and value.
 
     Args:
@@ -833,7 +833,13 @@ def split_filter_part(filter_part) -> List[str]:
     Input("datatable-paging-and-sorting", "filter_query"),
     Input("reload_page", "n_clicks"),
 )
-def update_table(page_current, page_size, sort_by, filter, n_clicks):
+def update_table(
+    page_current: int,
+    page_size: int,
+    sort_by: list,
+    filter: str,
+    n_clicks: int,
+    ) -> List[dict]:
     """Update the data in the data table based on pagination, sorting, and filtering.
 
     Args:
@@ -893,7 +899,10 @@ def update_table(page_current, page_size, sort_by, filter, n_clicks):
     Input("datatable-use-page-size", "value"),
     Input("datatable-page-size", "value"),
 )
-def update_page_size(use_page_size, page_size_value):
+def update_page_size(
+    use_page_size: list,
+    page_size_value: int
+    ) -> int:
     """Update the page size of the data table based on user input.
 
     Args:
@@ -920,7 +929,10 @@ def update_page_size(use_page_size, page_size_value):
     Input("pagination", "active_page"),
     Input("pagination", "max_value"),
 )
-def change_page(page, value):
+def change_page(
+    page: int,
+    value: int,
+    ) -> str:
     """Update the pagination display based on the current page and maximum value.
 
     Args:
@@ -943,7 +955,7 @@ def change_page(page, value):
     Output("datatable-paging-and-sorting", "page_current"),
     Input("pagination", "active_page"),
 )
-def change_page_table(page):
+def change_page_table(page: int) -> int:
     """Update the current page of the data table based on the pagination input.
 
     Args:
@@ -967,7 +979,7 @@ def change_page_table(page):
     Input("datatable-use-page-size", "value"),
     Input("datatable-page-size", "value"),
 )
-def update_page_count(use_page_size, page_size_value):
+def update_page_count(use_page_size: int, page_size_value: int) -> tuple:
     """Update the maximum value for pagination.
 
     Args:

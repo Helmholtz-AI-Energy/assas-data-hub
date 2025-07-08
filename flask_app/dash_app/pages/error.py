@@ -10,7 +10,7 @@ from dash import html, dcc
 from ..components import encode_svg_image
 
 
-def layout():
+def layout() -> dbc.Container:
     """Layout for the Error 404 page."""
     return dbc.Container(
         [

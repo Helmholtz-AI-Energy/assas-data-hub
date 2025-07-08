@@ -11,7 +11,7 @@ from ..components import content_style, encode_svg_image
 dash.register_page(__name__, path="/logout")
 
 
-def layout():
+def layout() -> html.Div:
     """Layout for the Logout page."""
     return html.Div(
         [

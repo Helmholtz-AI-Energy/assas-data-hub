@@ -22,7 +22,7 @@ users = users_collection.find()
 
 
 @auth.verify_password
-def verify_password(username_or_email, password):
+def verify_password(username_or_email: str, password: str) -> str | None:
     """Verifiy the username or email and password for authentication."""
     logger.info(f"Verifying user/email {username_or_email} with password {password}.")
 
@@ -38,7 +38,7 @@ def verify_password(username_or_email, password):
     return None
 
 
-def is_authenticated():
+def is_authenticated() -> bool:
     """Check if the user is authenticated."""
     is_auth = "user" in session
     logger.info(f"User authentication status: {is_auth}")
@@ -46,7 +46,7 @@ def is_authenticated():
     return is_auth
 
 
-def get_current_user():
+def get_current_user() -> str | None:
     """Get the currently authenticated user from the session."""
     logger.info("Retrieving current user from session.")
     return session.get("user", None)

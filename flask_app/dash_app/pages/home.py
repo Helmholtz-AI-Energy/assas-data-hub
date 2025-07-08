@@ -13,7 +13,7 @@ from ..components import content_style, encode_svg_image
 dash.register_page(__name__, path="/home")
 
 
-def layout():
+def layout() -> html.Div:
     """Layout for the Home page."""
     return html.Div(
         [

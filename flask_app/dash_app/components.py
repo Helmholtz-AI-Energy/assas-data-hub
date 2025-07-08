@@ -7,6 +7,8 @@ conditional table styles.
 import os
 import base64
 
+from typing import Dict, List
+
 from assasdb import AssasDocumentFileStatus
 
 uploaded_value = AssasDocumentFileStatus.UPLOADED.value
@@ -15,7 +17,7 @@ invalid_value = AssasDocumentFileStatus.INVALID.value
 convert_value = AssasDocumentFileStatus.CONVERTING.value
 
 
-def encode_svg_image(svg_name):
+def encode_svg_image(svg_name: str) -> str:
     """Encode an SVG image to a base64 string.
 
     Args:
@@ -34,7 +36,7 @@ def encode_svg_image(svg_name):
     return svg
 
 
-def content_style():
+def content_style() -> Dict:
     """Define the style for the content area of the Dash application.
 
     Returns:
@@ -51,7 +53,7 @@ def content_style():
     }
 
 
-def conditional_table_style():
+def conditional_table_style() -> List:
     """Define conditional styles for the Dash DataTable.
 
     Returns:
