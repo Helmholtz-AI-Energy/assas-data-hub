@@ -25,4 +25,4 @@ app = init_app()
 
 if __name__ == "__main__":
     app.logger.addHandler(handler)
-    app.run(host="0.0.0.0", port=5000)
+    app.run(unix_socket='/tmp/assas_app.sock')

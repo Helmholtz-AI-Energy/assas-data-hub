@@ -17,7 +17,7 @@ class Config(object):
     ASTEC_COMPILER = r"release"
     ASTEC_PARSER = r"/root/assas-data-hub/assas_database/assasdb/assas_astec_parser.py"
     CONNECTIONSTRING = r"mongodb://localhost:27017/"
-    MONGO_DB_NAME = r"assas_dev"
+    MONGO_DB_NAME = r"assas"
 
     # SECRET_KEY = 'do-i-really-need-this'
     # FLASK_HTPASSWD_PATH = '/secret/.htpasswd'
