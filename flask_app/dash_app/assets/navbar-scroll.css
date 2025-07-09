@@ -1,0 +1,38 @@
+/* Add this to flask_app/dash_app/assets/navbar-scroll.css */
+.navbar-visible {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+.navbar-compact {
+    transform: translateY(-50%) !important;
+    opacity: 0.9 !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+.navbar-hidden {
+    transform: translateY(-100%) !important;
+    opacity: 0 !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+.scroll-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.1s ease;
+    z-index: 1031;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .navbar-compact {
+        transform: translateY(-30%) !important;
+    }
+}

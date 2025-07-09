@@ -12,6 +12,7 @@ import pandas as pd
 import logging
 import shutil
 
+from pymongo import MongoClient
 from dash import dash_table, html, dcc, Input, Output, callback, State, callback_context
 from flask import current_app as app
 from zipfile import ZipFile
@@ -20,7 +21,8 @@ from pathlib import Path
 from typing import List
 
 from assasdb import AssasDatabaseManager, AssasDatabaseHandler
-from ..components import content_style, conditional_table_style
+from ..components import content_style, conditional_table_style, responsive_table_style
+from ..components import ultra_minimal_style, full_width_style
 
 # Define a common style dictionary
 COMMON_STYLE = {
@@ -65,7 +67,9 @@ def update_table_data() -> pd.DataFrame:
     logger.info("Load database entries to table.")
 
     database_manager = AssasDatabaseManager(
-        database_handler=AssasDatabaseHandler(
+        database_handler = AssasDatabaseHandler(
+            client=MongoClient(app.config["CONNECTIONSTRING"]),
+            backup_directory=app.config["BACKUP_DIRECTORY"],
             database_name=app.config["MONGO_DB_NAME"],
         )
     )
@@ -94,6 +98,8 @@ def get_database_size() -> str:
     """
     database_manager = AssasDatabaseManager(
         database_handler=AssasDatabaseHandler(
+            client=MongoClient(app.config["CONNECTIONSTRING"]),
+            backup_directory=app.config["BACKUP_DIRECTORY"],
             database_name=app.config["MONGO_DB_NAME"],
         )
     )
@@ -129,7 +135,8 @@ def layout() -> html.Div:
         [
             html.H2(
                 "ASSAS Database - Training Dataset Index",
-                style={**COMMON_STYLE, "fontSize": "48px", "fontWeight": "bold"},
+                #style={**COMMON_STYLE, "fontSize": "48px", "fontWeight": "bold"},
+                style=full_width_style(),
             ),
             dbc.Alert(
                 "Welcome to the ASSAS Database page! Use this interface to search, view"
@@ -517,6 +524,7 @@ def layout() -> html.Div:
                         "presentation": "markdown",
                     },
                 ],
+                **responsive_table_style(),
                 markdown_options={"html": True},
                 hidden_columns=[
                     "",
@@ -529,25 +537,25 @@ def layout() -> html.Div:
                     "system_number_of_samples_completed",
                 ],
                 data=table_data.to_dict("records"),
-                style_table={
-                    "overflowX": "auto",  # Horizontal scrolling for wide tables
-                    "width": "100%",  # Full width for responsiveness
-                    "margin": "0 auto",  # Center the table
-                },
-                style_cell={
-                    "fontSize": 17,
-                    "padding": "2px",
-                    "textAlign": "center",
-                    "fontFamily": "arial, sans-serif",
-                },
+                #style_table={
+                #    "overflowX": "auto",  # Horizontal scrolling for wide tables
+                #    "width": "100%",  # Full width for responsiveness
+                #    "margin": "0 auto",  # Center the table
+                #},
+                #style_cell={
+                #    "fontSize": 17,
+                #    "padding": "2px",
+                #    "textAlign": "center",
+                #    "fontFamily": "arial, sans-serif",
+                #},
                 merge_duplicate_headers=True,
-                style_header={
-                    "backgroundColor": "black",
-                    "color": "white",
-                    "fontWeight": "bold",
-                    "fontFamily": "arial, sans-serif",
-                },
-                style_data={"backgroundColor": "black", "color": "white"},
+                #style_header={
+                #    "backgroundColor": "black",
+                #    "color": "white",
+                #    "fontWeight": "bold",
+                #    "fontFamily": "arial, sans-serif",
+                #},
+                #style_data={"backgroundColor": "black", "color": "white"},
                 row_selectable="multi",
                 page_current=0,
                 page_size=PAGE_SIZE,

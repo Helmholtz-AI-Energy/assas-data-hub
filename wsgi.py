@@ -24,5 +24,16 @@ logger.addHandler(handler)
 app = init_app()
 
 if __name__ == "__main__":
+    
     app.logger.addHandler(handler)
-    app.run(host="0.0.0.0", port=5000)
+    
+    if app.config["DEBUG"]:
+        app.logger.setLevel(logging.DEBUG)
+    
+    if app.config["DEVELOPMENT"]:
+        app.logger.info("Running in development mode")
+        app.run(host="0.0.0.0", port=5000)
+    
+    else:
+        app.logger.info("Running in production mode")
+        app.run(host="/tmp/assas_app.sock", unix_socket=True, threaded=True)

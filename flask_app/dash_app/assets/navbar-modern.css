@@ -1,0 +1,473 @@
+/* Modern Navbar Styling */
+.navbar-modern {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Two-row navbar styling with scroll effects */
+.navbar-two-row {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Scrolling states - FIXED */
+.navbar-two-row.navbar-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+}
+
+.navbar-two-row.navbar-compact {
+    transform: translateY(0) scale(0.95);
+    opacity: 0.98;
+}
+
+.navbar-two-row.navbar-visible {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* Top row brand section - Made wider and REDUCED HEIGHT */
+.brand-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+.brand-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Brand title styling - REDUCED SIZE */
+.brand-title {
+    margin: 0;
+    padding: 0;
+    font-size: 1.5rem; /* Reduced from 2rem */
+    transition: font-size 0.3s ease;
+}
+
+.brand-center {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Individual logo styling - REDUCED SIZES */
+.logo-assas {
+    order: 1;
+}
+
+.logo-kit {
+    order: 3;
+}
+
+.brand-center {
+    order: 2;
+}
+
+/* High-quality logo styling - INCREASED default sizes */
+.navbar-brand-custom img,
+.logo-high-quality {
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-quality;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: bicubic;
+    
+    /* SVG specific optimizations */
+    shape-rendering: geometricPrecision;
+    text-rendering: optimizeLegibility;
+    
+    /* Hardware acceleration */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+    
+    /* INCREASED default logo size */
+    height: 80px !important; /* Increased from 60px */
+    width: 160px !important; /* Increased from 120px */
+    transition: all 0.3s ease;
+}
+
+/* Compact state for logos - ADJUSTED */
+.navbar-two-row.navbar-compact .logo-high-quality {
+    height: 70px !important; /* Increased from 50px */
+    width: 140px !important; /* Increased from 100px */
+}
+
+.navbar-two-row.navbar-compact .brand-title {
+    font-size: 1.2rem; /* Reduced from 1.6rem */
+}
+
+/* Enhanced logo hover effects */
+.navbar-brand-custom img:hover,
+.logo-high-quality:hover {
+    transform: scale(1.05) translateZ(0);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    filter: contrast(1.08) brightness(1.04);
+}
+
+/* Navigation links styling */
+.nav-link-modern {
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.nav-link-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.nav-link-modern:hover::before {
+    left: 100%;
+}
+
+/* Active link styling */
+.nav-link-modern.active {
+    background-color: #3498db !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.4);
+}
+
+/* Navigation container */
+.nav-items-container {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+/* Hamburger menu styling */
+.navbar-toggler-mobile {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1050;
+}
+
+/* Navbar collapse custom */
+.navbar-collapse-custom {
+    width: 100%;
+}
+
+/* Desktop layout - Navigation always visible */
+@media (min-width: 769px) {
+    .navbar-two-row {
+        position: fixed;
+        top: 0;
+        z-index: 1030;
+    }
+    
+    /* Hide hamburger on desktop */
+    .navbar-toggler-mobile {
+        display: none !important;
+    }
+    
+    /* Show navigation always on desktop */
+    .navbar-collapse-custom {
+        display: block !important;
+    }
+    
+    .nav-items-container {
+        flex-direction: row !important;
+        background-color: transparent !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+    }
+    
+    .brand-title {
+        font-size: 1.5rem; /* Reduced size */
+    }
+    
+    .logo-high-quality {
+        height: 80px !important; /* Increased from 60px */
+        width: 160px !important; /* Increased from 120px */
+    }
+    
+    /* Desktop horizontal layout: ASSAS - Brand - KIT - REDUCED HEIGHT */
+    .brand-link > div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem; /* Reduced from 3rem */
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0.75rem 2rem; /* Reduced from 1.5rem 2rem */
+        transition: all 0.3s ease;
+    }
+    
+    .brand-center {
+        flex: 1;
+        text-align: center;
+        margin: 0 2rem; /* Reduced from 3rem */
+    }
+    
+    /* Compact state adjustments */
+    .navbar-two-row.navbar-compact .brand-link > div {
+        padding: 0.5rem 1.5rem; /* Reduced from 1rem 1.5rem */
+        gap: 1.5rem; /* Reduced from 2rem */
+    }
+    
+    .navbar-two-row.navbar-compact .brand-center {
+        margin: 0 1.5rem; /* Reduced from 2rem */
+    }
+}
+
+/* Large desktop layout */
+@media (min-width: 1200px) {
+    .brand-link > div {
+        max-width: 1400px;
+        gap: 2.5rem; /* Reduced from 4rem */
+    }
+    
+    .brand-center {
+        margin: 0 2.5rem; /* Reduced from 4rem */
+    }
+    
+    .logo-high-quality {
+        height: 90px !important; /* Increased from 70px */
+        width: 180px !important; /* Increased from 140px */
+    }
+    
+    .brand-title {
+        font-size: 1.75rem; /* Reduced from 2.25rem */
+    }
+    
+    /* Compact state for large screens */
+    .navbar-two-row.navbar-compact .logo-high-quality {
+        height: 80px !important; /* Increased from 60px */
+        width: 160px !important; /* Increased from 120px */
+    }
+    
+    .navbar-two-row.navbar-compact .brand-title {
+        font-size: 1.4rem; /* Reduced from 1.9rem */
+    }
+}
+
+/* Tablet and Mobile layout */
+@media (max-width: 768px) {
+    .navbar-toggler-mobile {
+        display: block !important;
+    }
+    
+    .brand-title {
+        font-size: 1.3rem; /* Reduced from 1.75rem */
+    }
+    
+    .logo-high-quality {
+        height: 70px !important; /* Increased from 50px */
+        width: 140px !important; /* Increased from 100px */
+    }
+    
+    /* Mobile navigation styling */
+    .nav-link-modern {
+        width: 100%;
+        text-align: center;
+        margin: 0.25rem 0;
+        border-radius: 6px;
+        display: block;
+    }
+    
+    /* Mobile collapsed menu */
+    .navbar-collapse-custom:not(.show) {
+        display: none !important;
+    }
+    
+    .navbar-collapse-custom.show {
+        display: block !important;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1040;
+    }
+    
+    .navbar-collapse-custom.show .nav-items-container {
+        flex-direction: column !important;
+        background-color: #2c3e50 !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        margin: 1rem !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* Mobile stacked layout: logos together, then brand - REDUCED HEIGHT */
+    .brand-link > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem; /* Reduced from 1.5rem */
+        padding: 1rem 1rem; /* Reduced from 1.5rem 1rem */
+        transition: all 0.3s ease;
+    }
+    
+    /* Compact state for mobile */
+    .navbar-two-row.navbar-compact .brand-link > div {
+        gap: 0.75rem; /* Reduced from 1rem */
+        padding: 0.75rem 0.5rem; /* Reduced from 1rem 0.5rem */
+    }
+    
+    .navbar-two-row.navbar-compact .logo-high-quality {
+        height: 60px !important; /* Increased from 40px */
+        width: 120px !important; /* Increased from 80px */
+    }
+    
+    .navbar-two-row.navbar-compact .brand-title {
+        font-size: 1.1rem; /* Reduced from 1.4rem */
+    }
+    
+    /* Logos container for mobile */
+    .logo-assas,
+    .logo-kit {
+        order: 1;
+    }
+    
+    .brand-center {
+        order: 2;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Small mobile layout */
+@media (max-width: 576px) {
+    .brand-title {
+        font-size: 1.2rem; /* Reduced from 1.5rem */
+    }
+    
+    .logo-high-quality {
+        height: 60px !important; /* Increased from 45px */
+        width: 120px !important; /* Increased from 90px */
+    }
+    
+    .brand-link > div {
+        gap: 0.75rem; /* Reduced from 1rem */
+        padding: 0.75rem 0.5rem; /* Reduced from 1rem 0.5rem */
+    }
+}
+
+/* Extra small mobile */
+@media (max-width: 480px) {
+    .brand-title {
+        font-size: 1.1rem; /* Reduced from 1.3rem */
+        white-space: normal;
+        line-height: 1.2;
+        text-align: center;
+    }
+    
+    .logo-high-quality {
+        height: 55px !important; /* Increased from 40px */
+        width: 110px !important; /* Increased from 80px */
+    }
+    
+    .brand-link > div {
+        gap: 0.5rem; /* Reduced from 0.75rem */
+        padding: 0.75rem 0.25rem; /* Reduced from 1rem 0.25rem */
+    }
+}
+
+/* Smooth transitions */
+.navbar-toggler-mobile {
+    border: 2px solid #3498db;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.navbar-toggler-mobile:hover {
+    background-color: #3498db;
+    border-color: #2980b9;
+}
+
+.navbar-toggler-mobile:focus {
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.5);
+}
+
+/* Retina display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .logo-high-quality {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: optimize-quality;
+        filter: contrast(1.05) brightness(1.02);
+    }
+}
+
+/* Accessibility improvements */
+.nav-link-modern:focus {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    .navbar-modern,
+    .navbar-two-row {
+        display: none;
+    }
+}
+
+/* Collapsed menu animation */
+.navbar-collapse-custom {
+    transition: all 0.35s ease;
+}
+
+/* Fix for Bootstrap collapse classes */
+.collapse:not(.show) {
+    display: none;
+}
+
+.collapse.show {
+    display: block;
+}
+
+/* Scroll indicator - WORKING */
+.scroll-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.1s ease;
+    z-index: 1031;
+}
+
+/* Additional scroll states */
+.navbar-two-row.scrolling {
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-two-row.at-top {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
