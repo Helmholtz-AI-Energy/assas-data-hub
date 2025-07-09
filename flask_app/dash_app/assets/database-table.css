@@ -232,6 +232,18 @@
     text-align: center !important;
 }
 
+.status-uploaded {
+    background-color: #b4b8ed !important;
+    color: #131370 !important;
+    border: 2px solid #1b134f !important;
+    font-weight: bold !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    display: inline-block !important;
+    width: 90% !important;
+    text-align: center !important;
+}
+
 /* Ensure proper vertical alignment for status spans
 .dash-table-container [data-dash-column="system_status"] span {
     position: absolute !important;

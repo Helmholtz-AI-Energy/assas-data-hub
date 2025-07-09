@@ -93,6 +93,7 @@ def update_table_data() -> pd.DataFrame:
             'Valid': 'status-valid',
             'Invalid': 'status-invalid',
             'Converting': 'status-converting',
+            'Uploaded': 'status-uploaded',
         }
         css_class = status_classes.get(status, 'status-unknown')
         return f'<span class="{css_class}">{str(status)}</span>'
