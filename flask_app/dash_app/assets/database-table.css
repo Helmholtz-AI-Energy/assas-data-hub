@@ -248,9 +248,100 @@
 }
 
 /* Mobile Responsive */
+@media (max-width: 576px) {
+    /* Extra small devices */
+    .dash-table-container {
+        font-size: 10px !important;
+    }
+    
+    .dash-table-container th,
+    .dash-table-container td {
+        padding: 4px 2px !important;
+        font-size: 10px !important;
+    }
+    
+    .dash-table-container th {
+        height: 35px !important;
+    }
+    
+    .dash-table-container td {
+        height: 35px !important;
+        min-height: 35px !important;
+    }
+}
+
 @media (max-width: 768px) {
+    /* Small devices */
+    .dash-table-container {
+        font-size: 11px !important;
+    }
+    
+    .dash-table-container th,
+    .dash-table-container td {
+        padding: 5px 3px !important;
+        font-size: 11px !important;
+    }
+    
+    /* Status badges smaller on mobile */
+    .status-valid,
+    .status-invalid,
+    .status-unknown {
+        padding: 2px 4px !important;
+        font-size: 9px !important;
+        width: 95% !important;
+    }
+    
+    /* Ensure table scrolls horizontally */
+    .table-responsive {
+        overflow-x: auto !important;
+    }
+}
+
+@media (max-width: 992px) {
+    /* Medium devices */
     .dash-table-container {
         font-size: 12px !important;
+    }
+    
+    .dash-table-container th,
+    .dash-table-container td {
+        padding: 6px 4px !important;
+        font-size: 12px !important;
+    }
+}
+
+/* Ensure horizontal scrolling works properly */
+.dash-table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.dash-table-container table {
+    min-width: 800px !important;
+}
+
+/* Mobile-friendly pagination */
+@media (max-width: 768px) {
+    .pagination {
+        font-size: 0.8rem !important;
+    }
+    
+    .pagination .page-link {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* Mobile-friendly buttons */
+@media (max-width: 576px) {
+    .btn {
+        font-size: 0.8rem !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .btn-lg {
+        font-size: 0.9rem !important;
+        padding: 0.6rem 1.2rem !important;
     }
 }
 

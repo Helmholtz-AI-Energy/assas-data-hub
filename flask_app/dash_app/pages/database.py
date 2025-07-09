@@ -87,7 +87,7 @@ def update_table_data() -> pd.DataFrame:
         for entry in table_data_local.itertuples()
     ]
 
-        # ADD THIS: Create colored status cells
+    # Enable colored status cells
     def get_status_html(status):
         status_classes = {
             'Valid': 'status-valid',
@@ -96,14 +96,8 @@ def update_table_data() -> pd.DataFrame:
         css_class = status_classes.get(status, 'status-unknown')
         return f'<span class="{css_class}">{str(status)}</span>'
     
-    #table_data_local["system_status"] = [
-    #    get_status_html(entry.system_status)
-    #    for entry in table_data_local.itertuples()
-    #]
-
-    # Temporarily use plain text instead of HTML:
     table_data_local["system_status"] = [
-        entry.system_status  # Just use plain text for now
+        get_status_html(entry.system_status)
         for entry in table_data_local.itertuples()
     ]
 
@@ -175,30 +169,39 @@ BUTTON_STYLE = {
 }
 
 def layout() -> html.Div:
-    """Layout for the ASSAS Database page.
+    """Layout for the ASSAS Database page - Mobile Responsive.
 
     Returns:
         html.Div: The layout of the ASSAS Database page.
 
     """
     return html.Div([
-        # Header Section
+        # Header Section - Mobile Responsive
         dbc.Container([
             dbc.Row([
                 dbc.Col([
                     html.H1(
                         "ASSAS Database Training Dataset Index",
-                        className="display-4 fw-bold text-primary mb-3 text-center",                        
+                        className="display-6 fw-bold text-primary mb-3 text-center",  # Changed from display-4 to display-6 for mobile
+                        style={
+                            "fontSize": "clamp(1.5rem, 4vw, 3rem)",  # Responsive font size
+                            "lineHeight": "1.2"
+                        }
                     ),
                     html.H2(
                         "Browse, Search, and Download Machine Learning Training Datasets",
                         className="text-secondary mb-4 text-center",
-                        style={"fontSize": "1.5rem", "fontWeight": "400"}
+                        style={
+                            "fontSize": "clamp(0.9rem, 2.5vw, 1.5rem)",  # Responsive font size
+                            "fontWeight": "400",
+                            "lineHeight": "1.4"
+                        }
                     ),
                     html.Div([
                         dbc.Button([
                             html.I(className="fas fa-question-circle me-2"),
-                            "Usage Guide & Instructions"
+                            html.Span("Usage Guide", className="d-none d-sm-inline"),  # Hide text on very small screens
+                            html.Span("Guide", className="d-inline d-sm-none")  # Show short text on small screens
                         ],
                         id="toggle-usage-guide",
                         color="primary",
@@ -209,7 +212,8 @@ def layout() -> html.Div:
                             **BUTTON_STYLE,
                             "backgroundColor": "#17a2b8",
                             "borderColor": "#17a2b8",
-                            "color": "#ffffff"
+                            "color": "#ffffff",
+                            "fontSize": "clamp(0.8rem, 2vw, 1rem)"  # Responsive button text
                         }
                         ),
                         
@@ -218,109 +222,60 @@ def layout() -> html.Div:
                                 dbc.CardBody([
                                     html.H4("How to Use This Database Interface", 
                                            className="text-primary mb-4", 
-                                           style={"fontSize": "1.4rem", "fontWeight": "600"}),
+                                           style={
+                                               "fontSize": "clamp(1rem, 3vw, 1.4rem)",
+                                               "fontWeight": "600"
+                                           }),
                                     
+                                    # Mobile-responsive grid
                                     dbc.Row([
                                         dbc.Col([
-                                            html.H5("🔍 Searching & Filtering", className="text-secondary mb-3"),
+                                            html.H5("🔍 Searching & Filtering", 
+                                                   className="text-secondary mb-3",
+                                                   style={"fontSize": "clamp(0.9rem, 2.5vw, 1.1rem)"}),
                                             html.Ul([
                                                 html.Li([
                                                     html.Strong("Sort columns: "), 
-                                                    "Click on column headers to sort data in ascending or descending order"
-                                                ], className="mb-2"),
+                                                    "Click on column headers to sort data"
+                                                ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                                 html.Li([
                                                     html.Strong("Filter data: "), 
-                                                    "Use the filter boxes that appear when you hover over column headers"
-                                                ], className="mb-2"),
-                                                html.Li([
-                                                    html.Strong("Filter operators: "), 
-                                                    html.Code("contains"), ", ", html.Code("="), ", ", 
-                                                    html.Code(">"), ", ", html.Code("<"), ", ", html.Code("!=")
-                                                ], className="mb-2"),
+                                                    "Use filter boxes in column headers"
+                                                ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                                 html.Li([
                                                     html.Strong("Examples: "), 
-                                                    "Type 'Valid' in Status filter, or '>2024-01-01' in Date filter"
-                                                ], className="mb-2"),
-                                            ], style={"fontSize": "0.9rem"})
-                                        ], md=6),
+                                                    "Type 'Valid' in Status filter"
+                                                ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                            ])
+                                        ], xs=12, md=6),  # Full width on mobile, half on desktop
                                         
                                         dbc.Col([
-                                            html.H5("📄 Navigation & Settings", className="text-secondary mb-3"),
+                                            html.H5("📄 Navigation", 
+                                                   className="text-secondary mb-3",
+                                                   style={"fontSize": "clamp(0.9rem, 2.5vw, 1.1rem)"}),
                                             html.Ul([
                                                 html.Li([
-                                                    html.Strong("Navigate pages: "), 
-                                                    "Use pagination controls below to browse through datasets"
-                                                ], className="mb-2"),
+                                                    html.Strong("Navigate: "), 
+                                                    "Use pagination controls"
+                                                ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                                 html.Li([
-                                                    html.Strong("Adjust page size: "), 
-                                                    "Change entries per page (1-100) using the input field"
-                                                ], className="mb-2"),
+                                                    html.Strong("Page size: "), 
+                                                    "Change entries per page"
+                                                ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                                 html.Li([
-                                                    html.Strong("Page information: "), 
-                                                    "Shows current page number and total records displayed"
-                                                ], className="mb-2"),
-                                                html.Li([
-                                                    html.Strong("Auto-reset: "), 
-                                                    "Pagination resets to page 1 when filtering or changing page size"
-                                                ], className="mb-2"),
-                                            ], style={"fontSize": "0.9rem"})
-                                        ], md=6)
-                                    ]),
-                                    
-                                    html.Hr(className="my-4"),
-                                    
-                                    dbc.Row([
-                                        dbc.Col([
-                                            html.H5("📥 Downloading Datasets", className="text-secondary mb-3"),
-                                            html.Ul([
-                                                html.Li([
-                                                    html.Strong("Select datasets: "), 
-                                                    "Click checkboxes in the leftmost column to select datasets"
-                                                ], className="mb-2"),
-                                                html.Li([
-                                                    html.Strong("Bulk download: "), 
-                                                    "Click 'Database Tools' to expand download options (max 20 datasets)"
-                                                ], className="mb-2"),
-                                                html.Li([
-                                                    html.Strong("Individual downloads: "), 
-                                                    "Use download links in the 'Download' column for single files"
-                                                ], className="mb-2"),
-                                                html.Li([
-                                                    html.Strong("ZIP format: "), 
-                                                    "Bulk downloads are provided as compressed ZIP archives"
-                                                ], className="mb-2"),
-                                            ], style={"fontSize": "0.9rem"})
-                                        ], md=6),
-                                        
-                                        dbc.Col([
-                                            html.H5("🔗 Additional Features", className="text-secondary mb-3"),
-                                            html.Ul([
-                                                html.Li([
-                                                    html.Strong("Dataset details: "), 
-                                                    "Click on dataset names to view comprehensive information"
-                                                ], className="mb-2"),
-                                                html.Li([
-                                                    html.Strong("Refresh data: "), 
-                                                    "Use the refresh button in Database Tools to reload the latest data"
-                                                ], className="mb-2"),
-                                                html.Li([
-                                                    html.Strong("Storage statistics: "), 
-                                                    "View database usage information in the Database Tools section"
-                                                ], className="mb-2"),
-                                                html.Li([
-                                                    html.Strong("Responsive design: "), 
-                                                    "Interface adapts to different screen sizes and devices"
-                                                ], className="mb-2"),
-                                            ], style={"fontSize": "0.9rem"})
-                                        ], md=6)
+                                                    html.Strong("Download: "), 
+                                                    "Select datasets and use tools"
+                                                ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                            ])
+                                        ], xs=12, md=6)  # Full width on mobile, half on desktop
                                     ]),
                                     
                                     dbc.Alert([
                                         html.I(className="fas fa-lightbulb me-2"),
                                         html.Strong("Pro Tip: "), 
-                                        "Use filters to narrow down datasets before selecting for download. "
-                                        "This makes it easier to find and download exactly what you need!"
-                                    ], color="success", className="mt-4")
+                                        "Use filters before downloading!"
+                                    ], color="success", className="mt-4", 
+                                       style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"})
                                 ])
                             ], style={
                                 **CARD_STYLE,
@@ -329,65 +284,76 @@ def layout() -> html.Div:
                             })
                         ], id="collapse-usage-guide", is_open=False)
                     ], className="mb-4")
-                ])
+                ], xs=12)  # Full width on all screen sizes
             ])
         ], fluid=True, className="mb-4"),
         
-        # Database Tools Section
+        # Database Tools Section - Mobile Responsive
         dbc.Container([
             dbc.Row([
                 dbc.Col([
                     dbc.Button([
                         html.I(className="fas fa-tools me-2"),
-                        "Database Tools"
+                        html.Span("Database Tools", className="d-none d-sm-inline"),
+                        html.Span("Tools", className="d-inline d-sm-none")
                     ],
                     id="toggle-section",
                     color="primary",
                     size="lg",
                     className="w-100 mb-3",
-                    style=BUTTON_STYLE
+                    style={
+                        **BUTTON_STYLE,
+                        "fontSize": "clamp(0.8rem, 2vw, 1rem)"
+                    }
                     ),
                     
                     dbc.Collapse([
                         dbc.Card([
                             dbc.CardBody([
+                                # Mobile-stacked layout
                                 dbc.Row([
                                     # Download Section
                                     dbc.Col([
                                         html.H5([
                                             html.I(className="fas fa-download me-2 text-primary"),
-                                            "Download Datasets"
-                                        ], className="mb-3"),
+                                            "Download"
+                                        ], className="mb-3", style={"fontSize": "clamp(0.9rem, 2.5vw, 1.1rem)"}),
                                         dcc.Loading([
                                             dbc.Button([
                                                 html.I(className="fas fa-file-archive me-2"),
-                                                "Get Download Link"
+                                                html.Span("Get Download Link", className="d-none d-md-inline"),
+                                                html.Span("Download", className="d-inline d-md-none")
                                             ],
                                             id="download_selected",
                                             color="success",
                                             size="lg",
                                             disabled=True,
                                             className="w-100 mb-3",
-                                            style=BUTTON_STYLE
+                                            style={
+                                                **BUTTON_STYLE,
+                                                "fontSize": "clamp(0.8rem, 2vw, 0.9rem)"
+                                            }
                                             )
                                         ], type="default"),
                                         html.Div(
-                                            "Select datasets in the table to enable download",
+                                            "Select datasets to enable download",
                                             id="download_selected_info",
-                                            className="text-muted small text-center mb-2"
+                                            className="text-muted small text-center mb-2",
+                                            style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}
                                         ),
                                         dbc.Alert([
                                             html.I(className="fas fa-exclamation-triangle me-2"),
-                                            "Maximum 20 datasets per download"
-                                        ], color="warning", className="small")
-                                    ], md=4),
+                                            "Max 20 datasets"
+                                        ], color="warning", className="small",
+                                           style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"})
+                                    ], xs=12, md=4, className="mb-3 mb-md-0"),  # Stack on mobile
                                     
                                     # Refresh Section
                                     dbc.Col([
                                         html.H5([
                                             html.I(className="fas fa-sync-alt me-2 text-primary"),
-                                            "Refresh Data"
-                                        ], className="mb-3"),
+                                            "Refresh"
+                                        ], className="mb-3", style={"fontSize": "clamp(0.9rem, 2.5vw, 1.1rem)"}),
                                         dbc.Button([
                                             html.I(className="fas fa-refresh me-2"),
                                             "Refresh"
@@ -396,38 +362,47 @@ def layout() -> html.Div:
                                         color="info",
                                         size="lg",
                                         className="w-100 mb-3",
-                                        style=BUTTON_STYLE
+                                        style={
+                                            **BUTTON_STYLE,
+                                            "fontSize": "clamp(0.8rem, 2vw, 0.9rem)"
+                                        }
                                         ),
                                         html.Div([
-                                            html.Strong("Datasets loaded: "),
+                                            html.Strong("Datasets: "),
                                             html.Span(f"{len(table_data)}", className="text-primary")
-                                        ], id="dataset_count", className="text-center mb-2"),
+                                        ], id="dataset_count", className="text-center mb-2",
+                                           style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                         html.Div(
-                                            f"Last updated: {now}",
+                                            f"Updated: {now[:16]}",  # Shortened timestamp for mobile
                                             id="database_update_time",
-                                            className="text-muted small text-center"
+                                            className="text-muted small text-center",
+                                            style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}
                                         )
-                                    ], md=4),
+                                    ], xs=12, md=4, className="mb-3 mb-md-0"),
                                     
                                     # Storage Info Section
                                     dbc.Col([
                                         html.H5([
                                             html.I(className="fas fa-hdd me-2 text-primary"),
-                                            "Storage Information"
-                                        ], className="mb-3"),
+                                            "Storage"
+                                        ], className="mb-3", style={"fontSize": "clamp(0.9rem, 2.5vw, 1.1rem)"}),
                                         dbc.Table([
                                             html.Tbody([
                                                 html.Tr([
-                                                    html.Td("Used Storage", className="fw-bold"),
-                                                    html.Td(database_size, className="text-end")
+                                                    html.Td("Used", className="fw-bold", 
+                                                           style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                    html.Td(database_size, className="text-end",
+                                                           style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"})
                                                 ]),
                                                 html.Tr([
-                                                    html.Td("Storage Limit", className="fw-bold"),
-                                                    html.Td("100 TB", className="text-end")
+                                                    html.Td("Limit", className="fw-bold",
+                                                           style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                    html.Td("100 TB", className="text-end",
+                                                           style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"})
                                                 ])
                                             ])
-                                        ], striped=True, hover=True, className="mb-0")
-                                    ], md=4)
+                                        ], size="sm", striped=True, hover=True, className="mb-0")
+                                    ], xs=12, md=4)
                                 ]),
                                 
                                 # Download Link Section
@@ -435,23 +410,25 @@ def layout() -> html.Div:
                                     dbc.Col([
                                         html.Hr(),
                                         html.Div([
-                                            html.H6("Download Link:", className="mb-2"),
+                                            html.H6("Download Link:", className="mb-2",
+                                                   style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                             html.Div(
-                                                "Download link will appear here after selection",
+                                                "Download link will appear here",
                                                 id="download_link",
-                                                className="text-center p-3 bg-light rounded"
+                                                className="text-center p-3 bg-light rounded",
+                                                style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}
                                             )
                                         ])
-                                    ])
+                                    ], xs=12)
                                 ])
                             ])
                         ], style=CARD_STYLE)
                     ], id="collapse-section", is_open=False)
-                ])
+                ], xs=12)
             ])
         ], fluid=True, className="mb-4"),
         
-        # Data Table Section - WITH INTEGRATED PAGINATION
+        # Data Table Section - Mobile Responsive
         dbc.Container([
             dbc.Row([
                 dbc.Col([
@@ -459,22 +436,25 @@ def layout() -> html.Div:
                         dbc.CardHeader([
                             html.H4([
                                 html.I(className="fas fa-table me-2"),
-                                "Dataset Overview"
-                            ], className="mb-0 text-primary", style={"fontSize": "1.5rem"})
-                        ], style={"padding": "1.5rem", "backgroundColor": "#f8f9fa"}),
+                                html.Span("Dataset Overview", className="d-none d-sm-inline"),
+                                html.Span("Datasets", className="d-inline d-sm-none")
+                            ], className="mb-0 text-primary", 
+                               style={"fontSize": "clamp(1rem, 3vw, 1.5rem)"})
+                        ], style={"padding": "1rem", "backgroundColor": "#f8f9fa"}),
                         dbc.CardBody([
-                            # Pagination and Page Info - SIDE BY SIDE
+                            # Mobile-responsive pagination and settings
                             dbc.Row([
                                 dbc.Col([
                                     html.Div([
-                                        html.H6("Navigation", className="mb-2 text-secondary"),
+                                        html.H6("Navigation", className="mb-2 text-secondary",
+                                               style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                         dbc.Pagination(
                                             id="pagination",
                                             first_last=True,
                                             previous_next=True,
                                             max_value=int(PAGE_COUNT),
                                             fully_expanded=False,
-                                            size="lg",
+                                            size="sm",  # Changed from lg to sm for mobile
                                             className="justify-content-center mb-2"
                                         ),
                                         html.Small([
@@ -484,24 +464,19 @@ def layout() -> html.Div:
                                                 id="pagination-contents"
                                             )
                                         ], className="text-muted text-center d-block",
-                                           style={"fontSize": "0.7rem"})
+                                           style={"fontSize": "clamp(0.6rem, 1.5vw, 0.7rem)"})
                                     ], style={"textAlign": "center"})
-                                ], md=8),  # REDUCED FROM 12 TO 8
+                                ], xs=12, md=8, className="mb-3 mb-md-0"),
                                 dbc.Col([
                                     html.Div([
-                                        html.H6("Table Settings", className="mb-3 text-secondary"),
-                                        #dcc.Checklist(
-                                        #    id="datatable-use-page-size",
-                                        #    options=[{"label": " Enable custom page size", "value": "True"}],
-                                        #    value=["False"],
-                                        #    className="mb-3",
-                                        #    style={"fontSize": "15px"}
-                                        #),
+                                        html.H6("Settings", className="mb-3 text-secondary",
+                                               style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                         dbc.InputGroup([
                                             dbc.InputGroupText([
-                                                html.I(className="fas fa-list-ol me-2"),
-                                                "Entries per page:"
-                                            ]),
+                                                html.I(className="fas fa-list-ol me-1"),
+                                                html.Span("Per page:", className="d-none d-lg-inline"),
+                                                html.Span("Size:", className="d-inline d-lg-none")
+                                            ], style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
                                             dbc.Input(
                                                 id="datatable-page-size",
                                                 type="number",
@@ -510,14 +485,15 @@ def layout() -> html.Div:
                                                 value=PAGE_SIZE,
                                                 placeholder=str(PAGE_SIZE),
                                                 disabled=False,
-                                                size="lg"
+                                                size="sm",  # Changed from lg to sm for mobile
+                                                style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}
                                             )
-                                        ], size="lg", className="mb-3")
+                                        ], size="sm", className="mb-3")
                                     ])
-                                ], md=4),                               
+                                ], xs=12, md=4)
                             ], className="mb-4"),                            
                 
-                            # Enhanced Table Container
+                            # Enhanced Table Container - Mobile Responsive
                             html.Div([
                                 dash_table.DataTable(
                                     id="datatable-paging-and-sorting",
@@ -545,14 +521,14 @@ def layout() -> html.Div:
                                             "name": "Status",
                                             "id": "system_status",
                                             "selectable": True,
-                                            #"presentation": "markdown",
+                                            "presentation": "markdown",  # Enable HTML for colored status
                                             "type": "text",
                                             "deletable": False,
                                             "renamable": False,
                                             "hideable": False, 
                                         },
                                         {
-                                            "name": "Date Created",
+                                            "name": "Date",  # Shortened for mobile
                                             "id": "system_date",
                                             "selectable": True,
                                             "type": "datetime",
@@ -570,7 +546,7 @@ def layout() -> html.Div:
                                             "hideable": False,
                                         },
                                         {
-                                            "name": "Binary Size",
+                                            "name": "Size",  # Shortened for mobile
                                             "id": "system_size",
                                             "selectable": True,
                                             "type": "text",
@@ -579,7 +555,7 @@ def layout() -> html.Div:
                                             "hideable": False,
                                         },
                                         {
-                                            "name": "HDF5 Size",
+                                            "name": "HDF5",  # Shortened for mobile
                                             "id": "system_size_hdf5",
                                             "selectable": True,
                                             "type": "text",
@@ -601,26 +577,27 @@ def layout() -> html.Div:
                                     data=[],
                                     
                                     # ENABLE SORTING AND FILTERING
-                                    sort_action="custom",  # Enable custom sorting
-                                    sort_mode="multi",     # Allow multiple column sorting
-                                    filter_action="custom", # Enable custom filtering
-                                    filter_query="",       # Initial filter query
+                                    sort_action="custom",
+                                    sort_mode="multi",
+                                    filter_action="custom",
+                                    filter_query="",
                                     
                                     # PAGINATION SETTINGS
                                     page_current=0,
                                     page_size=PAGE_SIZE,
-                                    page_action="none",    # We handle pagination manually
+                                    page_action="none",
                                     
                                     # SELECTION SETTINGS
                                     row_selectable="multi",
                                     selected_rows=[],
                                     
-                                    # STYLING
+                                    # MOBILE-RESPONSIVE STYLING
                                     style_table={
                                         "width": "100%",
                                         "height": "auto",
-                                        "overflowX": "auto",
+                                        "overflowX": "auto",  # Horizontal scroll on mobile
                                         "overflowY": "visible",
+                                        "minWidth": "800px"  # Ensure minimum width for all columns
                                     },
                                     style_header={
                                         "backgroundColor": "#007bff",
@@ -628,19 +605,21 @@ def layout() -> html.Div:
                                         "fontWeight": "bold",
                                         "textAlign": "center",
                                         "border": "1px solid #dee2e6",
-                                        "fontSize": "14px",
-                                        "padding": "12px 8px",
+                                        "fontSize": "clamp(10px, 2vw, 14px)",  # Responsive font
+                                        "padding": "8px 4px",  # Smaller padding for mobile
+                                        "whiteSpace": "nowrap"
                                     },
                                     style_cell={
                                         "textAlign": "center",
-                                        "padding": "8px",
+                                        "padding": "6px 4px",  # Smaller padding
                                         "fontFamily": "Arial, sans-serif",
-                                        "fontSize": "13px",
+                                        "fontSize": "clamp(10px, 1.8vw, 13px)",  # Responsive font
                                         "border": "1px solid #dee2e6",
-                                        "whiteSpace": "normal",
-                                        "height": "auto",
-                                        "verticalAlign": "middle",       # ADD VERTICAL ALIGNMENT FOR ALL CELLS
-                                        "minHeight": "60px"              # ENSURE MINIMUM HEIGHT FOR PROPER ALIGNMENT
+                                        "whiteSpace": "nowrap",  # Prevent text wrapping
+                                        "overflow": "hidden",
+                                        "textOverflow": "ellipsis",
+                                        "verticalAlign": "middle",
+                                        "minHeight": "40px"
                                     },
                                     style_data={
                                         "backgroundColor": "white",
@@ -660,53 +639,54 @@ def layout() -> html.Div:
                                     ],
                                     style_cell_conditional=[
                                         {
-                                            "if": {"column_id": "meta_name"},
-                                            "textAlign": "center",
-                                            "fontWeight": "500",
-                                            "whiteSpace": "normal",
-                                            "maxWidth": "200px",
+                                            "if": {"column_id": "system_index"},
+                                            "width": "60px",
+                                            "minWidth": "60px",
+                                            "maxWidth": "60px",
                                         },
                                         {
-                                            "if": {"column_id": "system_index"},
-                                            "textAlign": "center",
-                                            "fontWeight": "600",
-                                            "maxWidth": "80px",
+                                            "if": {"column_id": "meta_name"},
+                                            "width": "200px",
+                                            "minWidth": "150px",
+                                            "maxWidth": "250px",
+                                            "whiteSpace": "normal",
+                                            "textAlign": "left"
                                         },
                                         {
                                             "if": {"column_id": "system_status"},
-                                            "textAlign": "center",
-                                            "fontWeight": "600",
+                                            "width": "80px",
+                                            "minWidth": "80px",
                                             "maxWidth": "100px",
                                         },
                                         {
                                             "if": {"column_id": "system_date"},
-                                            "textAlign": "center",
-                                            "maxWidth": "150px",
+                                            "width": "100px",
+                                            "minWidth": "100px",
+                                            "maxWidth": "120px",
                                         },
                                         {
                                             "if": {"column_id": "system_user"},
-                                            "textAlign": "center",
-                                            "maxWidth": "120px",
+                                            "width": "80px",
+                                            "minWidth": "80px",
+                                            "maxWidth": "100px",
                                         },
                                         {
                                             "if": {"column_id": "system_size"},
-                                            "textAlign": "center",
-                                            #"fontFamily": "Monaco, monospace",
-                                            "maxWidth": "120px",
+                                            "width": "80px",
+                                            "minWidth": "80px",
+                                            "maxWidth": "100px",
                                         },
                                         {
                                             "if": {"column_id": "system_size_hdf5"},
-                                            "textAlign": "center",
-                                            #"fontFamily": "Monaco, monospace",
-                                            "maxWidth": "120px",
+                                            "width": "80px",
+                                            "minWidth": "80px",
+                                            "maxWidth": "100px",
                                         },
                                         {
                                             "if": {"column_id": "system_download"},
-                                            "textAlign": "center",
+                                            "width": "120px",
+                                            "minWidth": "120px",
                                             "maxWidth": "150px",
-                                            "verticalAlign": "middle",  # ADD VERTICAL ALIGNMENT
-                                            "paddingTop": "12px",       # ADD TOP PADDING
-                                            "paddingBottom": "12px"     # ADD BOTTOM PADDING
                                         },
                                     ],
                                     
@@ -714,48 +694,39 @@ def layout() -> html.Div:
                                     merge_duplicate_headers=True,
                                     markdown_options={"html": True},
                                     css=[{
-                                        'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table',
-                                        'rule': 'table-layout: auto;'
+                                        'selector': '.dash-table-container',
+                                        'rule': 'overflow-x: auto !important;'
                                     }, {
-                                        'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table td',
-                                        'rule': 'vertical-align: middle !important; padding: 12px 8px !important;'
+                                        'selector': '.dash-table-container .dash-spreadsheet-container',
+                                        'rule': 'overflow-x: auto !important;'
+                                    }, {
+                                        'selector': '.dash-table-container table',
+                                        'rule': 'min-width: 800px !important;'
                                     }],
-                                    #css=[{
-                                    #    'selector': '.dash-table-tooltip',
-                                    #    'rule': 'background-color: #2c3e50; color: white; font-size: 12px;'
-                                    #}],
-                                    #tooltip_data=[
-                                    #    {
-                                    #        column: {'value': f'Click to sort by {column}', 'type': 'markdown'}
-                                    #        for column in ['system_index', 'meta_name', 'system_status', 
-                                    #                     'system_date', 'system_user', 'system_size', 
-                                    #                     'system_size_hdf5', 'system_download']
-                                    #    }                                    
-                                    #],                                    
                                 )
                             ], 
-                            className="table-responsive enhanced-table-container", 
+                            className="table-responsive", 
                             style={
-                                "overflow": "visible",  # CHANGED FROM "auto" TO "visible"
-                                "minHeight": "300px",  # REDUCED MINIMUM HEIGHT
-                                "height": "auto",  # AUTO HEIGHT
-                                "maxHeight": "none",  # REMOVED MAX HEIGHT RESTRICTION
-                                "padding": "1rem",
+                                "overflow": "auto",
+                                "minHeight": "300px",
+                                "height": "auto",
+                                "maxHeight": "none",
+                                "padding": "0.5rem",  # Reduced padding for mobile
                                 "backgroundColor": "#ffffff",
-                                "borderRadius": "12px",
+                                "borderRadius": "8px",
                                 "boxShadow": "inset 0 2px 4px rgba(0, 0, 0, 0.05)",
                             })
-                            ], style={"padding": "2rem"})
+                            ], style={"padding": "1rem"})  # Reduced padding
                         ], style={
                             **CARD_STYLE,
                             "minHeight": "auto",
                             "height": "auto",
-                            "width": "100%",  # ADD FULL WIDTH
-                            "maxWidth": "100%",  # ADD MAX WIDTH
-                            "boxShadow": "0 6px 20px rgba(0, 0, 0, 0.15)",
-                            "border": "2px solid #e0e6ed",
+                            "width": "100%",
+                            "maxWidth": "100%",
+                            "boxShadow": "0 4px 12px rgba(0, 0, 0, 0.1)",  # Smaller shadow
+                            "border": "1px solid #e0e6ed",
                         })
-                ], width=12, className="mb-4")
+                ], xs=12, className="mb-4")
             ])
         ], fluid=True, className="mb-4"),
         
@@ -765,8 +736,8 @@ def layout() -> html.Div:
     ], style={
         "backgroundColor": "#f8f9fa",
         "minHeight": "100vh",
-        "paddingTop": "2rem",
-        "paddingBottom": "2rem"
+        "paddingTop": "1rem",  # Reduced padding for mobile
+        "paddingBottom": "1rem"
     })
 
 
