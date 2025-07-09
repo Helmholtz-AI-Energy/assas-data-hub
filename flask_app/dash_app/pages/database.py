@@ -79,7 +79,7 @@ def update_table_data() -> pd.DataFrame:
     table_data_local["system_download"] = [
         f'<a href="/assas_app/hdf5_file?uuid={entry.system_uuid}">hdf5 file</a>'
         if entry.system_status == "Valid"
-        else "no hdf5 file available"
+        else '<span class="no-download">no hdf5 file</span>'  # WRAP TEXT IN SPAN
         for entry in table_data_local.itertuples()
     ]
     table_data_local["meta_name"] = [
@@ -610,6 +610,8 @@ def layout() -> html.Div:
                                         "border": "1px solid #dee2e6",
                                         "whiteSpace": "normal",
                                         "height": "auto",
+                                        "verticalAlign": "middle",       # ADD VERTICAL ALIGNMENT FOR ALL CELLS
+                                        "minHeight": "60px"              # ENSURE MINIMUM HEIGHT FOR PROPER ALIGNMENT
                                     },
                                     style_data={
                                         "backgroundColor": "white",
@@ -659,20 +661,23 @@ def layout() -> html.Div:
                                         },
                                         {
                                             "if": {"column_id": "system_size"},
-                                            "textAlign": "right",
-                                            "fontFamily": "Monaco, monospace",
+                                            "textAlign": "center",
+                                            #"fontFamily": "Monaco, monospace",
                                             "maxWidth": "120px",
                                         },
                                         {
                                             "if": {"column_id": "system_size_hdf5"},
-                                            "textAlign": "right",
-                                            "fontFamily": "Monaco, monospace",
+                                            "textAlign": "center",
+                                            #"fontFamily": "Monaco, monospace",
                                             "maxWidth": "120px",
                                         },
                                         {
                                             "if": {"column_id": "system_download"},
                                             "textAlign": "center",
-                                            "maxWidth": "120px",
+                                            "maxWidth": "150px",
+                                            "verticalAlign": "middle",  # ADD VERTICAL ALIGNMENT
+                                            "paddingTop": "12px",       # ADD TOP PADDING
+                                            "paddingBottom": "12px"     # ADD BOTTOM PADDING
                                         },
                                     ],
                                     
@@ -680,17 +685,24 @@ def layout() -> html.Div:
                                     merge_duplicate_headers=True,
                                     markdown_options={"html": True},
                                     css=[{
-                                        'selector': '.dash-table-tooltip',
-                                        'rule': 'background-color: #2c3e50; color: white; font-size: 12px;'
+                                        'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table',
+                                        'rule': 'table-layout: auto;'
+                                    }, {
+                                        'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table td',
+                                        'rule': 'vertical-align: middle !important; padding: 12px 8px !important;'
                                     }],
-                                    tooltip_data=[
-                                        {
-                                            column: {'value': f'Click to sort by {column}', 'type': 'markdown'}
-                                            for column in ['system_index', 'meta_name', 'system_status', 
-                                                         'system_date', 'system_user', 'system_size', 
-                                                         'system_size_hdf5', 'system_download']
-                                        }                                    
-                                    ],                                    
+                                    #css=[{
+                                    #    'selector': '.dash-table-tooltip',
+                                    #    'rule': 'background-color: #2c3e50; color: white; font-size: 12px;'
+                                    #}],
+                                    #tooltip_data=[
+                                    #    {
+                                    #        column: {'value': f'Click to sort by {column}', 'type': 'markdown'}
+                                    #        for column in ['system_index', 'meta_name', 'system_status', 
+                                    #                     'system_date', 'system_user', 'system_size', 
+                                    #                     'system_size_hdf5', 'system_download']
+                                    #    }                                    
+                                    #],                                    
                                 )
                             ], 
                             className="table-responsive enhanced-table-container", 

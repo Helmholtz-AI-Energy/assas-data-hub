@@ -135,14 +135,52 @@
 .dash-table-container table th:nth-child(8),
 .dash-table-container table td:nth-child(8) { width: 10% !important; }
 
-/* Force center alignment for link content */
-.dash-table-container [data-dash-column="meta_name"] a,
-.dash-table-container [data-dash-column="system_download"] a {
-    text-align: center !important;
-    display: block !important;
-    width: 100% !important;
+/* Force all cells to be visible and properly aligned */
+.dash-table-container th,
+.dash-table-container td {
+    display: table-cell !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 8px 6px !important;  /* Increased padding */
+    border: 1px solid #ddd !important;
+    vertical-align: middle !important;  /* ADD THIS */
+    height: 35px !important;            /* ADD THIS for consistent height */
+    line-height: 1.2 !important;        /* ADD THIS for better text spacing */
 }
 
+/* Perfect vertical centering using absolute positioning */
+.dash-table-container [data-dash-column="meta_name"] a,
+.dash-table-container [data-dash-column="system_download"] a {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100% - 16px) !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.dash-table-container [data-dash-column="meta_name"],
+.dash-table-container [data-dash-column="system_download"] {
+    position: relative !important;
+    height: 35px !important;
+    vertical-align: middle !important;
+}
+
+/* Ensure all table rows have consistent height */
+.dash-table-container tbody tr {
+    height: 35px !important;
+    vertical-align: middle !important;
+}
+
+/* Force proper alignment for all table cells */
+.dash-table-container tbody tr td {
+    height: 35px !important;
+    vertical-align: middle !important;
+    position: relative !important;
+}
 /* Container Wrappers */
 .table-responsive,
 .enhanced-table-container {
