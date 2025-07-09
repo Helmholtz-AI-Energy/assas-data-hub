@@ -609,26 +609,48 @@ def layout() -> html.Div:
                             # Mobile-responsive pagination and settings
                             dbc.Row([
                                 dbc.Col([
+                                    # Around line 615, replace your pagination component with this responsive version:
                                     html.Div([
                                         html.H6("Navigation", className="mb-2 text-secondary",
-                                               style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
-                                        dbc.Pagination(
-                                            id="pagination",
-                                            first_last=True,
-                                            previous_next=True,
-                                            max_value=int(PAGE_COUNT),
-                                            fully_expanded=False,
-                                            #size="lg",  # Changed from lg to sm for mobile
-                                            className="justify-content-center mb-2"
-                                        ),
+                                            style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                        
+                                        # Mobile-first pagination with conditional visibility
+                                        html.Div([
+                                            # Mobile pagination (simple prev/next + current page)
+                                            dbc.ButtonGroup([
+                                                dbc.Button([
+                                                    html.I(className="fas fa-chevron-left")
+                                                ], id="mobile-prev-btn", size="sm", outline=True, color="primary",
+                                                style={"minWidth": "40px", "fontSize": "0.8rem"}),
+                                                
+                                                dbc.Button([
+                                                    html.Span("1", id="mobile-current-page")
+                                                ], size="sm", disabled=True, color="secondary",
+                                                style={"minWidth": "50px", "fontSize": "0.8rem"}),
+                                                
+                                                dbc.Button([
+                                                    html.I(className="fas fa-chevron-right")
+                                                ], id="mobile-next-btn", size="sm", outline=True, color="primary",
+                                                style={"minWidth": "40px", "fontSize": "0.8rem"}),
+                                            ], className="d-flex d-md-none justify-content-center mb-2"),  # Show only on mobile
+                                            
+                                            # Desktop pagination (full pagination)
+                                            dbc.Pagination(
+                                                id="pagination",
+                                                first_last=True,
+                                                previous_next=True,
+                                                max_value=int(PAGE_COUNT),
+                                                fully_expanded=False,
+                                                size="sm",  # Use small size for better mobile compatibility
+                                                className="justify-content-center mb-2 d-none d-md-flex"  # Hide on mobile, show on desktop
+                                            ),
+                                        ]),
+                                        
                                         html.Small([
                                             html.I(className="fas fa-info-circle me-1"),
-                                            html.Span(
-                                                "Page 1/10",
-                                                id="pagination-contents"
-                                            )
+                                            html.Span("Page 1/10", id="pagination-contents")
                                         ], className="text-muted text-center d-block",
-                                           style={"fontSize": "clamp(0.6rem, 1.5vw, 0.7rem)"})
+                                        style={"fontSize": "clamp(0.6rem, 1.5vw, 0.7rem)"})
                                     ], style={"textAlign": "center"})
                                 ], xs=12, md=8, className="mb-3 mb-md-0"),
                                 dbc.Col([
@@ -1366,3 +1388,49 @@ def toggle_usage_guide(n_clicks: int) -> bool:
     """
     logger.info(f"Usage guide toggle clicked {n_clicks} times.")
     return n_clicks % 2 == 1  # Toggle between open and closed
+
+
+# Add these callbacks after your existing pagination callbacks:
+
+@callback(
+    Output("mobile-current-page", "children"),
+    Input("pagination", "active_page"),
+    prevent_initial_call=False
+)
+def update_mobile_page_display(active_page):
+    """Update mobile pagination display"""
+    if active_page is None:
+        active_page = 1
+    return str(active_page)
+
+@callback(
+    [Output("pagination", "active_page", allow_duplicate=True),
+     Output("mobile-prev-btn", "disabled"),
+     Output("mobile-next-btn", "disabled")],
+    [Input("mobile-prev-btn", "n_clicks"),
+     Input("mobile-next-btn", "n_clicks")],
+    [State("pagination", "active_page"),
+     State("pagination", "max_value")],
+    prevent_initial_call=True
+)
+def handle_mobile_navigation(prev_clicks, next_clicks, current_page, max_pages):
+    """Handle mobile pagination navigation"""
+    triggered = callback_context.triggered[0]['prop_id'] if callback_context.triggered else None
+    
+    if current_page is None:
+        current_page = 1
+    if max_pages is None:
+        max_pages = 1
+        
+    new_page = current_page
+    
+    if triggered == "mobile-prev-btn.n_clicks" and prev_clicks:
+        new_page = max(1, current_page - 1)
+    elif triggered == "mobile-next-btn.n_clicks" and next_clicks:
+        new_page = min(max_pages, current_page + 1)
+    
+    # Determine button states
+    prev_disabled = new_page <= 1
+    next_disabled = new_page >= max_pages
+    
+    return new_page, prev_disabled, next_disabled
