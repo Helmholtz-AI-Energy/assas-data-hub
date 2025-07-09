@@ -57,49 +57,49 @@
 /* Column Widths - Total 100% */
 .dash-table-container [data-dash-column="system_index"] {
     width: 10% !important;
-    min-width: 60px !important;
+    min-width: 50px !important;
     text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="meta_name"] {
     width: 15% !important;
-    min-width: 200px !important;
+    min-width: 150px !important;
     text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_status"] {
     width: 15% !important;
-    min-width: 70px !important;
+    min-width: 100px !important;
     text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_date"] {
     width: 15% !important;
-    min-width: 90px !important;
+    min-width: 100px !important;
     text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_user"] {
-    width: 15% !important;
-    min-width: 60px !important;
+    width: 10% !important;
+    min-width: 100px !important;
     text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_size"] {
     width: 10% !important;
-    min-width: 80px !important;
+    min-width: 100px !important;
     text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_size_hdf5"] {
     width: 10% !important;
-    min-width: 80px !important;
+    min-width: 100px !important;
     text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_download"] {
-    width: 10% !important;
-    min-width: 50px !important;
+    width: 15% !important;
+    min-width: 150px !important;
     text-align: center !important;
 }
 
@@ -124,7 +124,7 @@
 .dash-table-container table td:nth-child(4) { width: 15% !important; }
 
 .dash-table-container table th:nth-child(5),
-.dash-table-container table td:nth-child(5) { width: 15% !important; }
+.dash-table-container table td:nth-child(5) { width: 10% !important; }
 
 .dash-table-container table th:nth-child(6),
 .dash-table-container table td:nth-child(6) { width: 10% !important; }
@@ -133,7 +133,7 @@
 .dash-table-container table td:nth-child(7) { width: 10% !important; }
 
 .dash-table-container table th:nth-child(8),
-.dash-table-container table td:nth-child(8) { width: 10% !important; }
+.dash-table-container table td:nth-child(8) { width: 15% !important; }
 
 /* Force all cells to be visible and properly aligned */
 .dash-table-container th,
@@ -151,6 +151,18 @@
 /* Perfect vertical centering using absolute positioning */
 .dash-table-container [data-dash-column="meta_name"] a,
 .dash-table-container [data-dash-column="system_download"] a {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100% - 16px) !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.dash-table-container [data-dash-column="system_download"] span {
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
