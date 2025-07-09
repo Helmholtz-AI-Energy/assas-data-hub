@@ -661,7 +661,6 @@ def init_dashboard(server: object) -> object:
         """
         function(id) {
             let lastScrollTop = 0;
-            let scrollTimeout;
             
             function handleScroll() {
                 const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -678,90 +677,54 @@ def init_dashboard(server: object) -> object:
                     scrollIndicator.style.transform = `scaleX(${scrollProgress})`;
                 }
                 
-                // Determine scroll direction and distance
-                const scrollDelta = scrollTop - lastScrollTop;
-                const scrollDistance = Math.abs(scrollDelta);
-                
                 // Clear existing classes
-                navbar.classList.remove('navbar-hidden', 'navbar-compact', 'navbar-visible');
+                navbar.classList.remove('navbar-hidden', 'navbar-visible');
                 
-                if (scrollTop === 0) {
-                    // At top of page - show full navbar
+                if (scrollTop <= 5) {
+                    // At top of page (within 5px) - show navbar
                     navbar.classList.add('navbar-visible');
                     navbar.style.transform = 'translateY(0)';
                     navbar.style.opacity = '1';
-                } else if (scrollDelta > 0 && scrollDistance > 10) {
-                    // Scrolling down - hide navbar
-                    if (scrollTop > 30) {
-                        navbar.classList.add('navbar-hidden');
-                        navbar.style.transform = 'translateY(-100%)';
-                        navbar.style.opacity = '0';
-                    } else {
-                        navbar.classList.add('navbar-compact');
-                        navbar.style.transform = 'translateY(0) scale(0.95)';
-                        navbar.style.opacity = '0.9';
-                    }
-                } else if (scrollDelta < 0 && scrollDistance > 100) {
-                    // Scrolling up - show compact navbar
-                    navbar.classList.add('navbar-compact');
-                    navbar.style.transform = 'translateY(0) scale(0.95)';
-                    navbar.style.opacity = '0.9';
-                } else if (scrollTop < 50) {
-                    // Near top - show full navbar
-                    navbar.classList.add('navbar-visible');
-                    navbar.style.transform = 'translateY(0)';
-                    navbar.style.opacity = '1';
+                    navbar.style.transition = 'all 0.3s ease';
+                } else {
+                    // Any scroll away from top - hide navbar immediately
+                    navbar.classList.add('navbar-hidden');
+                    navbar.style.transform = 'translateY(-100%)';
+                    navbar.style.opacity = '0';
+                    navbar.style.transition = 'all 0.2s ease';  // Faster hiding
                 }
                 
                 lastScrollTop = scrollTop;
                 
-                // Clear scrolling state after delay
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    // Show navbar when stopped scrolling
-                    if (!navbar.classList.contains('navbar-hidden')) {
-                        navbar.classList.remove('navbar-compact');
-                        navbar.classList.add('navbar-visible');
-                        navbar.style.transform = 'translateY(0)';
-                        navbar.style.opacity = '1';
-                    }
-                }, 150);
-                
                 return {};
             }
             
-            // Throttled scroll handler
+            // Throttled scroll handler for better performance
             let ticking = false;
             
             function requestTick() {
                 if (!ticking) {
                     requestAnimationFrame(handleScroll);
                     ticking = true;
-                    setTimeout(() => { ticking = false; }, 16); // ~60fps
+                    setTimeout(() => { ticking = false; }, 8); // ~120fps for faster response
                 }
             }
             
             // Add scroll listener
             window.addEventListener('scroll', requestTick, { passive: true });
             
-            // Show navbar on mouse movement near top
-            document.addEventListener('mousemove', function(e) {
-                if (navbar && e.clientY < 100 && window.pageYOffset > 100) {
-                    navbar.classList.remove('navbar-hidden');
-                    navbar.classList.add('navbar-compact');
-                    navbar.style.transform = 'translateY(0) scale(0.95)';
-                    navbar.style.opacity = '0.9';
-                }
-            });
+            // Remove mouse movement show behavior - only show at top
             
             // Handle window resize
             window.addEventListener('resize', function() {
                 if (navbar) {
-                    // Reset navbar state on resize
-                    navbar.classList.remove('navbar-hidden', 'navbar-compact');
-                    navbar.classList.add('navbar-visible');
-                    navbar.style.transform = 'translateY(0)';
-                    navbar.style.opacity = '1';
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    if (scrollTop <= 5) {
+                        navbar.classList.remove('navbar-hidden');
+                        navbar.classList.add('navbar-visible');
+                        navbar.style.transform = 'translateY(0)';
+                        navbar.style.opacity = '1';
+                    }
                 }
             });
             
