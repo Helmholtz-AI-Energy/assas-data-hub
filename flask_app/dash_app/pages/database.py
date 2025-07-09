@@ -638,7 +638,7 @@ def layout() -> html.Div:
                                         dbc.InputGroup([
                                             dbc.InputGroupText([
                                                 html.I(className="fas fa-list-ol me-1"),
-                                                html.Span("Per page:", className="d-none d-lg-inline"),
+                                                html.Span("Datasets per page:", className="d-none d-lg-inline"),
                                                 html.Span("Size:", className="d-inline d-lg-none")
                                             ], style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
                                             dbc.Input(
@@ -649,10 +649,17 @@ def layout() -> html.Div:
                                                 value=PAGE_SIZE,
                                                 placeholder=str(PAGE_SIZE),
                                                 disabled=False,
-                                                size="sm",  # Changed from lg to sm for mobile
-                                                style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}
+                                                #size="sm",  # Changed from lg to sm for mobile
+                                                style={
+                                                    "fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)",
+                                                    "width": "80px",  # Fixed narrow width
+                                                    "maxWidth": "80px",  # Ensure it doesn't grow
+                                                    "minWidth": "60px",  # Minimum width for mobile
+                                                    "textAlign": "center",  # Center the number
+                                                    "flex": "0 0 auto"  # Don't grow or shrink
+                                                }
                                             )
-                                        ], size="sm", className="mb-3")
+                                        ], className="mb-3 responsive-input-group")
                                     ])
                                 ], xs=12, md=4)
                             ], className="mb-4"),                            

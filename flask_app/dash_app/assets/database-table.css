@@ -501,3 +501,185 @@
     border-color: #dee2e6 !important;
     cursor: not-allowed !important;
 }
+
+/* Add these responsive input group styles: */
+
+/* Desktop - Large input groups */
+.input-group {
+    font-size: 1rem !important;
+}
+
+.input-group .input-group-text {
+    padding: 0.75rem 1rem !important;
+    font-size: 1rem !important;
+    min-height: 44px !important;
+    border: 1px solid #ced4da !important;
+    background-color: #e9ecef !important;
+    font-weight: 500 !important;
+}
+
+.input-group .form-control {
+    padding: 0.75rem 1rem !important;
+    font-size: 1rem !important;
+    min-height: 44px !important;
+    border: 1px solid #ced4da !important;
+}
+
+/* Tablet - Medium input groups */
+@media (max-width: 992px) {
+    .input-group {
+        font-size: 0.9rem !important;
+    }
+    
+    .input-group .input-group-text {
+        padding: 0.6rem 0.8rem !important;
+        font-size: 0.9rem !important;
+        min-height: 40px !important;
+    }
+    
+    .input-group .form-control {
+        padding: 0.6rem 0.8rem !important;
+        font-size: 0.9rem !important;
+        min-height: 40px !important;
+    }
+}
+
+/* Mobile - Small input groups */
+@media (max-width: 768px) {
+    .input-group {
+        font-size: 0.8rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .input-group .input-group-text {
+        padding: 0.5rem 0.7rem !important;
+        font-size: 0.8rem !important;
+        min-height: 36px !important;
+    }
+    
+    .input-group .form-control {
+        padding: 0.5rem 0.7rem !important;
+        font-size: 0.8rem !important;
+        min-height: 36px !important;
+        width: auto !important;
+        flex: 1 1 auto !important;
+    }
+    
+    /* Stack input groups vertically on very small screens if needed */
+    .input-group.input-group-sm {
+        flex-direction: column !important;
+    }
+    
+    .input-group.input-group-sm .input-group-text {
+        border-radius: 0.25rem 0.25rem 0 0 !important;
+        border-bottom: none !important;
+    }
+    
+    .input-group.input-group-sm .form-control {
+        border-radius: 0 0 0.25rem 0.25rem !important;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 576px) {
+    .input-group {
+        font-size: 0.75rem !important;
+    }
+    
+    .input-group .input-group-text {
+        padding: 0.4rem 0.6rem !important;
+        font-size: 0.75rem !important;
+        min-height: 32px !important;
+        white-space: nowrap !important;
+    }
+    
+    .input-group .form-control {
+        padding: 0.4rem 0.6rem !important;
+        font-size: 0.75rem !important;
+        min-height: 32px !important;
+    }
+    
+    /* For very small screens, make icons smaller */
+    .input-group .input-group-text i {
+        font-size: 0.7rem !important;
+    }
+}
+
+/* Focus states for all screen sizes */
+.input-group .form-control:focus {
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    outline: none !important;
+}
+
+/* Hover effects */
+.input-group .input-group-text:hover {
+    background-color: #dee2e6 !important;
+    transition: background-color 0.2s ease !important;
+}
+
+/* Disabled state */
+.input-group .form-control:disabled {
+    background-color: #e9ecef !important;
+    opacity: 0.65 !important;
+    cursor: not-allowed !important;
+}
+
+.input-group .input-group-text.disabled {
+    background-color: #e9ecef !important;
+    opacity: 0.65 !important;
+    cursor: not-allowed !important;
+}
+
+/* Input group sizing variants */
+.input-group.input-group-lg .input-group-text,
+.input-group.input-group-lg .form-control {
+    padding: 1rem 1.25rem !important;
+    font-size: 1.25rem !important;
+    min-height: 48px !important;
+}
+
+.input-group.input-group-sm .input-group-text,
+.input-group.input-group-sm .form-control {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.875rem !important;
+    min-height: 30px !important;
+}
+
+/* Responsive override for explicitly small input groups on mobile */
+@media (max-width: 768px) {
+    .input-group.input-group-lg .input-group-text,
+    .input-group.input-group-lg .form-control {
+        padding: 0.5rem 0.7rem !important;
+        font-size: 0.8rem !important;
+        min-height: 36px !important;
+    }
+}
+
+/* Number input specific styling - UPDATED TO SHOW ARROWS */
+.input-group .form-control[type="number"] {
+    text-align: center !important;
+    /* Removed spinner-hiding rules to show arrows */
+}
+
+/* Keep spinners visible for better UX */
+.responsive-input-group .form-control[type="number"] {
+    width: 80px !important;
+    max-width: 80px !important;
+    min-width: 60px !important;
+    flex: 0 0 auto !important;  /* Don't grow */
+    text-align: center !important;
+    
+    /* Ensure spinners/arrows are visible */
+    -webkit-appearance: number-input !important;
+    appearance: number-input !important;
+}
+
+/* Style the spinner arrows for better visibility */
+.responsive-input-group .form-control[type="number"]::-webkit-outer-spin-button,
+.responsive-input-group .form-control[type="number"]::-webkit-inner-spin-button {
+    opacity: 1 !important;
+    height: auto !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+}
