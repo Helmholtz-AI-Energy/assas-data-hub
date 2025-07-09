@@ -124,6 +124,35 @@ PAGE_COUNT = ALL / PAGE_SIZE
 dash.register_page(__name__, path="/database")
 
 
+# Updated modern style dictionary
+MODERN_STYLE = {
+    "fontFamily": "Arial, sans-serif",
+    "fontSize": "16px",
+    "color": "#2c3e50",
+    "lineHeight": "1.6",
+}
+
+CARD_STYLE = {
+    "backgroundColor": "#ffffff",
+    "border": "1px solid #e0e6ed",
+    "borderRadius": "8px",
+    "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.1)",
+    "padding": "1.5rem",
+    "marginBottom": "1.5rem",
+    "transition": "all 0.3s ease",
+}
+
+BUTTON_STYLE = {
+    "fontFamily": "Arial, sans-serif",
+    "fontWeight": "600",
+    "borderRadius": "6px",
+    "padding": "12px 24px",
+    "fontSize": "14px",
+    "transition": "all 0.3s ease",
+    "border": "none",
+    "cursor": "pointer",
+}
+
 def layout() -> html.Div:
     """Layout for the ASSAS Database page.
 
@@ -131,466 +160,340 @@ def layout() -> html.Div:
         html.Div: The layout of the ASSAS Database page.
 
     """
-    return html.Div(
-        [
-            html.H2(
-                "ASSAS Database - Training Dataset Index",
-                #style={**COMMON_STYLE, "fontSize": "48px", "fontWeight": "bold"},
-                style=full_width_style(),
-            ),
-            dbc.Alert(
-                "Welcome to the ASSAS Database page! Use this interface to search, view"
-                ",and download datasets from the ASSAS training dataset index. "
-                "You can navigate through the available datasets using the pagination "
-                "controls below, refresh the dataset list, and access detailed storage "
-                "parameters. Click on the download link for valid datasets to retrieve "
-                "the corresponding files.",
-                color="primary",
-                style={**COMMON_STYLE},
-            ),
-            html.Hr(),
-            html.Div(
-                [
-                    dbc.Row(
-                        dbc.Col(
-                            dbc.Pagination(
-                                id="pagination",
-                                first_last=True,
-                                previous_next=True,
-                                max_value=PAGE_COUNT,
-                                fully_expanded=False,
-                                size="lg",
-                            ),
-                            width="auto",
-                            style={"fontFamily": "arial, sans-serif"},
-                        ),
-                        justify="center",
-                    )
-                ],
-                style={**RESPONSIVE_STYLE},
-            ),
-            html.Hr(),
-            html.Div(
-                [
-                    dbc.Button(
-                        "Database Tools",
-                        id="toggle-section",
-                        className="me-2",
-                        n_clicks=0,
-                        size="lg",
-                        style={
-                            **COMMON_STYLE,
-                            "width": "100%",
-                            "padding": "5px",
-                            "fontSize": "14px",
-                            "fontWeight": "bold",
-                        },
-                        color="primary",
-                        title="Click to toggle the section below.",
+    return html.Div([
+        # Header Section
+        dbc.Container([
+            dbc.Row([
+                dbc.Col([
+                    html.H1(
+                        "ASSAS Database",
+                        className="display-4 fw-bold text-primary mb-3"
                     ),
-                ],
-                style={
-                    **COMMON_STYLE,
-                    "textAlign": "center",
-                    "margin": "1% auto",
-                    "padding": "10px",
-                    "width": "100%",
-                },
-            ),
-            dbc.Collapse(
-                html.Div(
-                    [
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    html.H4(
-                                        "Select datasets for download:",
-                                        style={
-                                            **COMMON_STYLE,
-                                            "textAlign": "center",
-                                            "fontWeight": "bold",
-                                        },
-                                    ),
-                                    width=4,
-                                    style={
-                                        "border": "1px solid lightgrey",
-                                        "borderRadius": "2%",
-                                        "padding": "2%",
-                                    },
-                                ),
-                                dbc.Col(
-                                    html.H4(
-                                        "Refresh datasets on page:",
-                                        style={
-                                            **COMMON_STYLE,
-                                            "textAlign": "center",
-                                            "fontWeight": "bold",
-                                        },
-                                    ),
-                                    width=4,
-                                    style={
-                                        "border": "1px solid lightgrey",
-                                        "borderRadius": "2%",
-                                        "padding": "2%",
-                                    },
-                                ),
-                                dbc.Col(
-                                    html.H4(
-                                        "LSDF database parameters:",
-                                        style={
-                                            **COMMON_STYLE,
-                                            "textAlign": "center",
-                                            "fontWeight": "bold",
-                                        },
-                                    ),
-                                    width=4,
-                                    style={
-                                        "border": "1px solid lightgrey",
-                                        "borderRadius": "2%",
-                                        "padding": "2%",
-                                    },
-                                ),
-                            ]
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    children=[
-                                        dcc.Loading(
-                                            children=[
-                                                dbc.Button(
-                                                    "Get Download Link",
-                                                    id="download_selected",
-                                                    className="me-2",
-                                                    n_clicks=0,
-                                                    disabled=True,
-                                                    size="lg",
-                                                    style={
-                                                        **COMMON_STYLE,
-                                                        "width": "100%",
-                                                        "padding": "5px",
-                                                        "fontSize": "14px",
-                                                    },
-                                                    title="Select datasets in "
-                                                    " the table to enable"
-                                                    " this button.",
-                                                ),
-                                            ],
-                                            type="circle",
-                                            fullscreen=False,
-                                        ),
-                                        html.Div(
-                                            "Select datasets to download.",
-                                            id="download_selected_info",
-                                            style={
-                                                **COMMON_STYLE,
-                                                "margin-top": "10px",
-                                                "fontSize": "14px",
-                                                "textAlign": "center",
-                                            },
-                                        ),
-                                        dcc.Loading(
-                                            children=[
-                                                html.P(
-                                                    "Note: You can select multiple "
-                                                    "datasets, but the download is "
-                                                    "limited to 20 datasets at a time.",
-                                                    style={
-                                                        **COMMON_STYLE,
-                                                        "fontSize": "12px",
-                                                        "color": "grey",
-                                                        "textAlign": "center",
-                                                    },
-                                                )
-                                            ],
-                                            type="circle",
-                                            fullscreen=False,
-                                        ),
-                                    ],
-                                    width=4,
-                                    style={
-                                        "border": "1px solid lightgrey",
-                                        "borderRadius": "2%",
-                                        "padding": "2%",
-                                        "display": "block",
-                                        "textAlign": "center",
-                                    },
-                                ),
-                                dbc.Col(
-                                    children=[
-                                        dbc.Button(
-                                            "Refresh",
-                                            id="reload_page",
-                                            className="me-2",
-                                            n_clicks=0,
-                                            disabled=False,
-                                            size="lg",
-                                            style={
-                                                **COMMON_STYLE,
-                                                "width": "80%",
-                                                "padding": "5px",
-                                                "fontSize": "14px",
-                                            },
-                                            title="Click to refresh the dataset list.",
-                                        ),
-                                        html.Div(
-                                            f"Number of datasets loaded: "
-                                            f"{len(table_data)}",
-                                            id="dataset_count",
-                                            style={
-                                                **COMMON_STYLE,
-                                                "margin-top": "10px",
-                                                "fontSize": "14px",
-                                                "textAlign": "center",
-                                            },
-                                        ),
-                                        dcc.Loading(
-                                            children=[
-                                                html.P(
-                                                    f"Database updated at: {now}",
-                                                    id="database_update_time",
-                                                    style={
-                                                        **COMMON_STYLE,
-                                                        "fontSize": "12px",
-                                                        "color": "grey",
-                                                        "textAlign": "center",
-                                                    },
-                                                )
-                                            ],
-                                            type="circle",
-                                            fullscreen=False,
-                                        ),
-                                    ],
-                                    width=4,
-                                    style={
-                                        "border": "1px solid lightgrey",
-                                        "borderRadius": "2%",
-                                        "padding": "2%",
-                                        "display": "block",
-                                        "textAlign": "center",
-                                    },
-                                ),
-                                dbc.Col(
-                                    dbc.Table(
-                                        [
-                                            html.Thead(
-                                                dbc.Row(
-                                                    [
-                                                        dbc.Col(
-                                                            html.Th("Parameter"),
-                                                            width=6,
-                                                            style={
-                                                                "textAlign": "center"
-                                                            },
-                                                        ),
-                                                        dbc.Col(
-                                                            html.Th("Value"),
-                                                            width=6,
-                                                            style={
-                                                                "textAlign": "center"
-                                                            },
-                                                        ),
-                                                    ]
-                                                )
-                                            ),
-                                            html.Tbody(
-                                                [
-                                                    dbc.Row(
-                                                        [
-                                                            dbc.Col(
-                                                                html.Td("Used Storage"),
-                                                                width=6,
-                                                                style={
-                                                                    "align": "center"
-                                                                },
-                                                            ),
-                                                            dbc.Col(
-                                                                html.Td(
-                                                                    f"{database_size}"
-                                                                ),
-                                                                width=6,
-                                                                style={
-                                                                    "align": "center"
-                                                                },
-                                                            ),
-                                                        ]
-                                                    ),
-                                                    dbc.Row(
-                                                        [
-                                                            dbc.Col(
-                                                                html.Td(
-                                                                    "Current Storage "
-                                                                    "Limit"
-                                                                ),
-                                                                width=6,
-                                                                style={
-                                                                    "align": "center"
-                                                                },
-                                                            ),
-                                                            dbc.Col(
-                                                                html.Td("100 TB"),
-                                                                width=6,
-                                                                style={
-                                                                    "align": "center"
-                                                                },
-                                                            ),
-                                                        ]
-                                                    ),
-                                                ]
-                                            ),
-                                        ],
-                                        bordered=True,
-                                        striped=True,
-                                        hover=True,
-                                        responsive=True,
-                                        style={**COMMON_STYLE, "margin-left": "10%"},
-                                    ),
-                                    width=4,
-                                    style={
-                                        "border": "1px solid lightgrey",
-                                        "borderRadius": "2%",
-                                        "padding": "2%",
-                                    },
-                                ),
-                            ]
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    html.Div(
-                                        "Link",
-                                        id="download_link",
-                                        style={
-                                            **COMMON_STYLE,
-                                            "textAlign": "center",
-                                            "fontWeight": "bold",
-                                        },
-                                    ),
-                                    width=4,
-                                    style={
-                                        "border": "1px solid lightgrey",
-                                        "borderRadius": "2%",
-                                        "padding": "2%",
-                                    },
-                                ),
-                            ]
-                        ),
+                    html.H2(
+                        "Training Dataset Index",
+                        className="text-secondary mb-4",
+                        style={"fontSize": "1.5rem", "fontWeight": "400"}
+                    ),
+                    dbc.Alert([
+                        html.I(className="fas fa-info-circle me-2"),
+                        "Welcome to the ASSAS Database! Use this interface to search, view, "
+                        "and download datasets from the ASSAS training dataset index. "
+                        "Navigate through datasets using pagination controls below."
+                    ], color="primary", className="d-flex align-items-center")
+                ])
+            ])
+        ], fluid=True, className="mb-4"),
+        
+        # Database Tools Section
+        dbc.Container([
+            dbc.Row([
+                dbc.Col([
+                    dbc.Button([
+                        html.I(className="fas fa-tools me-2"),
+                        "Database Tools"
                     ],
-                    style=RESPONSIVE_STYLE,
-                ),
-                id="collapse-section",
-                is_open=False,  # Initially collapsed
-            ),
-            dcc.Location(id="download_location", refresh=True),
-            html.Hr(),
-            dash_table.DataTable(
-                id="datatable-paging-and-sorting",
-                columns=[
-                    {"name": "_id", "id": "_id", "hideable": True},
-                    {"name": "Uuid", "id": "system_uuid", "hideable": True},
-                    {
-                        "name": "Upload Uuid",
-                        "id": "system_upload_uuid",
-                        "hideable": True,
-                    },
-                    {"name": "Path", "id": "system_path", "hideable": True},
-                    {"name": "Result", "id": "system_result", "hideable": True},
-                    {
-                        "name": "Samples",
-                        "id": "system_number_of_samples",
-                        "hideable": True,
-                    },
-                    {
-                        "name": "Completed Samples",
-                        "id": "system_number_of_samples_completed",
-                        "hideable": True,
-                    },
-                    {"name": "Index", "id": "system_index", "selectable": True},
-                    {"name": "Size binary", "id": "system_size", "selectable": True},
-                    {"name": "Size hdf5", "id": "system_size_hdf5", "selectable": True},
-                    {"name": "Date", "id": "system_date", "selectable": True},
-                    {"name": "User", "id": "system_user", "selectable": True},
-                    {
-                        "name": "Download",
-                        "id": "system_download",
-                        "selectable": True,
-                        "presentation": "markdown",
-                    },
-                    {"name": "Status", "id": "system_status", "selectable": True},
-                    {
-                        "name": "Name",
-                        "id": "meta_name",
-                        "selectable": True,
-                        "presentation": "markdown",
-                    },
-                ],
-                **responsive_table_style(),
-                markdown_options={"html": True},
-                hidden_columns=[
-                    "",
-                    "_id",
-                    "system_uuid",
-                    "system_upload_uuid",
-                    "system_path",
-                    "system_result",
-                    "system_number_of_samples",
-                    "system_number_of_samples_completed",
-                ],
-                data=table_data.to_dict("records"),
-                #style_table={
-                #    "overflowX": "auto",  # Horizontal scrolling for wide tables
-                #    "width": "100%",  # Full width for responsiveness
-                #    "margin": "0 auto",  # Center the table
-                #},
-                #style_cell={
-                #    "fontSize": 17,
-                #    "padding": "2px",
-                #    "textAlign": "center",
-                #    "fontFamily": "arial, sans-serif",
-                #},
-                merge_duplicate_headers=True,
-                #style_header={
-                #    "backgroundColor": "black",
-                #    "color": "white",
-                #    "fontWeight": "bold",
-                #    "fontFamily": "arial, sans-serif",
-                #},
-                #style_data={"backgroundColor": "black", "color": "white"},
-                row_selectable="multi",
-                page_current=0,
-                page_size=PAGE_SIZE,
-                page_action="none",
-                filter_action="custom",
-                filter_query="",
-                sort_action="custom",
-                sort_mode="multi",
-                sort_by=[],
-                is_focused=True,
-                style_data_conditional=conditional_table_style(),
-                css=[dict(selector="p", rule="margin: 0; text-align: center")],
-            ),
-            html.Hr(),
-            html.Br(),
-            dcc.Checklist(
-                id="datatable-use-page-size",
-                options=[{"label": " Change entries per page", "value": "True"}],
-                value=["False"],
-            ),
-            "Entries per page: ",
-            dcc.Input(
-                id="datatable-page-size",
-                type="number",
-                min=1,
-                max=PAGE_MAX_SIZE,
-                value=PAGE_SIZE,
-                placeholder=PAGE_SIZE,
-                style={"color": "grey"},
-                disabled=False,
-            ),
-            html.Div("Select a page", id="pagination-contents"),
-        ],
-        style=content_style(),
-    )
+                    id="toggle-section",
+                    color="primary",
+                    size="lg",
+                    className="w-100 mb-3",
+                    style=BUTTON_STYLE
+                    ),
+                    
+                    dbc.Collapse([
+                        dbc.Card([
+                            dbc.CardBody([
+                                dbc.Row([
+                                    # Download Section
+                                    dbc.Col([
+                                        html.H5([
+                                            html.I(className="fas fa-download me-2 text-primary"),
+                                            "Download Datasets"
+                                        ], className="mb-3"),
+                                        dcc.Loading([
+                                            dbc.Button([
+                                                html.I(className="fas fa-file-archive me-2"),
+                                                "Get Download Link"
+                                            ],
+                                            id="download_selected",
+                                            color="success",
+                                            size="lg",
+                                            disabled=True,
+                                            className="w-100 mb-3",
+                                            style=BUTTON_STYLE
+                                            )
+                                        ], type="default"),
+                                        html.Div(
+                                            "Select datasets in the table to enable download",
+                                            id="download_selected_info",
+                                            className="text-muted small text-center mb-2"
+                                        ),
+                                        dbc.Alert([
+                                            html.I(className="fas fa-exclamation-triangle me-2"),
+                                            "Maximum 20 datasets per download"
+                                        ], color="warning", className="small")
+                                    ], md=4),
+                                    
+                                    # Refresh Section
+                                    dbc.Col([
+                                        html.H5([
+                                            html.I(className="fas fa-sync-alt me-2 text-primary"),
+                                            "Refresh Data"
+                                        ], className="mb-3"),
+                                        dbc.Button([
+                                            html.I(className="fas fa-refresh me-2"),
+                                            "Refresh"
+                                        ],
+                                        id="reload_page",
+                                        color="info",
+                                        size="lg",
+                                        className="w-100 mb-3",
+                                        style=BUTTON_STYLE
+                                        ),
+                                        html.Div([
+                                            html.Strong("Datasets loaded: "),
+                                            html.Span(f"{len(table_data)}", className="text-primary")
+                                        ], id="dataset_count", className="text-center mb-2"),
+                                        html.Div(
+                                            f"Last updated: {now}",
+                                            id="database_update_time",
+                                            className="text-muted small text-center"
+                                        )
+                                    ], md=4),
+                                    
+                                    # Storage Info Section
+                                    dbc.Col([
+                                        html.H5([
+                                            html.I(className="fas fa-hdd me-2 text-primary"),
+                                            "Storage Information"
+                                        ], className="mb-3"),
+                                        dbc.Table([
+                                            html.Tbody([
+                                                html.Tr([
+                                                    html.Td("Used Storage", className="fw-bold"),
+                                                    html.Td(database_size, className="text-end")
+                                                ]),
+                                                html.Tr([
+                                                    html.Td("Storage Limit", className="fw-bold"),
+                                                    html.Td("100 TB", className="text-end")
+                                                ])
+                                            ])
+                                        ], striped=True, hover=True, className="mb-0")
+                                    ], md=4)
+                                ]),
+                                
+                                # Download Link Section
+                                dbc.Row([
+                                    dbc.Col([
+                                        html.Hr(),
+                                        html.Div([
+                                            html.H6("Download Link:", className="mb-2"),
+                                            html.Div(
+                                                "Download link will appear here after selection",
+                                                id="download_link",
+                                                className="text-center p-3 bg-light rounded"
+                                            )
+                                        ])
+                                    ])
+                                ])
+                            ])
+                        ], style=CARD_STYLE)
+                    ], id="collapse-section", is_open=False)
+                ])
+            ])
+        ], fluid=True, className="mb-4"),
+        
+        # Data Table Section - WITH INTEGRATED PAGINATION
+        dbc.Container([
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardHeader([
+                            html.H4([
+                                html.I(className="fas fa-table me-2"),
+                                "Dataset Overview"
+                            ], className="mb-0 text-primary", style={"fontSize": "1.5rem"})
+                        ], style={"padding": "1.5rem", "backgroundColor": "#f8f9fa"}),
+                        dbc.CardBody([
+                            # Pagination - MOVED HERE DIRECTLY ABOVE TABLE
+                            dbc.Row([
+                                dbc.Col([
+                                    html.Div([
+                                        html.H6("Navigation", className="mb-2 text-secondary"),
+                                        dbc.Pagination(
+                                            id="pagination",
+                                            first_last=True,
+                                            previous_next=True,
+                                            max_value=int(PAGE_COUNT),
+                                            fully_expanded=False,
+                                            size="lg",
+                                            className="justify-content-center mb-0"
+                                        )
+                                    ], style={"textAlign": "center"})
+                                ])
+                            ], className="mb-4"),
+                            
+                            # Table Controls
+                            dbc.Row([
+                                dbc.Col([
+                                    html.Div([
+                                        html.H6("Table Settings", className="mb-3 text-secondary"),
+                                        dcc.Checklist(
+                                            id="datatable-use-page-size",
+                                            options=[{"label": " Enable custom page size", "value": "True"}],
+                                            value=["False"],
+                                            className="mb-3",
+                                            style={"fontSize": "15px"}
+                                        ),
+                                        dbc.InputGroup([
+                                            dbc.InputGroupText([
+                                                html.I(className="fas fa-list-ol me-2"),
+                                                "Entries per page:"
+                                            ]),
+                                            dbc.Input(
+                                                id="datatable-page-size",
+                                                type="number",
+                                                min=1,
+                                                max=PAGE_MAX_SIZE,
+                                                value=PAGE_SIZE,
+                                                placeholder=str(PAGE_SIZE),
+                                                disabled=False,
+                                                size="lg"
+                                            )
+                                        ], size="lg", className="mb-3")
+                                    ])
+                                ], md=6),
+                                dbc.Col([
+                                    html.Div([
+                                        html.H6("Page Information", className="mb-3 text-secondary"),
+                                        dbc.Alert([
+                                            html.I(className="fas fa-info-circle me-2"),
+                                            html.Span(
+                                                "Select a page using pagination above",
+                                                id="pagination-contents"
+                                            )
+                                        ], color="info", className="d-flex align-items-center")
+                                    ])
+                                ], md=6)
+                            ], className="mb-4"),
+                            
+                            # Enhanced Table Container
+                            html.Div([
+                                dash_table.DataTable(
+                                    id="datatable-paging-and-sorting",
+                                    columns=[
+                                        {
+                                            "name": "Index",
+                                            "id": "system_index",
+                                            "selectable": True,
+                                            "type": "numeric",
+                                        },
+                                        {
+                                            "name": "Dataset Name",
+                                            "id": "meta_name",
+                                            "selectable": True,
+                                            "presentation": "markdown"
+                                        },
+                                        {
+                                            "name": "Status",
+                                            "id": "system_status",
+                                            "selectable": True,
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "Date Created",
+                                            "id": "system_date",
+                                            "selectable": True,
+                                            "type": "datetime"
+                                        },
+                                        {
+                                            "name": "User",
+                                            "id": "system_user",
+                                            "selectable": True,
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "Binary Size",
+                                            "id": "system_size",
+                                            "selectable": True,
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "HDF5 Size",
+                                            "id": "system_size_hdf5",
+                                            "selectable": True,
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "Download",
+                                            "id": "system_download",
+                                            "selectable": True,
+                                            "presentation": "markdown"
+                                        },
+                                    ],
+                                    data=table_data.to_dict("records"),
+                                    style_table={
+                                        "width": "100%",
+                                        "height": "auto",
+                                        "overflowX": "auto",
+                                        "overflowY": "visible",
+                                    },
+                                    style_header={
+                                        "backgroundColor": "#007bff",
+                                        "color": "white",
+                                        "fontWeight": "bold",
+                                        "textAlign": "center",
+                                    },
+                                    style_cell={
+                                        "textAlign": "left",
+                                        "padding": "10px",
+                                        "fontFamily": "Arial",
+                                    },
+                                    style_data={
+                                        "backgroundColor": "white",
+                                        "color": "black",
+                                    },
+                                    page_current=0,
+                                    page_size=PAGE_SIZE,
+                                    page_action="none",
+                                    row_selectable="multi",
+                                    merge_duplicate_headers=True,
+                                    markdown_options={"html": True},
+                                )
+                            ], 
+                            className="table-responsive enhanced-table-container", 
+                            style={
+                                "overflow": "visible",  # CHANGED FROM "auto" TO "visible"
+                                "minHeight": "300px",  # REDUCED MINIMUM HEIGHT
+                                "height": "auto",  # AUTO HEIGHT
+                                "maxHeight": "none",  # REMOVED MAX HEIGHT RESTRICTION
+                                "padding": "1rem",
+                                "backgroundColor": "#ffffff",
+                                "borderRadius": "12px",
+                                "boxShadow": "inset 0 2px 4px rgba(0, 0, 0, 0.05)",
+                            })
+                        ], style={"padding": "2rem"})  # INCREASED CARD BODY PADDING
+                    ], style={
+                        **CARD_STYLE,
+                        "minHeight": "auto",
+                        "height": "auto",
+                        "width": "100%",  # ADD FULL WIDTH
+                        "maxWidth": "100%",  # ADD MAX WIDTH
+                        "boxShadow": "0 6px 20px rgba(0, 0, 0, 0.15)",
+                        "border": "2px solid #e0e6ed",
+                    })
+                ], width=12, className="mb-4")
+            ])
+        ], fluid=True, className="mb-4"),
+        
+        # Hidden elements
+        dcc.Location(id="download_location", refresh=True),
+        
+    ], style={
+        "backgroundColor": "#f8f9fa",
+        "minHeight": "100vh",
+        "paddingTop": "2rem",
+        "paddingBottom": "2rem"
+    })
 
 
 @callback(
@@ -1010,3 +913,38 @@ def update_page_count(use_page_size: int, page_size_value: int) -> tuple:
         return int(len(table_data) / PAGE_SIZE) + 1, {"color": "grey"}
 
     return int(len(table_data) / PAGE_SIZE) + 1, {"color": "grey"}
+
+@callback(
+    Output("datatable-paging-and-sorting", "style_table"),
+    Input("datatable-page-size", "value"),
+    prevent_initial_call=False
+)
+def update_table_height(page_size):
+    """Dynamically adjust table height based on page size - NO SCROLLING"""
+    if page_size is None:
+        page_size = PAGE_SIZE
+    
+    # Calculate height based on number of rows
+    # Each row is approximately 60px (45px cell + 15px padding/border)
+    # Header is approximately 50px
+    padding_height = 40  # Additional padding and borders
+    
+    # Calculate total height needed
+    calculated_height = (page_size * 60) + 50 + padding_height
+    
+    # Convert to CSS height
+    table_height = f"{calculated_height}px"
+    
+    return {
+        "overflowX": "auto",  # HORIZONTAL SCROLL IF NEEDED
+        "overflowY": "visible",  # NO VERTICAL SCROLL
+        "borderRadius": "12px",
+        "border": "2px solid #e0e6ed",
+        "fontFamily": "Arial, sans-serif",
+        "width": "100%",
+        "height": table_height,  # CALCULATED HEIGHT
+        "minHeight": "300px",  # MINIMUM HEIGHT
+        "maxHeight": "none",  # NO MAXIMUM HEIGHT
+        "boxShadow": "0 4px 12px rgba(0, 0, 0, 0.15)",
+        "tableLayout": "fixed",
+    }

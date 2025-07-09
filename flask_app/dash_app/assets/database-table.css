@@ -1,0 +1,164 @@
+/* Minimal Dash Table CSS - Complete Table Display */
+
+/* Force table to display all content */
+.dash-table-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Remove any height restrictions */
+.dash-table-container .dash-spreadsheet-container {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner {
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* Force table layout */
+.dash-table-container table {
+    width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+}
+
+/* Force all cells to be visible */
+.dash-table-container th,
+.dash-table-container td {
+    display: table-cell !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 8px !important;
+    border: 1px solid #ddd !important;
+}
+
+/* Force table structure */
+.dash-table-container thead {
+    display: table-header-group !important;
+}
+
+.dash-table-container tbody {
+    display: table-row-group !important;
+}
+
+.dash-table-container tr {
+    display: table-row !important;
+}
+
+/* Column Widths - Total 100% */
+.dash-table-container [data-dash-column="system_index"] {
+    width: 8% !important;
+    min-width: 60px !important;
+    text-align: center !important;
+}
+
+.dash-table-container [data-dash-column="meta_name"] {
+    width: 35% !important;
+    min-width: 200px !important;
+    text-align: left !important;
+}
+
+.dash-table-container [data-dash-column="system_status"] {
+    width: 10% !important;
+    min-width: 70px !important;
+    text-align: center !important;
+}
+
+.dash-table-container [data-dash-column="system_date"] {
+    width: 12% !important;
+    min-width: 90px !important;
+    text-align: center !important;
+}
+
+.dash-table-container [data-dash-column="system_user"] {
+    width: 8% !important;
+    min-width: 60px !important;
+    text-align: center !important;
+}
+
+.dash-table-container [data-dash-column="system_size"] {
+    width: 12% !important;
+    min-width: 80px !important;
+    text-align: right !important;
+    font-family: monospace !important;
+}
+
+.dash-table-container [data-dash-column="system_size_hdf5"] {
+    width: 12% !important;
+    min-width: 80px !important;
+    text-align: right !important;
+    font-family: monospace !important;
+}
+
+.dash-table-container [data-dash-column="system_download"] {
+    width: 3% !important;
+    min-width: 50px !important;
+    text-align: center !important;
+}
+
+/* Force Column Display */
+.dash-table-container table th,
+.dash-table-container table td {
+    display: table-cell !important;
+    box-sizing: border-box !important;
+}
+
+/* nth-child Backup Selectors */
+.dash-table-container table th:nth-child(1),
+.dash-table-container table td:nth-child(1) { width: 8% !important; }
+
+.dash-table-container table th:nth-child(2),
+.dash-table-container table td:nth-child(2) { width: 35% !important; }
+
+.dash-table-container table th:nth-child(3),
+.dash-table-container table td:nth-child(3) { width: 10% !important; }
+
+.dash-table-container table th:nth-child(4),
+.dash-table-container table td:nth-child(4) { width: 12% !important; }
+
+.dash-table-container table th:nth-child(5),
+.dash-table-container table td:nth-child(5) { width: 8% !important; }
+
+.dash-table-container table th:nth-child(6),
+.dash-table-container table td:nth-child(6) { width: 12% !important; }
+
+.dash-table-container table th:nth-child(7),
+.dash-table-container table td:nth-child(7) { width: 12% !important; }
+
+.dash-table-container table th:nth-child(8),
+.dash-table-container table td:nth-child(8) { width: 3% !important; }
+
+/* Container Wrappers */
+.table-responsive,
+.enhanced-table-container {
+    width: 100% !important;
+    overflow: visible !important;
+    margin: 0 !important;
+}
+
+/* Card Containers */
+.card:has(.dash-table-container) {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.card-body:has(.table-responsive) {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .dash-table-container {
+        font-size: 12px !important;
+    }
+}

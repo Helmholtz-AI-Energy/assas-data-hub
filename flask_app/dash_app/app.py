@@ -245,6 +245,230 @@ def hamburger_style() -> dict:
         },
     }
 
+def footer_style() -> dict:
+    """Define footer styles.
+    
+    Returns:
+        dict: CSS styles for footer.
+    """
+    return {
+        "backgroundColor": "#2c3e50",
+        "color": "#ecf0f1",
+        "padding": "2rem 0",
+        "marginTop": "3rem",
+        "borderTop": "3px solid #3498db",
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": "0.9rem",
+        
+        # Mobile responsive
+        "@media (max-width: 768px)": {
+            "padding": "1.5rem 0",
+            "fontSize": "0.8rem",
+        },
+    }
+
+def footer_section_style() -> dict:
+    """Define footer section styles.
+    
+    Returns:
+        dict: CSS styles for footer sections.
+    """
+    return {
+        "marginBottom": "1.5rem",
+        
+        # Mobile responsive
+        "@media (max-width: 768px)": {
+            "marginBottom": "1rem",
+            "textAlign": "center",
+        },
+    }
+
+def footer_title_style() -> dict:
+    """Define footer title styles.
+    
+    Returns:
+        dict: CSS styles for footer titles.
+    """
+    return {
+        "color": "#3498db",
+        "fontSize": "1.1rem",
+        "fontWeight": "600",
+        "marginBottom": "0.75rem",
+        "borderBottom": "1px solid #34495e",
+        "paddingBottom": "0.5rem",
+        
+        # Mobile responsive
+        "@media (max-width: 768px)": {
+            "fontSize": "1rem",
+            "marginBottom": "0.5rem",
+        },
+    }
+
+def footer_link_style() -> dict:
+    """Define footer link styles.
+    
+    Returns:
+        dict: CSS styles for footer links.
+    """
+    return {
+        "color": "#bdc3c7",
+        "textDecoration": "none",
+        "transition": "color 0.3s ease",
+        "display": "block",
+        "padding": "0.25rem 0",
+        
+        ":hover": {
+            "color": "#3498db",
+            "textDecoration": "underline",
+        },
+    }
+
+def footer_copyright_style() -> dict:
+    """Define footer copyright styles.
+    
+    Returns:
+        dict: CSS styles for copyright section.
+    """
+    return {
+        "borderTop": "1px solid #34495e",
+        "paddingTop": "1.5rem",
+        "marginTop": "2rem",
+        "textAlign": "center",
+        "color": "#95a5a6",
+        "fontSize": "0.85rem",
+        
+        # Mobile responsive
+        "@media (max-width: 768px)": {
+            "paddingTop": "1rem",
+            "marginTop": "1.5rem",
+            "fontSize": "0.8rem",
+        },
+    }
+
+# Footer component
+footer = html.Footer([
+    dbc.Container([
+        dbc.Row([
+            # Organization Info
+            dbc.Col([
+                html.H5("ASSAS Project", style=footer_title_style()),
+                html.P([
+                    "Advanced Seismic Simulation and Analysis System for ",
+                    "geothermal energy applications at KIT."
+                ], style={"lineHeight": "1.6", "marginBottom": "1rem"}),
+                html.Div([
+                    html.I(className="fas fa-map-marker-alt me-2"),
+                    "Karlsruhe Institute of Technology (KIT)"
+                ], style={"marginBottom": "0.5rem"}),
+                html.Div([
+                    html.I(className="fas fa-envelope me-2"),
+                    html.A(
+                        "contact@assas-project.org",
+                        href="mailto:contact@assas-project.org",
+                        style=footer_link_style()
+                    )
+                ], style={"display": "inline-block"}),
+            ], md=4, sm=12, style=footer_section_style()),
+            
+            # Quick Links
+            dbc.Col([
+                html.H5("Quick Links", style=footer_title_style()),
+                html.Div([
+                    html.A("Home", href="/assas_app/home", style=footer_link_style()),
+                    html.A("Database", href="/assas_app/database", style=footer_link_style()),
+                    html.A("About", href="/assas_app/about", style=footer_link_style()),
+                    html.A("Documentation", href="#", style=footer_link_style()),
+                    html.A("API Reference", href="#", style=footer_link_style()),
+                ])
+            ], md=2, sm=6, style=footer_section_style()),
+            
+            # Resources
+            dbc.Col([
+                html.H5("Resources", style=footer_title_style()),
+                html.Div([
+                    html.A("Research Papers", href="#", style=footer_link_style()),
+                    html.A("Data Sets", href="#", style=footer_link_style()),
+                    html.A("Tutorials", href="#", style=footer_link_style()),
+                    html.A("FAQ", href="#", style=footer_link_style()),
+                    html.A("Support", href="#", style=footer_link_style()),
+                ])
+            ], md=2, sm=6, style=footer_section_style()),
+            
+            # Partners & Social
+            dbc.Col([
+                html.H5("Partners", style=footer_title_style()),
+                html.Div([
+                    # Partner logos
+                    html.Div([
+                        html.Img(
+                            src=encode_svg_image_hq("kit_logo.drawio.svg"),
+                            height="40px",
+                            width="80px",
+                            style={
+                                "backgroundColor": "#ffffff",
+                                "padding": "4px",
+                                "borderRadius": "4px",
+                                "marginBottom": "1rem",
+                                "filter": "contrast(1.05) brightness(1.02)",
+                            },
+                            alt="KIT Logo"
+                        )
+                    ], style={"marginBottom": "1rem"}),
+                    
+                    # Social links
+                    html.Div([
+                        html.A([
+                            html.I(className="fab fa-github me-2"),
+                            "GitHub"
+                        ], href="https://github.com/Helmholtz-AI-Energy/assas-data-hub", 
+                           style=footer_link_style(), target="_blank"),
+                        html.A([
+                            html.I(className="fas fa-globe me-2"),
+                            "Website"
+                        ], href="#", style=footer_link_style(), target="_blank"),
+                    ])
+                ])
+            ], md=4, sm=12, style=footer_section_style()),
+        ]),
+        
+        # Copyright section
+        html.Hr(style={"borderColor": "#34495e", "margin": "2rem 0 1.5rem 0"}),
+        dbc.Row([
+            dbc.Col([
+                html.Div([
+                    html.P([
+                        "© 2024 ASSAS Data Hub. All rights reserved. | ",
+                        html.A("Privacy Policy", href="#", style=footer_link_style()),
+                        " | ",
+                        html.A("Terms of Service", href="#", style=footer_link_style()),
+                        " | ",
+                        html.A("Imprint", href="#", style=footer_link_style())
+                    ], style={
+                        "margin": "0",
+                        "display": "flex",
+                        "alignItems": "center",
+                        "justifyContent": "center",
+                        "flexWrap": "wrap",
+                        "gap": "0.5rem",
+                    }),
+                    html.P([
+                        "Powered by ",
+                        html.A("Dash", href="https://plotly.com/dash/", 
+                               style=footer_link_style(), target="_blank"),
+                        " & ",
+                        html.A("Flask", href="https://flask.palletsprojects.com/", 
+                               style=footer_link_style(), target="_blank")
+                    ], style={
+                        "margin": "0.5rem 0 0 0",
+                        "fontSize": "0.8rem",
+                        "color": "#7f8c8d"
+                    })
+                ], style=footer_copyright_style())
+            ], width=12)
+        ])
+    ], fluid=True)
+], style=footer_style())
+
 # Two-row navbar structure without toggle button
 navbar = html.Div([
     # Top Row - Brand and Logos (Reordered: ASSAS - Brand - KIT) - INCREASED LOGO HEIGHT
@@ -468,7 +692,7 @@ def init_dashboard(server: object) -> object:
                     navbar.style.opacity = '1';
                 } else if (scrollDelta > 0 && scrollDistance > 10) {
                     // Scrolling down - hide navbar
-                    if (scrollTop > 50) {
+                    if (scrollTop > 30) {
                         navbar.classList.add('navbar-hidden');
                         navbar.style.transform = 'translateY(-100%)';
                         navbar.style.opacity = '0';
@@ -549,19 +773,30 @@ def init_dashboard(server: object) -> object:
         prevent_initial_call=False
     )
 
-    # Create Dash Layout
+    # Create Dash Layout with Footer
     dash_app.layout = html.Div(
         [
             navbar,
-            html.Div(
-                dash.page_container,
-                style={
-                    "minHeight": "calc(100vh - 140px)",  # Increased from 120px
-                    "paddingTop": "160px",  # Increased from 140px - accounts for taller navbar
-                    "paddingLeft": "1rem",
-                    "paddingRight": "1rem",
-                }
-            )
+            # Main content wrapper
+            html.Div([
+                # Page content container
+                html.Div(
+                    dash.page_container,
+                    style={
+                        "minHeight": "calc(100vh - 160px - 200px)",  # Account for navbar and footer
+                        "paddingTop": "160px",  # Space for fixed navbar
+                        "paddingLeft": "1rem",
+                        "paddingRight": "1rem",
+                        "paddingBottom": "2rem",  # Space before footer
+                    }
+                ),
+                # Footer
+                footer
+            ], style={
+                "display": "flex",
+                "flexDirection": "column",
+                "minHeight": "100vh",
+            })
         ], 
         id="dash-container",
         style={
