@@ -87,6 +87,26 @@ def update_table_data() -> pd.DataFrame:
         for entry in table_data_local.itertuples()
     ]
 
+        # ADD THIS: Create colored status cells
+    def get_status_html(status):
+        status_classes = {
+            'Valid': 'status-valid',
+            'Invalid': 'status-invalid',
+        }
+        css_class = status_classes.get(status, 'status-unknown')
+        return f'<span class="{css_class}">{str(status)}</span>'
+    
+    #table_data_local["system_status"] = [
+    #    get_status_html(entry.system_status)
+    #    for entry in table_data_local.itertuples()
+    #]
+
+    # Temporarily use plain text instead of HTML:
+    table_data_local["system_status"] = [
+        entry.system_status  # Just use plain text for now
+        for entry in table_data_local.itertuples()
+    ]
+
     return table_data_local
 
 
@@ -508,7 +528,8 @@ def layout() -> html.Div:
                                             "selectable": True,
                                             "type": "numeric",
                                             "deletable": False,
-                                            "renamable": False
+                                            "renamable": False,
+                                            "hideable": False,
                                         },
                                         {
                                             "name": "Dataset Name",
@@ -517,15 +538,18 @@ def layout() -> html.Div:
                                             "presentation": "markdown",
                                             "type": "text",
                                             "deletable": False,
-                                            "renamable": False
+                                            "renamable": False,
+                                            "hideable": False,
                                         },
                                         {
                                             "name": "Status",
                                             "id": "system_status",
                                             "selectable": True,
+                                            #"presentation": "markdown",
                                             "type": "text",
                                             "deletable": False,
-                                            "renamable": False
+                                            "renamable": False,
+                                            "hideable": False, 
                                         },
                                         {
                                             "name": "Date Created",
@@ -533,7 +557,8 @@ def layout() -> html.Div:
                                             "selectable": True,
                                             "type": "datetime",
                                             "deletable": False,
-                                            "renamable": False
+                                            "renamable": False,
+                                            "hideable": False,
                                         },
                                         {
                                             "name": "User",
@@ -541,7 +566,8 @@ def layout() -> html.Div:
                                             "selectable": True,
                                             "type": "text",
                                             "deletable": False,
-                                            "renamable": False
+                                            "renamable": False,
+                                            "hideable": False,
                                         },
                                         {
                                             "name": "Binary Size",
@@ -549,7 +575,8 @@ def layout() -> html.Div:
                                             "selectable": True,
                                             "type": "text",
                                             "deletable": False,
-                                            "renamable": False
+                                            "renamable": False,
+                                            "hideable": False,
                                         },
                                         {
                                             "name": "HDF5 Size",
@@ -557,7 +584,8 @@ def layout() -> html.Div:
                                             "selectable": True,
                                             "type": "text",
                                             "deletable": False,
-                                            "renamable": False
+                                            "renamable": False,
+                                            "hideable": False,
                                         },
                                         {
                                             "name": "Download",
@@ -566,7 +594,8 @@ def layout() -> html.Div:
                                             "presentation": "markdown",
                                             "type": "text",
                                             "deletable": False,
-                                            "renamable": False
+                                            "renamable": False,
+                                            "hideable": False,
                                         },
                                     ],
                                     data=[],
