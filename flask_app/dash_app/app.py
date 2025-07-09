@@ -363,8 +363,8 @@ footer = html.Footer([
                 html.Div([
                     html.I(className="fas fa-envelope me-2"),
                     html.A(
-                        "contact@assas-project.org",
-                        href="mailto:contact@assas-project.org",
+                        "jonas.dressner@kit.edu",
+                        href="mailto:jonas.dressner@kit.edu",
                         style=footer_link_style()
                     )
                 ], style={"display": "inline-block"}),
