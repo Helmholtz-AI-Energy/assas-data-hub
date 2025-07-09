@@ -92,6 +92,7 @@ def update_table_data() -> pd.DataFrame:
         status_classes = {
             'Valid': 'status-valid',
             'Invalid': 'status-invalid',
+            'Converting': 'status-converting',
         }
         css_class = status_classes.get(status, 'status-unknown')
         return f'<span class="{css_class}">{str(status)}</span>'
@@ -617,7 +618,7 @@ def layout() -> html.Div:
                                             previous_next=True,
                                             max_value=int(PAGE_COUNT),
                                             fully_expanded=False,
-                                            size="sm",  # Changed from lg to sm for mobile
+                                            #size="lg",  # Changed from lg to sm for mobile
                                             className="justify-content-center mb-2"
                                         ),
                                         html.Small([
@@ -709,7 +710,7 @@ def layout() -> html.Div:
                                             "hideable": False,
                                         },
                                         {
-                                            "name": "Size",  # Shortened for mobile
+                                            "name": "Binary Size",  # Shortened for mobile
                                             "id": "system_size",
                                             "selectable": True,
                                             "type": "text",
@@ -718,7 +719,7 @@ def layout() -> html.Div:
                                             "hideable": False,
                                         },
                                         {
-                                            "name": "HDF5",  # Shortened for mobile
+                                            "name": "HDF5 Size",  # Shortened for mobile
                                             "id": "system_size_hdf5",
                                             "selectable": True,
                                             "type": "text",

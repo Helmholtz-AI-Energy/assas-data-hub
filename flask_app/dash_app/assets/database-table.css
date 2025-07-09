@@ -176,6 +176,18 @@
     text-overflow: ellipsis !important;
 }
 
+.dash-table-container [data-dash-column="system_status"] span {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100% - 16px) !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
 .dash-table-container [data-dash-column="meta_name"],
 .dash-table-container [data-dash-column="system_download"] {
     position: relative !important;
@@ -199,6 +211,18 @@
     background-color: #f8d7da !important;
     color: #721c24 !important;
     border: 2px solid #dc3545 !important;
+    font-weight: bold !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    display: inline-block !important;
+    width: 90% !important;
+    text-align: center !important;
+}
+
+.status-converting {
+    background-color: #f1eab8 !important;
+    color: #575224 !important;
+    border: 2px solid #575224 !important;
     font-weight: bold !important;
     border-radius: 4px !important;
     padding: 4px 8px !important;
@@ -369,4 +393,111 @@
 .dash-table-container input[type="text"] {
     background-color: white !important;
     color: black !important;
+}
+
+/* Add these responsive pagination styles: */
+
+/* Desktop - Large pagination */
+.pagination {
+    font-size: 1rem !important;
+}
+
+.pagination .page-link {
+    padding: 0.75rem 1rem !important;
+    font-size: 1rem !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+}
+
+.pagination .page-item {
+    margin: 0 2px !important;
+}
+
+/* Tablet - Medium pagination */
+@media (max-width: 992px) {
+    .pagination {
+        font-size: 0.9rem !important;
+    }
+    
+    .pagination .page-link {
+        padding: 0.6rem 0.8rem !important;
+        font-size: 0.9rem !important;
+        min-width: 40px !important;
+        min-height: 40px !important;
+    }
+    
+    .pagination .page-item {
+        margin: 0 1px !important;
+    }
+}
+
+/* Mobile - Small pagination */
+@media (max-width: 768px) {
+    .pagination {
+        font-size: 0.8rem !important;
+    }
+    
+    .pagination .page-link {
+        padding: 0.5rem 0.7rem !important;
+        font-size: 0.8rem !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+    }
+    
+    .pagination .page-item {
+        margin: 0 1px !important;
+    }
+    
+    /* Hide page numbers on very small screens, keep only prev/next */
+    .pagination .page-item:not(.page-item-first):not(.page-item-last):not(.page-item-prev):not(.page-item-next) {
+        display: none !important;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 576px) {
+    .pagination {
+        font-size: 0.75rem !important;
+        justify-content: center !important;
+    }
+    
+    .pagination .page-link {
+        padding: 0.4rem 0.6rem !important;
+        font-size: 0.75rem !important;
+        min-width: 32px !important;
+        min-height: 32px !important;
+    }
+    
+    .pagination .page-item {
+        margin: 0 !important;
+    }
+    
+    /* Show only essential navigation */
+    .pagination .page-item:not(.page-item-first):not(.page-item-last):not(.page-item-prev):not(.page-item-next):not(.page-item-active) {
+        display: none !important;
+    }
+}
+
+/* Active page styling for all screen sizes */
+.pagination .page-item.active .page-link {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+/* Hover effects */
+.pagination .page-link:hover {
+    background-color: #e9ecef !important;
+    border-color: #dee2e6 !important;
+    color: #007bff !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Disabled state */
+.pagination .page-item.disabled .page-link {
+    color: #6c757d !important;
+    background-color: #fff !important;
+    border-color: #dee2e6 !important;
+    cursor: not-allowed !important;
 }
