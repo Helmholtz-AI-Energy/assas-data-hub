@@ -706,7 +706,7 @@ def init_dashboard(server: object) -> object:
                     navbar.classList.add('navbar-compact');
                     navbar.style.transform = 'translateY(0) scale(0.95)';
                     navbar.style.opacity = '0.9';
-                } else if (scrollTop < 100) {
+                } else if (scrollTop < 50) {
                     // Near top - show full navbar
                     navbar.classList.add('navbar-visible');
                     navbar.style.transform = 'translateY(0)';

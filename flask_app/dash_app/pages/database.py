@@ -11,6 +11,7 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import logging
 import shutil
+import math
 
 from pymongo import MongoClient
 from dash import dash_table, html, dcc, Input, Output, callback, State, callback_context
@@ -314,7 +315,7 @@ def layout() -> html.Div:
                             ], className="mb-0 text-primary", style={"fontSize": "1.5rem"})
                         ], style={"padding": "1.5rem", "backgroundColor": "#f8f9fa"}),
                         dbc.CardBody([
-                            # Pagination - MOVED HERE DIRECTLY ABOVE TABLE
+                            # Pagination and Page Info - SIDE BY SIDE
                             dbc.Row([
                                 dbc.Col([
                                     html.Div([
@@ -326,24 +327,28 @@ def layout() -> html.Div:
                                             max_value=int(PAGE_COUNT),
                                             fully_expanded=False,
                                             size="lg",
-                                            className="justify-content-center mb-0"
-                                        )
+                                            className="justify-content-center mb-2"
+                                        ),
+                                        html.Small([
+                                            html.I(className="fas fa-info-circle me-1"),
+                                            html.Span(
+                                                "Page 1/10",
+                                                id="pagination-contents"
+                                            )
+                                        ], className="text-muted text-center d-block",
+                                           style={"fontSize": "0.7rem"})
                                     ], style={"textAlign": "center"})
-                                ])
-                            ], className="mb-4"),
-                            
-                            # Table Controls
-                            dbc.Row([
+                                ], md=8),  # REDUCED FROM 12 TO 8
                                 dbc.Col([
                                     html.Div([
                                         html.H6("Table Settings", className="mb-3 text-secondary"),
-                                        dcc.Checklist(
-                                            id="datatable-use-page-size",
-                                            options=[{"label": " Enable custom page size", "value": "True"}],
-                                            value=["False"],
-                                            className="mb-3",
-                                            style={"fontSize": "15px"}
-                                        ),
+                                        #dcc.Checklist(
+                                        #    id="datatable-use-page-size",
+                                        #    options=[{"label": " Enable custom page size", "value": "True"}],
+                                        #    value=["False"],
+                                        #    className="mb-3",
+                                        #    style={"fontSize": "15px"}
+                                        #),
                                         dbc.InputGroup([
                                             dbc.InputGroupText([
                                                 html.I(className="fas fa-list-ol me-2"),
@@ -361,21 +366,9 @@ def layout() -> html.Div:
                                             )
                                         ], size="lg", className="mb-3")
                                     ])
-                                ], md=6),
-                                dbc.Col([
-                                    html.Div([
-                                        html.H6("Page Information", className="mb-3 text-secondary"),
-                                        dbc.Alert([
-                                            html.I(className="fas fa-info-circle me-2"),
-                                            html.Span(
-                                                "Select a page using pagination above",
-                                                id="pagination-contents"
-                                            )
-                                        ], color="info", className="d-flex align-items-center")
-                                    ])
-                                ], md=6)
-                            ], className="mb-4"),
-                            
+                                ], md=4),                               
+                            ], className="mb-4"),                            
+                
                             # Enhanced Table Container
                             html.Div([
                                 dash_table.DataTable(
@@ -391,7 +384,7 @@ def layout() -> html.Div:
                                             "name": "Dataset Name",
                                             "id": "meta_name",
                                             "selectable": True,
-                                            "presentation": "markdown"
+                                            "presentation": "markdown",            
                                         },
                                         {
                                             "name": "Status",
@@ -431,6 +424,7 @@ def layout() -> html.Div:
                                         },
                                     ],
                                     data=table_data.to_dict("records"),
+                                    #data=[],
                                     style_table={
                                         "width": "100%",
                                         "height": "auto",
@@ -444,7 +438,7 @@ def layout() -> html.Div:
                                         "textAlign": "center",
                                     },
                                     style_cell={
-                                        "textAlign": "left",
+                                        "textAlign": "center",
                                         "padding": "10px",
                                         "fontFamily": "Arial",
                                     },
@@ -454,10 +448,18 @@ def layout() -> html.Div:
                                     },
                                     page_current=0,
                                     page_size=PAGE_SIZE,
-                                    page_action="none",
+                                    page_action="custom",
                                     row_selectable="multi",
                                     merge_duplicate_headers=True,
                                     markdown_options={"html": True},
+                                    style_cell_conditional=[
+                                        {
+                                            "if": {"column_id": "meta_name"},
+                                            "textAlign": "center",  # CHANGED FROM "left" TO "center"
+                                            "fontWeight": "500",
+                                            "whiteSpace": "normal",
+                                        },
+                                    ],
                                 )
                             ], 
                             className="table-responsive enhanced-table-container", 
@@ -471,16 +473,16 @@ def layout() -> html.Div:
                                 "borderRadius": "12px",
                                 "boxShadow": "inset 0 2px 4px rgba(0, 0, 0, 0.05)",
                             })
-                        ], style={"padding": "2rem"})  # INCREASED CARD BODY PADDING
-                    ], style={
-                        **CARD_STYLE,
-                        "minHeight": "auto",
-                        "height": "auto",
-                        "width": "100%",  # ADD FULL WIDTH
-                        "maxWidth": "100%",  # ADD MAX WIDTH
-                        "boxShadow": "0 6px 20px rgba(0, 0, 0, 0.15)",
-                        "border": "2px solid #e0e6ed",
-                    })
+                            ], style={"padding": "2rem"})
+                        ], style={
+                            **CARD_STYLE,
+                            "minHeight": "auto",
+                            "height": "auto",
+                            "width": "100%",  # ADD FULL WIDTH
+                            "maxWidth": "100%",  # ADD MAX WIDTH
+                            "boxShadow": "0 6px 20px rgba(0, 0, 0, 0.15)",
+                            "border": "2px solid #e0e6ed",
+                        })
                 ], width=12, className="mb-4")
             ])
         ], fluid=True, className="mb-4"),
@@ -737,183 +739,115 @@ def split_filter_part(filter_part: str) -> List[str]:
 
 
 @callback(
-    Output("datatable-paging-and-sorting", "data"),
-    Input("datatable-paging-and-sorting", "page_current"),
-    Input("datatable-paging-and-sorting", "page_size"),
-    Input("datatable-paging-and-sorting", "sort_by"),
-    Input("datatable-paging-and-sorting", "filter_query"),
-    Input("reload_page", "n_clicks"),
+    [Output("datatable-paging-and-sorting", "data"),
+     Output("pagination-contents", "children")],
+    [Input("pagination", "active_page"),
+     Input("datatable-page-size", "value"),
+     Input("datatable-paging-and-sorting", "sort_by"),
+     Input("datatable-paging-and-sorting", "filter_query"),
+     Input("reload_page", "n_clicks")],
+    prevent_initial_call=False
 )
-def update_table(
-    page_current: int,
-    page_size: int,
-    sort_by: list,
-    filter: str,
-    n_clicks: int,
-    ) -> List[dict]:
-    """Update the data in the data table based on pagination, sorting, and filtering.
-
-    Args:
-        page_current (int): The current page number.
-        page_size (int): The number of rows per page.
-        sort_by (list): List of dictionaries containing sorting information.
-        filter (str): The filter query string.
-        n_clicks (int): Number of clicks on the reload button.
-
-    Returns:
-        list: A list of dictionaries representing the filtered and sorted data for
-            the current page.
-
-    """
+def update_table_with_pagination(active_page, page_size, sort_by, filter_query, n_clicks):
+    """Update table data based on pagination, sorting, filtering, and refresh"""
+    
+    # Use default values if None
+    if active_page is None:
+        active_page = 1
+    if page_size is None:
+        page_size = PAGE_SIZE
+    if sort_by is None:
+        sort_by = []
+    
+    # Get fresh data (especially important after refresh)
     dataframe = update_table_data()
-
-    filtering_expressions = filter.split(" && ")
-
-    logger.info(f"filtering_expressions: {filtering_expressions}")
-
-    logger.info(f"page_current: {page_current}, page_size: {page_size}")
-    logger.info(f"sort_by: {sort_by}, filter: {filter}, n_clicks: {n_clicks}")
-
-    for filter_part in filtering_expressions:
-        col_name, operator, filter_value = split_filter_part(filter_part)
-
-        logger.info(f"filter_part: {filter_part}, col_name: {col_name}")
-        logger.info(f"operator: {operator}, filter_value: {filter_value}")
-
-        if operator in ("eq", "ne", "lt", "le", "gt", "ge"):
-            # these operators match pandas series operator method names
-            dataframe = dataframe.loc[
-                getattr(dataframe[col_name], operator)(filter_value)
-            ]
-        elif operator == "contains":
-            dataframe = dataframe.loc[dataframe[col_name].str.contains(filter_value)]
-        elif operator == "datestartswith":
-            # this is a simplification of the front-end filtering logic,
-            # only works with complete fields in standard format
-            dataframe = dataframe.loc[dataframe[col_name].str.startswith(filter_value)]
-
+    
+    # Apply filtering
+    if filter_query:
+        filtering_expressions = filter_query.split(" && ")
+        
+        for filter_part in filtering_expressions:
+            col_name, operator, filter_value = split_filter_part(filter_part)
+            
+            if operator in ("eq", "ne", "lt", "le", "gt", "ge"):
+                dataframe = dataframe.loc[
+                    getattr(dataframe[col_name], operator)(filter_value)
+                ]
+            elif operator == "contains":
+                dataframe = dataframe.loc[dataframe[col_name].str.contains(filter_value)]
+            elif operator == "datestartswith":
+                dataframe = dataframe.loc[dataframe[col_name].str.startswith(filter_value)]
+    
+    # Apply sorting
     if len(sort_by):
         dataframe = dataframe.sort_values(
             [col["column_id"] for col in sort_by],
             ascending=[col["direction"] == "asc" for col in sort_by],
             inplace=False,
         )
+    
+    # Calculate pagination
+    start_idx = (active_page - 1) * page_size
+    end_idx = start_idx + page_size
+    
+    # Get paginated data
+    paginated_data = dataframe.iloc[start_idx:end_idx].to_dict("records")
+    
+    # Update pagination info text
+    total_records = len(dataframe)  # Use filtered dataframe length
+    start_record = start_idx + 1 if total_records > 0 else 0
+    end_record = min(end_idx, total_records)
+    
+    pagination_text = f"Page {active_page} | Showing {start_record}-{end_record} of {total_records}"
+    
+    return paginated_data, pagination_text
 
-    page = page_current
-    size = page_size
-
-    return dataframe.iloc[page * size : (page + 1) * size].to_dict("records")
-
-
-@callback(
-    Output("datatable-paging-and-sorting", "page_size"),
-    Input("datatable-use-page-size", "value"),
-    Input("datatable-page-size", "value"),
-)
-def update_page_size(
-    use_page_size: list,
-    page_size_value: int
-    ) -> int:
-    """Update the page size of the data table based on user input.
-
-    Args:
-        use_page_size (list): List of selected options from the page size checklist.
-        page_size_value (int): The value entered in the page size input field.
-
-    Returns:
-        int: The updated page size value.
-
-    """
-    logger.info(
-        f"update page size, use_page_size: {use_page_size}, "
-        f"page_size_value: {page_size_value}"
-    )
-
-    if len(use_page_size) == 0 or page_size_value is None:
-        return PAGE_SIZE
-
-    return page_size_value
-
-
-@callback(
-    Output("pagination-contents", "children"),
-    Input("pagination", "active_page"),
-    Input("pagination", "max_value"),
-)
-def change_page(
-    page: int,
-    value: int,
-    ) -> str:
-    """Update the pagination display based on the current page and maximum value.
-
-    Args:
-        page (int): The current active page number.
-        value (int): The maximum value for pagination.
-
-    Returns:
-        str: A string indicating the current page and maximum value.
-
-    """
-    logger.debug(f"page: {page}, value: {value}")
-
-    if page:
-        return f"Page selected: {page}/{value}"
-
-    return f"Page selected: 1/{value}"
-
-
-@callback(
-    Output("datatable-paging-and-sorting", "page_current"),
-    Input("pagination", "active_page"),
-)
-def change_page_table(page: int) -> int:
-    """Update the current page of the data table based on the pagination input.
-
-    Args:
-        page (int): The current active page number from the pagination component.
-
-    Returns:
-        int: The current page number for the data table, adjusted to be zero-indexed.
-
-    """
-    logger.debug(f"Page: {page}.")
-
-    if page:
-        return page - 1
-
-    return 0
-
+# Keep these callbacks - they don't conflict:
 
 @callback(
     Output("pagination", "max_value"),
-    Output("datatable-page-size", "style"),
-    Input("datatable-use-page-size", "value"),
-    Input("datatable-page-size", "value"),
+    [Input("datatable-page-size", "value"),
+     Input("datatable-paging-and-sorting", "filter_query")],
+    prevent_initial_call=False
 )
-def update_page_count(use_page_size: int, page_size_value: int) -> tuple:
-    """Update the maximum value for pagination.
+def update_pagination_max_value(page_size, filter_query):
+    """Update pagination max value when page size or filter changes"""
+    if page_size is None:
+        page_size = PAGE_SIZE
+    
+    # Get filtered data count
+    dataframe = update_table_data()
+    
+    # Apply filtering to get accurate count
+    if filter_query:
+        filtering_expressions = filter_query.split(" && ")
+        
+        for filter_part in filtering_expressions:
+            col_name, operator, filter_value = split_filter_part(filter_part)
+            
+            if operator in ("eq", "ne", "lt", "le", "gt", "ge"):
+                dataframe = dataframe.loc[
+                    getattr(dataframe[col_name], operator)(filter_value)
+                ]
+            elif operator == "contains":
+                dataframe = dataframe.loc[dataframe[col_name].str.contains(filter_value)]
+            elif operator == "datestartswith":
+                dataframe = dataframe.loc[dataframe[col_name].str.startswith(filter_value)]
+    
+    total_pages = math.ceil(len(dataframe) / page_size) if len(dataframe) > 0 else 1
+    return total_pages
 
-    Args:
-        use_page_size (list): List of selected options from the page size checklist.
-        page_size_value (int): The value entered in the page size input field.
+@callback(
+    Output("pagination", "active_page"),
+    [Input("datatable-page-size", "value"),
+     Input("datatable-paging-and-sorting", "filter_query")],
+    prevent_initial_call=True
+)
+def reset_pagination_on_changes(page_size, filter_query):
+    """Reset to page 1 when page size or filter changes"""
+    return 1
 
-    Returns:
-        tuple: A tuple containing:
-            - int: The updated maximum value for pagination.
-            - dict: A dictionary with the style for the page size input field.
-
-    """
-    logger.debug(f"Update page count, use page size: {use_page_size}.")
-    logger.debug(f"page_size_value: {page_size_value}.")
-
-    if len(use_page_size) > 1 and page_size_value is not None:
-        return int(len(table_data) / page_size_value) + 1, {"color": "black"}
-
-    if page_size_value is None:
-        return int(len(table_data) / PAGE_SIZE) + 1, {"color": "grey"}
-
-    return int(len(table_data) / PAGE_SIZE) + 1, {"color": "grey"}
-
+# Keep the table height callback as is:
 @callback(
     Output("datatable-paging-and-sorting", "style_table"),
     Input("datatable-page-size", "value"),
@@ -925,8 +859,6 @@ def update_table_height(page_size):
         page_size = PAGE_SIZE
     
     # Calculate height based on number of rows
-    # Each row is approximately 60px (45px cell + 15px padding/border)
-    # Header is approximately 50px
     padding_height = 40  # Additional padding and borders
     
     # Calculate total height needed
@@ -936,15 +868,15 @@ def update_table_height(page_size):
     table_height = f"{calculated_height}px"
     
     return {
-        "overflowX": "auto",  # HORIZONTAL SCROLL IF NEEDED
-        "overflowY": "visible",  # NO VERTICAL SCROLL
+        "overflowX": "auto",
+        "overflowY": "visible",
         "borderRadius": "12px",
         "border": "2px solid #e0e6ed",
         "fontFamily": "Arial, sans-serif",
         "width": "100%",
-        "height": table_height,  # CALCULATED HEIGHT
-        "minHeight": "300px",  # MINIMUM HEIGHT
-        "maxHeight": "none",  # NO MAXIMUM HEIGHT
+        "height": table_height,
+        "minHeight": "300px",
+        "maxHeight": "none",
         "boxShadow": "0 4px 12px rgba(0, 0, 0, 0.15)",
         "tableLayout": "fixed",
     }

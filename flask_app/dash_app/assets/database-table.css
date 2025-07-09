@@ -56,51 +56,49 @@
 
 /* Column Widths - Total 100% */
 .dash-table-container [data-dash-column="system_index"] {
-    width: 8% !important;
+    width: 10% !important;
     min-width: 60px !important;
     text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="meta_name"] {
-    width: 35% !important;
+    width: 15% !important;
     min-width: 200px !important;
-    text-align: left !important;
+    text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_status"] {
-    width: 10% !important;
+    width: 15% !important;
     min-width: 70px !important;
     text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_date"] {
-    width: 12% !important;
+    width: 15% !important;
     min-width: 90px !important;
     text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_user"] {
-    width: 8% !important;
+    width: 15% !important;
     min-width: 60px !important;
     text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_size"] {
-    width: 12% !important;
+    width: 10% !important;
     min-width: 80px !important;
-    text-align: right !important;
-    font-family: monospace !important;
+    text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_size_hdf5"] {
-    width: 12% !important;
+    width: 10% !important;
     min-width: 80px !important;
-    text-align: right !important;
-    font-family: monospace !important;
+    text-align: center !important;
 }
 
 .dash-table-container [data-dash-column="system_download"] {
-    width: 3% !important;
+    width: 10% !important;
     min-width: 50px !important;
     text-align: center !important;
 }
@@ -114,28 +112,36 @@
 
 /* nth-child Backup Selectors */
 .dash-table-container table th:nth-child(1),
-.dash-table-container table td:nth-child(1) { width: 8% !important; }
+.dash-table-container table td:nth-child(1) { width: 10% !important; }
 
 .dash-table-container table th:nth-child(2),
-.dash-table-container table td:nth-child(2) { width: 35% !important; }
+.dash-table-container table td:nth-child(2) { width: 15% !important; }
 
 .dash-table-container table th:nth-child(3),
-.dash-table-container table td:nth-child(3) { width: 10% !important; }
+.dash-table-container table td:nth-child(3) { width: 15% !important; }
 
 .dash-table-container table th:nth-child(4),
-.dash-table-container table td:nth-child(4) { width: 12% !important; }
+.dash-table-container table td:nth-child(4) { width: 15% !important; }
 
 .dash-table-container table th:nth-child(5),
-.dash-table-container table td:nth-child(5) { width: 8% !important; }
+.dash-table-container table td:nth-child(5) { width: 15% !important; }
 
 .dash-table-container table th:nth-child(6),
-.dash-table-container table td:nth-child(6) { width: 12% !important; }
+.dash-table-container table td:nth-child(6) { width: 10% !important; }
 
 .dash-table-container table th:nth-child(7),
-.dash-table-container table td:nth-child(7) { width: 12% !important; }
+.dash-table-container table td:nth-child(7) { width: 10% !important; }
 
 .dash-table-container table th:nth-child(8),
-.dash-table-container table td:nth-child(8) { width: 3% !important; }
+.dash-table-container table td:nth-child(8) { width: 10% !important; }
+
+/* Force center alignment for link content */
+.dash-table-container [data-dash-column="meta_name"] a,
+.dash-table-container [data-dash-column="system_download"] a {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+}
 
 /* Container Wrappers */
 .table-responsive,
