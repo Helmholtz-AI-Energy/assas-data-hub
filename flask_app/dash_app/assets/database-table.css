@@ -395,3 +395,245 @@
     background-color: white !important;
     color: black !important;
 }
+
+/* ====== DESKTOP PAGINATION STYLING ====== */
+
+/* Desktop - Large pagination buttons with centered numbers */
+@media (min-width: 769px) {
+    .pagination {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        margin: 1rem 0 !important;
+        font-size: 1rem !important;
+    }
+
+    .pagination .page-item {
+        margin: 0 0.25rem !important;
+    }
+
+    .pagination .page-link {
+        padding: 0.75rem 1rem !important;
+        font-size: 1rem !important;
+        border: 1px solid #dee2e6 !important;
+        color: #007bff !important;
+        background-color: white !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        text-align: center !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.2s ease !important;
+        border-radius: 0.375rem !important;
+        line-height: 1 !important;
+        text-decoration: none !important;
+        font-weight: 500 !important;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #e9ecef !important;
+        border-color: #007bff !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        color: #0056b3 !important;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #007bff !important;
+        border-color: #007bff !important;
+        color: white !important;
+        font-weight: bold !important;
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3) !important;
+    }
+
+    .pagination .page-item.active .page-link:hover {
+        background-color: #0056b3 !important;
+        border-color: #0056b3 !important;
+        transform: translateY(-1px) !important;
+    }
+
+    .pagination .page-link:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+        outline: none !important;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d !important;
+        background-color: #fff !important;
+        border-color: #dee2e6 !important;
+        cursor: not-allowed !important;
+        opacity: 0.6 !important;
+    }
+
+    .pagination .page-item.disabled .page-link:hover {
+        transform: none !important;
+        box-shadow: none !important;
+        background-color: #fff !important;
+    }
+
+    /* First/Last button specific styling */
+    .pagination .page-item.page-item-first .page-link,
+    .pagination .page-item.page-item-last .page-link {
+        font-weight: 600 !important;
+    }
+
+    /* Previous/Next button specific styling */
+    .pagination .page-item.page-item-prev .page-link,
+    .pagination .page-item.page-item-next .page-link {
+        font-weight: 600 !important;
+        font-size: 1.1em !important;
+    }
+
+    /* Ensure all pagination elements are visible on desktop */
+    .pagination .page-item {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .pagination .page-link {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+/* Tablet - Medium buttons but still desktop style */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .pagination {
+        font-size: 0.9rem !important;
+        margin: 0.75rem 0 !important;
+    }
+    
+    .pagination .page-link {
+        padding: 0.6rem 0.8rem !important;
+        font-size: 0.9rem !important;
+        min-width: 42px !important;
+        min-height: 42px !important;
+    }
+    
+    .pagination .page-item {
+        margin: 0 0.15rem !important;
+    }
+}
+
+/* MOBILE AND HIGH ZOOM - HIDE DESKTOP PAGINATION */
+@media (max-width: 768px) {
+    /* Hide ALL desktop pagination elements on mobile */
+    .pagination {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: -9999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+    }
+    
+    .pagination .page-item,
+    .pagination .page-link {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
+/* HIGH ZOOM DETECTION - Hide desktop pagination when zoomed */
+@media (max-width: 900px) and (min-resolution: 1.5dppx) {
+    /* This detects high zoom levels on desktop */
+    .pagination {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    .pagination .page-item,
+    .pagination .page-link {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
+/* EXTREME ZOOM PROTECTION */
+@media (max-width: 1200px) and (min-resolution: 2dppx) {
+    /* This catches 200%+ zoom levels */
+    .pagination {
+        display: none !important;
+    }
+}
+
+/* Additional zoom breakpoints */
+@media (max-width: 600px) {
+    .pagination {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination {
+        display: none !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .pagination {
+        display: none !important;
+    }
+}
+
+@media (max-width: 320px) {
+    .pagination {
+        display: none !important;
+    }
+}
+
+/* Pagination container styling for desktop */
+@media (min-width: 769px) {
+    .pagination-container {
+        overflow: visible !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 0.5rem 0 !important;
+    }
+}
+
+/* Hide pagination container on mobile/zoom */
+@media (max-width: 768px) {
+    .pagination-container {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
+/* ====== END DESKTOP PAGINATION STYLING ====== */
+
+/* ====== MOBILE PAGINATION ALTERNATIVE ====== */
+/* You should use mobile-specific pagination buttons for mobile/zoom */
+@media (max-width: 768px) {
+    /* Style your mobile pagination buttons here */
+    .mobile-pagination,
+    .mobile-nav-buttons {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin: 0.5rem 0 !important;
+    }
+    
+    .mobile-pagination .btn,
+    .mobile-nav-buttons .btn {
+        margin: 0 0.25rem !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+}
