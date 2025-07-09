@@ -507,52 +507,86 @@ def layout() -> html.Div:
                                             "id": "system_index",
                                             "selectable": True,
                                             "type": "numeric",
+                                            "deletable": False,
+                                            "renamable": False
                                         },
                                         {
                                             "name": "Dataset Name",
                                             "id": "meta_name",
                                             "selectable": True,
-                                            "presentation": "markdown",            
+                                            "presentation": "markdown",
+                                            "type": "text",
+                                            "deletable": False,
+                                            "renamable": False
                                         },
                                         {
                                             "name": "Status",
                                             "id": "system_status",
                                             "selectable": True,
-                                            "type": "text"
+                                            "type": "text",
+                                            "deletable": False,
+                                            "renamable": False
                                         },
                                         {
                                             "name": "Date Created",
                                             "id": "system_date",
                                             "selectable": True,
-                                            "type": "datetime"
+                                            "type": "datetime",
+                                            "deletable": False,
+                                            "renamable": False
                                         },
                                         {
                                             "name": "User",
                                             "id": "system_user",
                                             "selectable": True,
-                                            "type": "text"
+                                            "type": "text",
+                                            "deletable": False,
+                                            "renamable": False
                                         },
                                         {
                                             "name": "Binary Size",
                                             "id": "system_size",
                                             "selectable": True,
-                                            "type": "text"
+                                            "type": "text",
+                                            "deletable": False,
+                                            "renamable": False
                                         },
                                         {
                                             "name": "HDF5 Size",
                                             "id": "system_size_hdf5",
                                             "selectable": True,
-                                            "type": "text"
+                                            "type": "text",
+                                            "deletable": False,
+                                            "renamable": False
                                         },
                                         {
                                             "name": "Download",
                                             "id": "system_download",
                                             "selectable": True,
-                                            "presentation": "markdown"
+                                            "presentation": "markdown",
+                                            "type": "text",
+                                            "deletable": False,
+                                            "renamable": False
                                         },
                                     ],
-                                    #data=table_data.to_dict("records"),
                                     data=[],
+                                    
+                                    # ENABLE SORTING AND FILTERING
+                                    sort_action="custom",  # Enable custom sorting
+                                    sort_mode="multi",     # Allow multiple column sorting
+                                    filter_action="custom", # Enable custom filtering
+                                    filter_query="",       # Initial filter query
+                                    
+                                    # PAGINATION SETTINGS
+                                    page_current=0,
+                                    page_size=PAGE_SIZE,
+                                    page_action="none",    # We handle pagination manually
+                                    
+                                    # SELECTION SETTINGS
+                                    row_selectable="multi",
+                                    selected_rows=[],
+                                    
+                                    # STYLING
                                     style_table={
                                         "width": "100%",
                                         "height": "auto",
@@ -564,30 +598,99 @@ def layout() -> html.Div:
                                         "color": "white",
                                         "fontWeight": "bold",
                                         "textAlign": "center",
+                                        "border": "1px solid #dee2e6",
+                                        "fontSize": "14px",
+                                        "padding": "12px 8px",
                                     },
                                     style_cell={
                                         "textAlign": "center",
-                                        "padding": "10px",
-                                        "fontFamily": "Arial",
+                                        "padding": "8px",
+                                        "fontFamily": "Arial, sans-serif",
+                                        "fontSize": "13px",
+                                        "border": "1px solid #dee2e6",
+                                        "whiteSpace": "normal",
+                                        "height": "auto",
                                     },
                                     style_data={
                                         "backgroundColor": "white",
                                         "color": "black",
+                                        "border": "1px solid #dee2e6",
                                     },
-                                    page_current=0,
-                                    page_size=PAGE_SIZE,
-                                    page_action="none",
-                                    row_selectable="multi",
-                                    merge_duplicate_headers=True,
-                                    markdown_options={"html": True},
+                                    style_data_conditional=[
+                                        {
+                                            "if": {"row_index": "odd"},
+                                            "backgroundColor": "#f8f9fa",
+                                        },
+                                        {
+                                            "if": {"state": "selected"},
+                                            "backgroundColor": "#d1ecf1",
+                                            "border": "1px solid #bee5eb",
+                                        },
+                                    ],
                                     style_cell_conditional=[
                                         {
                                             "if": {"column_id": "meta_name"},
-                                            "textAlign": "center",  # CHANGED FROM "left" TO "center"
+                                            "textAlign": "center",
                                             "fontWeight": "500",
                                             "whiteSpace": "normal",
+                                            "maxWidth": "200px",
+                                        },
+                                        {
+                                            "if": {"column_id": "system_index"},
+                                            "textAlign": "center",
+                                            "fontWeight": "600",
+                                            "maxWidth": "80px",
+                                        },
+                                        {
+                                            "if": {"column_id": "system_status"},
+                                            "textAlign": "center",
+                                            "fontWeight": "600",
+                                            "maxWidth": "100px",
+                                        },
+                                        {
+                                            "if": {"column_id": "system_date"},
+                                            "textAlign": "center",
+                                            "maxWidth": "150px",
+                                        },
+                                        {
+                                            "if": {"column_id": "system_user"},
+                                            "textAlign": "center",
+                                            "maxWidth": "120px",
+                                        },
+                                        {
+                                            "if": {"column_id": "system_size"},
+                                            "textAlign": "right",
+                                            "fontFamily": "Monaco, monospace",
+                                            "maxWidth": "120px",
+                                        },
+                                        {
+                                            "if": {"column_id": "system_size_hdf5"},
+                                            "textAlign": "right",
+                                            "fontFamily": "Monaco, monospace",
+                                            "maxWidth": "120px",
+                                        },
+                                        {
+                                            "if": {"column_id": "system_download"},
+                                            "textAlign": "center",
+                                            "maxWidth": "120px",
                                         },
                                     ],
+                                    
+                                    # ADDITIONAL OPTIONS
+                                    merge_duplicate_headers=True,
+                                    markdown_options={"html": True},
+                                    css=[{
+                                        'selector': '.dash-table-tooltip',
+                                        'rule': 'background-color: #2c3e50; color: white; font-size: 12px;'
+                                    }],
+                                    tooltip_data=[
+                                        {
+                                            column: {'value': f'Click to sort by {column}', 'type': 'markdown'}
+                                            for column in ['system_index', 'meta_name', 'system_status', 
+                                                         'system_date', 'system_user', 'system_size', 
+                                                         'system_size_hdf5', 'system_download']
+                                        }                                    
+                                    ],                                    
                                 )
                             ], 
                             className="table-responsive enhanced-table-container", 
@@ -866,6 +969,60 @@ def split_filter_part(filter_part: str) -> List[str]:
     return [None] * 3
 
 
+def apply_filters(dataframe: pd.DataFrame, filter_query: str) -> pd.DataFrame:
+    """Apply filters to the dataframe based on filter query.
+    
+    Args:
+        dataframe (pd.DataFrame): The dataframe to filter
+        filter_query (str): The filter query string
+        
+    Returns:
+        pd.DataFrame: Filtered dataframe
+    """
+    if not filter_query:
+        return dataframe
+    
+    filtering_expressions = filter_query.split(" && ")
+    
+    for filter_part in filtering_expressions:
+        col_name, operator, filter_value = split_filter_part(filter_part)
+        
+        if col_name is None or operator is None:
+            continue
+            
+        try:
+            if operator == "eq":
+                dataframe = dataframe.loc[dataframe[col_name] == filter_value]
+            elif operator == "ne":
+                dataframe = dataframe.loc[dataframe[col_name] != filter_value]
+            elif operator == "lt":
+                dataframe = dataframe.loc[dataframe[col_name] < filter_value]
+            elif operator == "le":
+                dataframe = dataframe.loc[dataframe[col_name] <= filter_value]
+            elif operator == "gt":
+                dataframe = dataframe.loc[dataframe[col_name] > filter_value]
+            elif operator == "ge":
+                dataframe = dataframe.loc[dataframe[col_name] >= filter_value]
+            elif operator == "contains":
+                if col_name in dataframe.columns:
+                    # Convert to string for contains operation
+                    dataframe = dataframe.loc[
+                        dataframe[col_name].astype(str).str.contains(
+                            str(filter_value), case=False, na=False
+                        )
+                    ]
+            elif operator == "datestartswith":
+                if col_name in dataframe.columns:
+                    dataframe = dataframe.loc[
+                        dataframe[col_name].astype(str).str.startswith(str(filter_value))
+                    ]
+        except Exception as e:
+            logger.warning(f"Error applying filter {filter_part}: {e}")
+            continue
+    
+    return dataframe
+
+
 @callback(
     [Output("datatable-paging-and-sorting", "data"),
      Output("pagination-contents", "children")],
@@ -889,32 +1046,29 @@ def update_table_with_pagination(active_page, page_size, sort_by, filter_query, 
     
     # Get fresh data (especially important after refresh)
     dataframe = update_table_data()
+    logger.info(f"Loaded {len(dataframe)} records from database")
     
-    # Apply filtering
+    # Apply filtering using enhanced function
     if filter_query:
-        filtering_expressions = filter_query.split(" && ")
-        
-        for filter_part in filtering_expressions:
-            col_name, operator, filter_value = split_filter_part(filter_part)
-            
-            if operator in ("eq", "ne", "lt", "le", "gt", "ge"):
-                dataframe = dataframe.loc[
-                    getattr(dataframe[col_name], operator)(filter_value)
-                ]
-            elif operator == "contains":
-                dataframe = dataframe.loc[dataframe[col_name].str.contains(filter_value)]
-            elif operator == "datestartswith":
-                dataframe = dataframe.loc[dataframe[col_name].str.startswith(filter_value)]
+        logger.info(f"Applying filter: {filter_query}")
+        dataframe = apply_filters(dataframe, filter_query)
+        logger.info(f"After filtering: {len(dataframe)} records")
     
     # Apply sorting
     if len(sort_by):
-        dataframe = dataframe.sort_values(
-            [col["column_id"] for col in sort_by],
-            ascending=[col["direction"] == "asc" for col in sort_by],
-            inplace=False,
-        )
+        logger.info(f"Applying sort: {sort_by}")
+        try:
+            dataframe = dataframe.sort_values(
+                [col["column_id"] for col in sort_by],
+                ascending=[col["direction"] == "asc" for col in sort_by],
+                inplace=False,
+            )
+            logger.info("Sorting applied successfully")
+        except Exception as e:
+            logger.warning(f"Error applying sort: {e}")
     
     # Calculate pagination
+    total_records = len(dataframe)
     start_idx = (active_page - 1) * page_size
     end_idx = start_idx + page_size
     
@@ -922,11 +1076,15 @@ def update_table_with_pagination(active_page, page_size, sort_by, filter_query, 
     paginated_data = dataframe.iloc[start_idx:end_idx].to_dict("records")
     
     # Update pagination info text
-    total_records = len(dataframe)  # Use filtered dataframe length
     start_record = start_idx + 1 if total_records > 0 else 0
     end_record = min(end_idx, total_records)
     
     pagination_text = f"Page {active_page} | Showing {start_record}-{end_record} of {total_records}"
+    
+    if filter_query:
+        pagination_text += " (filtered)"
+    
+    logger.info(f"Pagination: {pagination_text}")
     
     return paginated_data, pagination_text
 
@@ -935,34 +1093,25 @@ def update_table_with_pagination(active_page, page_size, sort_by, filter_query, 
 @callback(
     Output("pagination", "max_value"),
     [Input("datatable-page-size", "value"),
-     Input("datatable-paging-and-sorting", "filter_query")],
+     Input("datatable-paging-and-sorting", "filter_query"),
+     Input("reload_page", "n_clicks")],
     prevent_initial_call=False
 )
-def update_pagination_max_value(page_size, filter_query):
-    """Update pagination max value when page size or filter changes"""
+def update_pagination_max_value(page_size, filter_query, n_clicks):
+    """Update pagination max value when page size, filter, or data changes"""
     if page_size is None:
         page_size = PAGE_SIZE
     
-    # Get filtered data count
+    # Get fresh data
     dataframe = update_table_data()
     
     # Apply filtering to get accurate count
     if filter_query:
-        filtering_expressions = filter_query.split(" && ")
-        
-        for filter_part in filtering_expressions:
-            col_name, operator, filter_value = split_filter_part(filter_part)
-            
-            if operator in ("eq", "ne", "lt", "le", "gt", "ge"):
-                dataframe = dataframe.loc[
-                    getattr(dataframe[col_name], operator)(filter_value)
-                ]
-            elif operator == "contains":
-                dataframe = dataframe.loc[dataframe[col_name].str.contains(filter_value)]
-            elif operator == "datestartswith":
-                dataframe = dataframe.loc[dataframe[col_name].str.startswith(filter_value)]
+        dataframe = apply_filters(dataframe, filter_query)
     
     total_pages = math.ceil(len(dataframe) / page_size) if len(dataframe) > 0 else 1
+    logger.info(f"Updated pagination: {total_pages} total pages")
+    
     return total_pages
 
 @callback(
