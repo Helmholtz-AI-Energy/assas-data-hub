@@ -638,7 +638,7 @@ def layout() -> html.Div:
                                         dbc.InputGroup([
                                             dbc.InputGroupText([
                                                 html.I(className="fas fa-list-ol me-1"),
-                                                html.Span("Datasets per page:", className="d-none d-lg-inline"),
+                                                html.Span("Datasets per Page:", className="d-none d-lg-inline"),
                                                 html.Span("Size:", className="d-inline d-lg-none")
                                             ], style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
                                             dbc.Input(
@@ -659,8 +659,14 @@ def layout() -> html.Div:
                                                     "flex": "0 0 auto"  # Don't grow or shrink
                                                 }
                                             )
-                                        ], className="mb-3 responsive-input-group")
-                                    ])
+                                        ], className="mb-3 responsive-input-group"),
+                                        # Add tooltip container
+                                        #html.Div(
+                                        #    id="page-size-tooltip",
+                                        #    className="input-validation-tooltip hidden",
+                                        #    style={"display": "none"}
+                                        #)
+                                    ], style={"position": "relative"})
                                 ], xs=12, md=4)
                             ], className="mb-4"),                            
                 

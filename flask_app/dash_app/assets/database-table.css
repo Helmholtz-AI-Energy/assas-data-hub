@@ -176,7 +176,8 @@
     text-overflow: ellipsis !important;
 }
 
-.dash-table-container [data-dash-column="system_status"] span {
+/* WITH this fixed rule that targets only data cells: */
+.dash-table-container tbody td[data-dash-column="system_status"] span {
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
