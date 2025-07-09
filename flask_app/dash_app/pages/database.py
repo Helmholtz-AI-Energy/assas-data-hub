@@ -167,20 +167,148 @@ def layout() -> html.Div:
             dbc.Row([
                 dbc.Col([
                     html.H1(
-                        "ASSAS Database",
-                        className="display-4 fw-bold text-primary mb-3"
+                        "ASSAS Database Training Dataset Index",
+                        className="display-4 fw-bold text-primary mb-3 text-center",                        
                     ),
                     html.H2(
-                        "Training Dataset Index",
-                        className="text-secondary mb-4",
+                        "Browse, Search, and Download Machine Learning Training Datasets",
+                        className="text-secondary mb-4 text-center",
                         style={"fontSize": "1.5rem", "fontWeight": "400"}
                     ),
-                    dbc.Alert([
-                        html.I(className="fas fa-info-circle me-2"),
-                        "Welcome to the ASSAS Database! Use this interface to search, view, "
-                        "and download datasets from the ASSAS training dataset index. "
-                        "Navigate through datasets using pagination controls below."
-                    ], color="primary", className="d-flex align-items-center")
+                    html.Div([
+                        dbc.Button([
+                            html.I(className="fas fa-question-circle me-2"),
+                            "Usage Guide & Instructions"
+                        ],
+                        id="toggle-usage-guide",
+                        color="primary",
+                        outline=False,
+                        size="lg",
+                        className="w-100 mb-3",
+                        style={
+                            **BUTTON_STYLE,
+                            "backgroundColor": "#17a2b8",
+                            "borderColor": "#17a2b8",
+                            "color": "#ffffff"
+                        }
+                        ),
+                        
+                        dbc.Collapse([
+                            dbc.Card([
+                                dbc.CardBody([
+                                    html.H4("How to Use This Database Interface", 
+                                           className="text-primary mb-4", 
+                                           style={"fontSize": "1.4rem", "fontWeight": "600"}),
+                                    
+                                    dbc.Row([
+                                        dbc.Col([
+                                            html.H5("🔍 Searching & Filtering", className="text-secondary mb-3"),
+                                            html.Ul([
+                                                html.Li([
+                                                    html.Strong("Sort columns: "), 
+                                                    "Click on column headers to sort data in ascending or descending order"
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("Filter data: "), 
+                                                    "Use the filter boxes that appear when you hover over column headers"
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("Filter operators: "), 
+                                                    html.Code("contains"), ", ", html.Code("="), ", ", 
+                                                    html.Code(">"), ", ", html.Code("<"), ", ", html.Code("!=")
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("Examples: "), 
+                                                    "Type 'Valid' in Status filter, or '>2024-01-01' in Date filter"
+                                                ], className="mb-2"),
+                                            ], style={"fontSize": "0.9rem"})
+                                        ], md=6),
+                                        
+                                        dbc.Col([
+                                            html.H5("📄 Navigation & Settings", className="text-secondary mb-3"),
+                                            html.Ul([
+                                                html.Li([
+                                                    html.Strong("Navigate pages: "), 
+                                                    "Use pagination controls below to browse through datasets"
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("Adjust page size: "), 
+                                                    "Change entries per page (1-100) using the input field"
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("Page information: "), 
+                                                    "Shows current page number and total records displayed"
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("Auto-reset: "), 
+                                                    "Pagination resets to page 1 when filtering or changing page size"
+                                                ], className="mb-2"),
+                                            ], style={"fontSize": "0.9rem"})
+                                        ], md=6)
+                                    ]),
+                                    
+                                    html.Hr(className="my-4"),
+                                    
+                                    dbc.Row([
+                                        dbc.Col([
+                                            html.H5("📥 Downloading Datasets", className="text-secondary mb-3"),
+                                            html.Ul([
+                                                html.Li([
+                                                    html.Strong("Select datasets: "), 
+                                                    "Click checkboxes in the leftmost column to select datasets"
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("Bulk download: "), 
+                                                    "Click 'Database Tools' to expand download options (max 20 datasets)"
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("Individual downloads: "), 
+                                                    "Use download links in the 'Download' column for single files"
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("ZIP format: "), 
+                                                    "Bulk downloads are provided as compressed ZIP archives"
+                                                ], className="mb-2"),
+                                            ], style={"fontSize": "0.9rem"})
+                                        ], md=6),
+                                        
+                                        dbc.Col([
+                                            html.H5("🔗 Additional Features", className="text-secondary mb-3"),
+                                            html.Ul([
+                                                html.Li([
+                                                    html.Strong("Dataset details: "), 
+                                                    "Click on dataset names to view comprehensive information"
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("Refresh data: "), 
+                                                    "Use the refresh button in Database Tools to reload the latest data"
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("Storage statistics: "), 
+                                                    "View database usage information in the Database Tools section"
+                                                ], className="mb-2"),
+                                                html.Li([
+                                                    html.Strong("Responsive design: "), 
+                                                    "Interface adapts to different screen sizes and devices"
+                                                ], className="mb-2"),
+                                            ], style={"fontSize": "0.9rem"})
+                                        ], md=6)
+                                    ]),
+                                    
+                                    dbc.Alert([
+                                        html.I(className="fas fa-lightbulb me-2"),
+                                        html.Strong("Pro Tip: "), 
+                                        "Use filters to narrow down datasets before selecting for download. "
+                                        "This makes it easier to find and download exactly what you need!"
+                                    ], color="success", className="mt-4")
+                                ])
+                            ], style={
+                                **CARD_STYLE,
+                                "backgroundColor": "#f8f9fa",
+                                "border": "1px solid #dee2e6"
+                            })
+                        ], id="collapse-usage-guide", is_open=False)
+                    ], className="mb-4")
                 ])
             ])
         ], fluid=True, className="mb-4"),
@@ -423,8 +551,8 @@ def layout() -> html.Div:
                                             "presentation": "markdown"
                                         },
                                     ],
-                                    data=table_data.to_dict("records"),
-                                    #data=[],
+                                    #data=table_data.to_dict("records"),
+                                    data=[],
                                     style_table={
                                         "width": "100%",
                                         "height": "auto",
@@ -448,7 +576,7 @@ def layout() -> html.Div:
                                     },
                                     page_current=0,
                                     page_size=PAGE_SIZE,
-                                    page_action="custom",
+                                    page_action="none",
                                     row_selectable="multi",
                                     merge_duplicate_headers=True,
                                     markdown_options={"html": True},
@@ -880,3 +1008,23 @@ def update_table_height(page_size):
         "boxShadow": "0 4px 12px rgba(0, 0, 0, 0.15)",
         "tableLayout": "fixed",
     }
+
+# Add this callback after your existing callbacks:
+
+@callback(
+    Output("collapse-usage-guide", "is_open"),
+    Input("toggle-usage-guide", "n_clicks"),
+    prevent_initial_call=True,
+)
+def toggle_usage_guide(n_clicks: int) -> bool:
+    """Toggle the visibility of the usage guide section.
+
+    Args:
+        n_clicks (int): Number of clicks on the toggle button.
+
+    Returns:
+        bool: True if the section should be open, False if it should be closed.
+
+    """
+    logger.info(f"Usage guide toggle clicked {n_clicks} times.")
+    return n_clicks % 2 == 1  # Toggle between open and closed
