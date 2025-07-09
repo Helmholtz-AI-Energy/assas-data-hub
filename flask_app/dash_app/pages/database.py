@@ -227,8 +227,9 @@ def layout() -> html.Div:
                                                "fontWeight": "600"
                                            }),
                                     
-                                    # Mobile-responsive grid
+                                    # Mobile-responsive grid with expanded content
                                     dbc.Row([
+                                        # Searching & Filtering Section
                                         dbc.Col([
                                             html.H5("🔍 Searching & Filtering", 
                                                    className="text-secondary mb-3",
@@ -236,46 +237,208 @@ def layout() -> html.Div:
                                             html.Ul([
                                                 html.Li([
                                                     html.Strong("Sort columns: "), 
-                                                    "Click on column headers to sort data"
+                                                    "Click on column headers to sort data ascending/descending"
                                                 ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                                 html.Li([
                                                     html.Strong("Filter data: "), 
-                                                    "Use filter boxes in column headers"
+                                                    "Use filter boxes that appear when hovering over column headers"
                                                 ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                                 html.Li([
-                                                    html.Strong("Examples: "), 
-                                                    "Type 'Valid' in Status filter"
+                                                    html.Strong("Multi-column sorting: "), 
+                                                    "Hold Shift and click multiple headers for complex sorting"
+                                                ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                                html.Li([
+                                                    html.Strong("Clear filters: "), 
+                                                    "Delete text in filter boxes to remove filters"
                                                 ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                             ])
-                                        ], xs=12, md=6),  # Full width on mobile, half on desktop
+                                        ], xs=12, lg=4, className="mb-4"),
                                         
+                                        # Filter Examples Section
                                         dbc.Col([
-                                            html.H5("📄 Navigation", 
+                                            html.H5("📝 Filter Examples", 
+                                                   className="text-secondary mb-3",
+                                                   style={"fontSize": "clamp(0.9rem, 2.5vw, 1.1rem)"}),
+                                            html.Div([
+                                                html.P([
+                                                    html.Strong("Text filtering:"),
+                                                ], className="mb-1", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                                html.Ul([
+                                                    html.Li([
+                                                        html.Code("Valid", className="bg-light px-1"), 
+                                                        " - Show only Valid datasets"
+                                                    ], className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                    html.Li([
+                                                        html.Code("contains example", className="bg-light px-1"), 
+                                                        " - Find datasets containing 'example'"
+                                                    ], className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                    html.Li([
+                                                        html.Code("ne Invalid", className="bg-light px-1"), 
+                                                        " - Exclude Invalid datasets"
+                                                    ], className="mb-2", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                ]),
+                                                
+                                                html.P([
+                                                    html.Strong("Date filtering:"),
+                                                ], className="mb-1", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                                html.Ul([
+                                                    html.Li([
+                                                        html.Code("datestartswith 2024", className="bg-light px-1"), 
+                                                        " - Show 2024 datasets"
+                                                    ], className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                    html.Li([
+                                                        html.Code(">= 2024-01-01", className="bg-light px-1"), 
+                                                        " - From January 2024 onwards"
+                                                    ], className="mb-2", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                ]),
+                                                
+                                                html.P([
+                                                    html.Strong("Size filtering:"),
+                                                ], className="mb-1", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                                html.Ul([
+                                                    html.Li([
+                                                        html.Code("> 100", className="bg-light px-1"), 
+                                                        " - Larger than 100 MB"
+                                                    ], className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                    html.Li([
+                                                        html.Code("< 1000", className="bg-light px-1"), 
+                                                        " - Smaller than 1 GB"
+                                                    ], className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                ]),
+                                            ])
+                                        ], xs=12, lg=4, className="mb-4"),
+                                        
+                                        # Navigation & Downloads Section
+                                        dbc.Col([
+                                            html.H5("📄 Navigation & Downloads", 
                                                    className="text-secondary mb-3",
                                                    style={"fontSize": "clamp(0.9rem, 2.5vw, 1.1rem)"}),
                                             html.Ul([
                                                 html.Li([
-                                                    html.Strong("Navigate: "), 
-                                                    "Use pagination controls"
+                                                    html.Strong("Navigate pages: "), 
+                                                    "Use pagination controls at the bottom"
                                                 ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                                 html.Li([
                                                     html.Strong("Page size: "), 
-                                                    "Change entries per page"
+                                                    "Change entries per page (1-100 datasets)"
                                                 ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                                 html.Li([
-                                                    html.Strong("Download: "), 
-                                                    "Select datasets and use tools"
+                                                    html.Strong("Dataset details: "), 
+                                                    "Click on dataset names for detailed information"
+                                                ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                                html.Li([
+                                                    html.Strong("Single download: "), 
+                                                    "Click 'hdf5 file' links in Download column"
                                                 ], className="mb-2", style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
                                             ])
-                                        ], xs=12, md=6)  # Full width on mobile, half on desktop
+                                        ], xs=12, lg=4, className="mb-4")
                                     ]),
                                     
-                                    dbc.Alert([
-                                        html.I(className="fas fa-lightbulb me-2"),
-                                        html.Strong("Pro Tip: "), 
-                                        "Use filters before downloading!"
-                                    ], color="success", className="mt-4", 
-                                       style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"})
+                                    # Bulk Download Section
+                                    dbc.Row([
+                                        dbc.Col([
+                                            html.Hr(className="my-4"),
+                                            html.H5("📦 Bulk Download Instructions", 
+                                                   className="text-primary mb-3",
+                                                   style={"fontSize": "clamp(0.9rem, 2.5vw, 1.1rem)"}),
+                                            
+                                            dbc.Row([
+                                                dbc.Col([
+                                                    html.H6("Step 1: Select Datasets", 
+                                                           className="text-secondary mb-2",
+                                                           style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                                    html.Ul([
+                                                        html.Li("Click the checkbox at the beginning of each row", 
+                                                               className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                        html.Li("Select multiple datasets (up to 20 at once)", 
+                                                               className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                        html.Li("Use filters first to narrow down your selection", 
+                                                               className="mb-2", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                    ]),
+                                                ], xs=12, md=6, className="mb-3"),
+                                                
+                                                dbc.Col([
+                                                    html.H6("Step 2: Generate Download", 
+                                                           className="text-secondary mb-2",
+                                                           style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                                    html.Ul([
+                                                        html.Li("Open 'Database Tools' section above", 
+                                                               className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                        html.Li("Click 'Get Download Link' button", 
+                                                               className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                        html.Li("Wait for ZIP archive to be prepared", 
+                                                               className="mb-2", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                    ]),
+                                                ], xs=12, md=6, className="mb-3")
+                                            ]),
+                                            
+                                            dbc.Alert([
+                                                html.I(className="fas fa-info-circle me-2"),
+                                                html.Strong("Download Limits: "),
+                                                "Maximum 20 datasets per download. Only 'Valid' datasets include HDF5 files. Invalid datasets show 'no hdf5 file'."
+                                            ], color="info", className="mb-3",
+                                               style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                        ], xs=12)
+                                    ]),
+                                    
+                                    # Advanced Tips Section
+                                    dbc.Row([
+                                        dbc.Col([
+                                            html.Hr(className="my-4"),
+                                            html.H5("💡 Advanced Tips", 
+                                                   className="text-primary mb-3",
+                                                   style={"fontSize": "clamp(0.9rem, 2.5vw, 1.1rem)"}),
+                                            
+                                            dbc.Row([
+                                                dbc.Col([
+                                                    html.H6("Efficient Filtering", 
+                                                           className="text-secondary mb-2",
+                                                           style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                                    html.Ul([
+                                                        html.Li([
+                                                            "Combine filters: Use ", html.Code("Status = Valid", className="bg-light px-1"), 
+                                                            " and date filters together"
+                                                        ], className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                        html.Li("Filter before selecting: Reduces scrolling through pages", 
+                                                               className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                        html.Li("Use wildcards: Text filters are case-insensitive", 
+                                                               className="mb-2", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                    ]),
+                                                ], xs=12, md=6, className="mb-3"),
+                                                
+                                                dbc.Col([
+                                                    html.H6("Download Strategy", 
+                                                           className="text-secondary mb-2",
+                                                           style={"fontSize": "clamp(0.8rem, 2vw, 0.9rem)"}),
+                                                    html.Ul([
+                                                        html.Li("Check file sizes before bulk download", 
+                                                               className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                        html.Li("Download in batches for large collections", 
+                                                               className="mb-1", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                        html.Li("Valid datasets have both binary and HDF5 files", 
+                                                               className="mb-2", style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"}),
+                                                    ]),
+                                                ], xs=12, md=6, className="mb-3")
+                                            ]),
+                                        ], xs=12)
+                                    ]),
+                                    
+                                    # Final Pro Tips
+                                    dbc.Row([
+                                        dbc.Col([
+                                            dbc.Alert([
+                                                html.I(className="fas fa-lightbulb me-2"),
+                                                html.Strong("Pro Tips: "),
+                                                html.Ul([
+                                                    html.Li("Use browser's back button to return to filtered results", className="mb-1"),
+                                                    html.Li("Bookmark filtered URLs for repeated searches", className="mb-1"),
+                                                    html.Li("Check dataset details page for metadata and preview", className="mb-1"),
+                                                    html.Li("Refresh page to get latest data from database", className="mb-0"),
+                                                ], className="mb-0 mt-2")
+                                            ], color="success", className="mb-0",
+                                               style={"fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)"})
+                                        ], xs=12)
+                                    ])
                                 ])
                             ], style={
                                 **CARD_STYLE,
