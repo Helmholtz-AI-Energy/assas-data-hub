@@ -18,6 +18,7 @@ from flask import redirect, request, Response, session
 from ..auth_utils import auth, is_authenticated, get_current_user
 from ..auth.oauth_auth import oauth_bp, init_oauth
 from ..auth.routes import auth_bp
+from ..auth.basic_auth import basic_auth_bp
 
 logger = logging.getLogger("assas_app")
 
@@ -815,7 +816,8 @@ def init_dashboard(server: object) -> object:
     # Register blueprints
     server.register_blueprint(oauth_bp)
     server.register_blueprint(auth_bp)
-
+    server.register_blueprint(basic_auth_bp)  # Add this line
+    
     # Protect Dash pages
     @server.before_request
     def restrict_access() -> Response:

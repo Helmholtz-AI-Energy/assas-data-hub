@@ -364,6 +364,30 @@ def layout() -> html.Div:  # ruff: noqa: E501
         ])
     
     # Authenticated layout
+    basic_auth_section = []
+    
+    if user.get('provider') == 'basic_auth':
+        basic_auth_section = dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.I(className="fas fa-key me-2"),
+                        html.Strong("Basic Authentication")
+                    ]),
+                    dbc.CardBody([
+                        html.P("You are logged in using Basic Authentication.", className="mb-3"),
+                        dbc.Button(
+                            [html.I(className="fas fa-key me-2"), "Change Password"],
+                            href="/auth/basic/change-password",
+                            color="warning",
+                            className="me-2"
+                        ),
+                        html.Small("Change your login password", className="text-muted")
+                    ])
+                ], className="mb-4")
+            ], width=12)
+        ])
+    
     return html.Div([
         dbc.Container([
             # Page Header
@@ -395,6 +419,9 @@ def layout() -> html.Div:  # ruff: noqa: E501
                     create_account_details_card(),
                     create_permissions_card()
                 ], md=8, sm=12)
-            ])
+            ]),
+            
+            # Basic Auth Section
+            basic_auth_section
         ], fluid=True, style={"maxWidth": "1400px", "margin": "0 auto", "padding": "2rem 1rem"})
     ])

@@ -1,5 +1,6 @@
 """Module to initialize the Flask application for the ASSAS Data Hub."""
 
+import os
 import secrets
 
 from flask import Flask
@@ -73,7 +74,21 @@ def init_app() -> CustomFlask:
 
     app.secret_key = secrets.token_hex(16)
 
-    app.config.from_object("config.Config")
+    config_name = os.environ.get('FLASK_ENV', 'development').lower()
+        
+    if config_name == 'development':
+        from config import DevelopmentConfig
+        app.config.from_object(DevelopmentConfig)
+        app.logger.info("Loaded DevelopmentConfig")
+    elif config_name == 'production':
+        from config import ProductionConfig
+        app.config.from_object(ProductionConfig)
+        app.logger.info("Loaded ProductionConfig")
+    else:
+        # Default to development
+        from config import DevelopmentConfig
+        app.config.from_object(DevelopmentConfig)
+        app.logger.info("Loaded DevelopmentConfig (default)")
 
     with app.app_context():
         # Import parts of our core Flask app

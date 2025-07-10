@@ -121,6 +121,18 @@
                 </div>
             </div>
             
+            <!-- Update your existing login.html to include basic auth option -->
+            <hr class="my-4">
+
+            <div class="text-center">
+                <p class="mb-3">Alternative login method:</p>
+                <a href="/auth/basic/login" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-user-shield me-2"></i>
+                    Basic Auth Login
+                </a>
+                <p class="form-text mt-2">For users with local credentials</p>
+            </div>
+            
             <!-- Debug Info (Development only) -->
             {% if config.DEBUG %}
             <div class="mt-4 p-3 bg-light border rounded">

@@ -3,6 +3,7 @@
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash
 
 # Load environment variables from .env file
 load_dotenv()
@@ -68,6 +69,24 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SERVER_NAME = 'localhost:5000'
     PREFERRED_URL_SCHEME = 'http'
+
+    # Development basic auth users
+    BASIC_AUTH_USERS = {
+        'admin_local': {
+            'password_hash': generate_password_hash('admin123'),  # Change this!
+            'roles': ['admin'],
+            'email': 'admin@dev.local',
+            'name': 'Development Admin',
+            'is_active': True
+        },
+        'user': {
+            'password_hash': generate_password_hash('user123'),   # Change this!
+            'roles': ['viewer'],
+            'email': 'user@dev.local',
+            'name': 'Development User',
+            'is_active': True
+        }
+    }
 
 
 class ProductionConfig(Config):
