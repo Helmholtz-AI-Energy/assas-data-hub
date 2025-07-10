@@ -119,10 +119,10 @@ class UserManager:
     def get_user_by_email(self, email: str) -> Optional[Dict]:
         """Get user by email address."""
         try:
-            user = self.users_collection.find_one({"email": email})
+            user = self.users_collection.find_one({"email": email.lower()})
             return user
         except Exception as e:
-            logger.error(f"Error retrieving user by email {email}: {e}")
+            logger.error(f"Error getting user by email: {e}")
             return None
     
     def get_user_by_username(self, username: str) -> Optional[Dict]:
@@ -273,3 +273,37 @@ class UserManager:
         except Exception as e:
             logger.error(f"Error retrieving user by ID {user_id}: {e}")
             return None
+        
+    def create_user(self, user_data: Dict[str, Any]) -> bool:
+        """Create a new user in the database."""
+        try:
+            # Validate required fields
+            required_fields = ['username', 'email', 'provider', 'roles']
+            for field in required_fields:
+                if field not in user_data:
+                    logger.error(f"Missing required field: {field}")
+                    return False
+            
+            # Check for existing username
+            if self.get_user_by_username(user_data['username']):
+                logger.error(f"Username {user_data['username']} already exists")
+                return False
+            
+            # Check for existing email
+            if self.get_user_by_email(user_data['email']):
+                logger.error(f"Email {user_data['email']} already exists")
+                return False
+            
+            # Insert user
+            result = self.users_collection.insert_one(user_data)
+            
+            if result.inserted_id:
+                logger.info(f"Created user: {user_data['username']} with ID: {result.inserted_id}")
+                return True
+            else:
+                logger.error("Failed to insert user")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error creating user: {e}")
+            return False

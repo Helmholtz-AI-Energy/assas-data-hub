@@ -16,6 +16,7 @@ import pandas as pd
 from typing import Dict, List, Any, Optional
 import io
 import base64
+from werkzeug.security import generate_password_hash
 
 from ...auth_utils import get_current_user, require_role
 from ...database.user_manager import UserManager
@@ -640,10 +641,229 @@ def generate_excel_download(users_data: List[Dict]) -> str:
         logger.error(f"Error generating Excel: {e}")
         return ""
 
-# Update the layout function to include export buttons
+def create_add_user_modal():
+    """Create modal for adding new users with 4 roles only."""
+    
+    return dbc.Modal([
+        dbc.ModalHeader(dbc.ModalTitle([
+            html.I(className="fas fa-user-plus me-2"),
+            "Add New User"
+        ])),
+        dbc.ModalBody([
+            dbc.Form([
+                # Username
+                dbc.Row([
+                    dbc.Label("Username", html_for="new-username", width=3),
+                    dbc.Col([
+                        dbc.Input(
+                            id="new-username",
+                            type="text",
+                            placeholder="Enter username",
+                            required=True
+                        ),
+                        dbc.FormText("Username must be unique")
+                    ], width=9),
+                ], className="mb-3"),
+                
+                # Email
+                dbc.Row([
+                    dbc.Label("Email", html_for="new-email", width=3),
+                    dbc.Col([
+                        dbc.Input(
+                            id="new-email",
+                            type="email",
+                            placeholder="Enter email address",
+                            required=True
+                        )
+                    ], width=9),
+                ], className="mb-3"),
+                
+                # Full Name
+                dbc.Row([
+                    dbc.Label("Full Name", html_for="new-name", width=3),
+                    dbc.Col([
+                        dbc.Input(
+                            id="new-name",
+                            type="text",
+                            placeholder="Enter full name"
+                        )
+                    ], width=9),
+                ], className="mb-3"),
+                
+                # Institute
+                dbc.Row([
+                    dbc.Label("Institute", html_for="new-institute", width=3),
+                    dbc.Col([
+                        dbc.Input(
+                            id="new-institute",
+                            type="text",
+                            placeholder="Enter institute/organization"
+                        )
+                    ], width=9),
+                ], className="mb-3"),
+                
+                # Authentication Provider
+                dbc.Row([
+                    dbc.Label("Auth Provider", html_for="new-provider", width=3),
+                    dbc.Col([
+                        dbc.Select(
+                            id="new-provider",
+                            options=[
+                                {"label": "Basic Authentication", "value": "basic_auth"},
+                                {"label": "GitHub OAuth", "value": "github"},
+                                {"label": "bwIDM OAuth", "value": "bwidm"},
+                            ],
+                            value="basic_auth"
+                        )
+                    ], width=9),
+                ], className="mb-3"),
+                
+                # Password (only for basic auth)
+                dbc.Row([
+                    dbc.Label("Password", html_for="new-password", width=3),
+                    dbc.Col([
+                        dbc.Input(
+                            id="new-password",
+                            type="password",
+                            placeholder="Enter password (for basic auth only)"
+                        ),
+                        dbc.FormText("Only required for basic authentication")
+                    ], width=9),
+                ], className="mb-3", id="password-row"),
+                
+                # Roles - Simplified to 4 roles only
+                dbc.Row([
+                    dbc.Label("Roles", html_for="new-roles", width=3),
+                    dbc.Col([
+                        dbc.Checklist(
+                            id="new-roles",
+                            options=[
+                                {"label": "Administrator - Full system access", "value": "admin"},
+                                {"label": "Researcher - Research data access", "value": "researcher"},
+                                {"label": "Curator - Data curation access", "value": "curator"},
+                                {"label": "User - Basic view access", "value": "viewer"},
+                            ],
+                            value=["viewer"],  # Default role
+                            inline=False
+                        )
+                    ], width=9),
+                ], className="mb-3"),
+                
+                # Active Status
+                dbc.Row([
+                    dbc.Label("Status", width=3),
+                    dbc.Col([
+                        dbc.Switch(
+                            id="new-is-active",
+                            label="Active User",
+                            value=True
+                        )
+                    ], width=9),
+                ], className="mb-3"),
+            ])
+        ]),
+        dbc.ModalFooter([
+            dbc.Button(
+                "Cancel", 
+                id="cancel-add-user", 
+                className="me-2", 
+                color="secondary",
+                outline=True
+            ),
+            dbc.Button(
+                [html.I(className="fas fa-user-plus me-2"), "Add User"],
+                id="confirm-add-user", 
+                color="primary"
+            ),
+        ]),
+    ], id="add-user-modal", is_open=False, size="lg")
+
+def validate_new_user_data(username, email, provider, password, roles):
+    """Validate new user data."""
+    errors = []
+    
+    if not username or len(username.strip()) < 3:
+        errors.append("Username must be at least 3 characters long")
+    
+    if not email or '@' not in email:
+        errors.append("Valid email address is required")
+    
+    if provider == "basic_auth" and (not password or len(password) < 6):
+        errors.append("Password must be at least 6 characters for basic auth")
+    
+    if not roles:
+        errors.append("At least one role must be selected")
+    
+    return errors
+
+def create_new_user(username, email, name, institute, provider, password, roles, is_active):
+    """Create a new user with the 4-role system."""
+    try:
+        user_manager = UserManager()
+        
+        # Check if username already exists
+        existing_user = user_manager.get_user_by_username(username)
+        if existing_user:
+            return False, "Username already exists"
+        
+        # Check if email already exists
+        existing_email = user_manager.get_user_by_email(email)
+        if existing_email:
+            return False, "Email already exists"
+        
+        # Validate roles (only allow the 4 defined roles)
+        valid_roles = ['admin', 'researcher', 'curator', 'viewer']
+        final_roles = [role for role in roles if role in valid_roles]
+        
+        if not final_roles:
+            final_roles = ['viewer']  # Default to viewer if no valid roles
+        
+        # Prepare user data (same structure as your assas_add_user.py)
+        user_data = {
+            'username': username.strip(),
+            'email': email.strip().lower(),
+            'name': name.strip() if name else username.title(),
+            'provider': provider,
+            'roles': final_roles,
+            'is_active': is_active,
+            'institute': institute.strip() if institute else '',
+            
+            # Timestamps
+            'created_at': datetime.utcnow().isoformat(),
+            'updated_at': datetime.utcnow().isoformat(),
+            'last_login': None,
+            'login_count': 0,
+            
+            # Optional fields
+            'avatar_url': None,
+            'github_id': None,
+            'github_profile': None,
+            'bwidm_sub': None,
+            'entitlements': [],
+            'affiliations': []
+        }
+        
+        # Add password hash for basic auth users
+        if provider == "basic_auth" and password:
+            user_data['basic_auth_password_hash'] = generate_password_hash(password)
+        
+        # Create user
+        result = user_manager.create_user(user_data)
+        
+        if result:
+            role_display = ", ".join([role.title() for role in final_roles])
+            return True, f"User {username} created successfully with roles: {role_display}"
+        else:
+            return False, "Failed to create user in database"
+            
+    except Exception as e:
+        logger.error(f"Error creating user: {e}")
+        return False, f"Error creating user: {str(e)}"
+
+# Update the layout function to include the add user functionality
 @require_role('admin')
 def layout():
-    """Enhanced admin page layout with export functionality."""
+    """Enhanced admin page layout with add user functionality."""
     current_user = get_current_user()
     
     if not current_user or 'admin' not in current_user.get('roles', []):
@@ -656,7 +876,7 @@ def layout():
     users_data = get_users_data()
     
     return html.Div([
-        # Header
+        # Header with Add User button
         dbc.Row([
             dbc.Col([
                 html.H1([
@@ -664,25 +884,34 @@ def layout():
                     "Admin Dashboard"
                 ], className="text-primary mb-0"),
                 html.P(f"Welcome, {current_user.get('name', 'Admin')}!", className="lead")
-            ], md=8),
+            ], md=6),
             dbc.Col([
-                dbc.Badge(
-                    f"Total Users: {stats.get('total_users', 0)}",
-                    color="primary",
-                    className="fs-6 p-2"
-                )
-            ], md=4, className="text-end")
+                dbc.ButtonGroup([
+                    dbc.Button([
+                        html.I(className="fas fa-user-plus me-2"),
+                        "Add User"
+                    ], id="open-add-user-modal", color="success", size="sm"),
+                    dbc.Badge(
+                        f"Total Users: {stats.get('total_users', 0)}",
+                        color="primary",
+                        className="fs-6 p-2 ms-2"
+                    )
+                ], className="d-flex align-items-center")
+            ], md=6, className="text-end")
         ], className="mb-4"),
         
-        # Statistics cards
+        # Alert for user operations
+        html.Div(id="user-operation-alert"),
+        
+        # Existing statistics cards
         create_statistics_cards(stats),
         
-        # Charts
+        # Existing charts
         html.Hr(),
         html.H3("Analytics", className="mt-4 mb-3"),
         create_charts(stats),
         
-        # User Management Section with Export
+        # User Management Section with Export (existing)
         html.Hr(),
         dbc.Row([
             dbc.Col([
@@ -705,7 +934,7 @@ def layout():
         # Export status
         html.Div(id="export-status", className="mb-3"),
         
-        # User table
+        # Existing user table
         dash_table.DataTable(
             id='users-table',
             columns=[
@@ -761,11 +990,14 @@ def layout():
             ]
         ),
         
-        # Hidden download components
+        # Add User Modal
+        create_add_user_modal(),
+        
+        # Hidden download components (existing)
         dcc.Download(id="download-csv"),
         dcc.Download(id="download-excel"),
         
-        # System information
+        # Existing system information section
         html.Hr(),
         html.H3("System Information", className="mt-4 mb-3"),
         dbc.Card([
@@ -864,3 +1096,86 @@ def handle_export(csv_clicks, excel_clicks):
 
 # Register the page
 dash.register_page(__name__, path="/admin", title="Admin Dashboard")
+
+# Add callbacks for the add user functionality
+@callback(
+    Output("add-user-modal", "is_open"),
+    [Input("open-add-user-modal", "n_clicks"),
+     Input("cancel-add-user", "n_clicks"),
+     Input("confirm-add-user", "n_clicks")],
+    [State("add-user-modal", "is_open")],
+    prevent_initial_call=True
+)
+def toggle_add_user_modal(open_clicks, cancel_clicks, confirm_clicks, is_open):
+    """Toggle the add user modal."""
+    if ctx.triggered_id == "open-add-user-modal":
+        return True
+    elif ctx.triggered_id in ["cancel-add-user", "confirm-add-user"]:
+        return False
+    return is_open
+
+@callback(
+    [Output("user-operation-alert", "children"),
+     Output("users-table", "data", allow_duplicate=True),
+     Output("new-username", "value"),
+     Output("new-email", "value"),
+     Output("new-name", "value"),
+     Output("new-institute", "value"),
+     Output("new-password", "value"),
+     Output("new-roles", "value"),
+     Output("new-is-active", "value")],
+    [Input("confirm-add-user", "n_clicks")],
+    [State("new-username", "value"),
+     State("new-email", "value"),
+     State("new-name", "value"),
+     State("new-institute", "value"),
+     State("new-provider", "value"),
+     State("new-password", "value"),
+     State("new-roles", "value"),
+     State("new-is-active", "value")],
+    prevent_initial_call=True
+)
+def handle_add_user(n_clicks, username, email, name, institute, provider, password, roles, is_active):
+    """Handle adding a new user."""
+    if not n_clicks:
+        return "", dash.no_update, "", "", "", "", "", ["viewer"], True
+    
+    # Validate input
+    validation_errors = validate_new_user_data(username, email, provider, password, roles)
+    
+    if validation_errors:
+        alert = dbc.Alert([
+            html.H5("Validation Errors:", className="alert-heading"),
+            html.Ul([html.Li(error) for error in validation_errors])
+        ], color="danger", dismissable=True)
+        return alert, dash.no_update, username, email, name, institute, password, roles, is_active
+    
+    # Create user
+    success, message = create_new_user(username, email, name, institute, provider, password, roles, is_active)
+    
+    if success:
+        # Success - refresh user data and clear form
+        updated_users_data = get_users_data()
+        alert = dbc.Alert([
+            html.I(className="fas fa-check-circle me-2"),
+            message
+        ], color="success", dismissable=True)
+        return alert, updated_users_data, "", "", "", "", "", ["viewer"], True
+    else:
+        # Error - keep form data
+        alert = dbc.Alert([
+            html.I(className="fas fa-exclamation-triangle me-2"),
+            message
+        ], color="danger", dismissable=True)
+        return alert, dash.no_update, username, email, name, institute, password, roles, is_active
+
+@callback(
+    Output("password-row", "style"),
+    [Input("new-provider", "value")]
+)
+def toggle_password_field(provider):
+    """Show/hide password field based on provider selection."""
+    if provider == "basic_auth":
+        return {"display": "block"}
+    else:
+        return {"display": "none"}

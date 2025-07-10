@@ -62,27 +62,61 @@ class Config(object):
     AARC_GROUP_CLAIM = 'eduperson_entitlement'
     ASSAS_GROUP_PREFIX = 'urn:geant:helmholtz.de:group:HIFIS:'
 
-    # Role Mapping
-    ROLE_MAPPINGS = {
-        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:admins': 'admin',
-        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:writers': 'writer',
-        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:readers': 'reader',
-        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:viewers': 'viewer',
+    # Role Mapping (exactly like your assas_add_user.py)
+    ROLE_MAPPING = {
+        'Administrator': ['admin'],
+        'Researcher': ['researcher'],
+        'User': ['viewer'],
+        'Curator': ['curator']
+    }
+    
+    # Available roles for the system (4 roles only)
+    AVAILABLE_ROLES = [
+        {
+            'value': 'admin',
+            'label': 'Administrator',
+            'description': 'Full system access and user management'
+        },
+        {
+            'value': 'researcher',
+            'label': 'Researcher', 
+            'description': 'Research data access and analysis tools'
+        },
+        {
+            'value': 'curator',
+            'label': 'Curator',
+            'description': 'Data curation and quality control'
+        },
+        {
+            'value': 'viewer',
+            'label': 'User',
+            'description': 'Basic view access to content'
+        }
+    ]
+
+    # AARC Entitlement to Role Mapping
+    AARC_ROLE_MAPPINGS = {
+        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:admins': ['admin'],
+        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:researchers': ['researcher'],
+        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:curators': ['curator'],
+        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:viewers': ['viewer'],
     }
 
+    # GitHub Role Mappings
     GITHUB_ROLE_MAPPINGS = {
-        # Map GitHub usernames to roles for testing
-        'ke4920': 'admin',
-        'test-user-1': 'writer',
-        'test-user-2': 'reader',
-        # Default role for any GitHub user
-        '*': 'viewer'
+        'ke4920': ['admin'],
+        'jonas-dressner': ['admin'],
+        'markus-goetz': ['admin'],
+        '*': ['viewer']  # Default role
     }
-
+    
+    # bwIDM Role Mappings
     BWIDM_ROLE_MAPPINGS = {
-        'jonas.dressner@kit.edu': 'admin',
-        'markus.goetz@kit.edu': 'admin',
-        '*': 'viewer'
+        'jonas.dressner@kit.edu': ['admin'],
+        'markus.goetz@kit.edu': ['admin'],
+        'charlotte.debus@kit.edu': ['researcher'],
+        'anastasia.stakhanova@kit.edu': ['researcher'],
+        '*': ['viewer']  # Default role
     }
 
 
