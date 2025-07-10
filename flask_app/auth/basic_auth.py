@@ -8,6 +8,8 @@ from flask import Blueprint, request, session, redirect, url_for, flash, render_
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
+from bson import ObjectId
+import json
 
 from ..database.user_manager import UserManager
 from ..auth_utils import get_current_user
@@ -190,6 +192,19 @@ class BasicAuthSession:
             logger.warning(f"Could not update login for basic auth user {username}: {e}")
         
         logger.info(f"Created basic auth session for user: {username} (source: {source})")
+
+# Update your login handler to convert ObjectId to string
+
+def convert_objectid_to_string(obj):
+    """Recursively convert ObjectId objects to strings for JSON serialization."""
+    if isinstance(obj, ObjectId):
+        return str(obj)
+    elif isinstance(obj, dict):
+        return {key: convert_objectid_to_string(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_objectid_to_string(item) for item in obj]
+    else:
+        return obj
 
 # Routes
 @basic_auth_bp.route('/login', methods=['GET', 'POST'])

@@ -1,12 +1,13 @@
 """User Management for MongoDB operations."""
 
+import os
 import logging
+
 from typing import List, Dict, Optional, Any
 from datetime import datetime
 from pymongo import MongoClient
-from bson import ObjectId
 from flask import current_app
-import os
+from bson import ObjectId
 
 logger = logging.getLogger("assas_app")
 
@@ -78,7 +79,7 @@ class UserManager:
             # Don't raise - the app can work without perfect indexes
     
     def get_all_users(self) -> List[Dict]:
-        """Get all users from database."""
+        """Get all users from database with ObjectId converted to string."""
         try:
             logger.info("Starting get_all_users() method")
             logger.info(f"Collection: {self.users_collection}")
@@ -108,7 +109,10 @@ class UserManager:
             logger.info(f"Retrieved {len(users)} users from database")
             logger.info(f"First user keys (if any): {list(users[0].keys()) if users else 'No users'}")
             
-            return users
+            # Convert ObjectId to string for all users
+            converted_users = [self._convert_objectid_to_string(user) for user in users]
+            
+            return converted_users
         
         except Exception as e:
             logger.error(f"Error retrieving users: {e}")
@@ -116,11 +120,25 @@ class UserManager:
             logger.error(f"Traceback: {traceback.format_exc()}")
             return []
     
+    def _convert_objectid_to_string(self, obj):
+        """Convert ObjectId objects to strings recursively."""
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        elif isinstance(obj, dict):
+            return {key: self._convert_objectid_to_string(value) for key, value in obj.items()}
+        elif isinstance(obj, list):
+            return [self._convert_objectid_to_string(item) for item in obj]
+        else:
+            return obj
+    
     def get_user_by_email(self, email: str) -> Optional[Dict]:
         """Get user by email address."""
         try:
             user = self.users_collection.find_one({"email": email.lower()})
-            return user
+            if user:
+                # Convert ObjectId to string for JSON serialization
+                return self._convert_objectid_to_string(user)
+            return None
         except Exception as e:
             logger.error(f"Error getting user by email: {e}")
             return None
@@ -129,19 +147,26 @@ class UserManager:
         """Get user by username."""
         try:
             user = self.users_collection.find_one({"username": username})
-            return user
+            if user:
+                # Convert ObjectId to string for JSON serialization
+                return self._convert_objectid_to_string(user)
+            return None
         except Exception as e:
-            logger.error(f"Error retrieving user by username {username}: {e}")
+            logger.error(f"Error getting user by username: {e}")
             return None
     
     def get_users_with_basic_auth(self) -> List[Dict]:
-        """Get all users with basic auth enabled."""
+        """Get all users with basic auth enabled with ObjectId converted to string."""
         try:
             users = list(self.users_collection.find({
                 "basic_auth_password_hash": {"$exists": True, "$ne": None}
             }))
             logger.info(f"Found {len(users)} users with basic auth")
-            return users
+            
+            # Convert ObjectId to string for all users
+            converted_users = [self._convert_objectid_to_string(user) for user in users]
+            
+            return converted_users
         except Exception as e:
             logger.error(f"Error retrieving basic auth users: {e}")
             return []
@@ -197,8 +222,13 @@ class UserManager:
                 # Update existing user
                 user_doc['login_count'] = existing_user.get('login_count', 0) + 1
                 
+                # Convert existing_user _id to ObjectId for the query
+                user_id = existing_user["_id"]
+                if isinstance(user_id, str):
+                    user_id = ObjectId(user_id)
+                
                 result = self.users_collection.update_one(
-                    {"_id": existing_user["_id"]},
+                    {"_id": user_id},
                     {"$set": user_doc}
                 )
                 
@@ -264,12 +294,15 @@ class UserManager:
             return False
     
     def get_user_by_id(self, user_id) -> Optional[Dict[str, Any]]:
-        """Get user by ID."""
+        """Get user by ID with ObjectId converted to string."""
         try:
             if isinstance(user_id, str):
                 user_id = ObjectId(user_id)
             user = self.users_collection.find_one({"_id": user_id})
-            return user
+            if user:
+                # Convert ObjectId to string for JSON serialization
+                return self._convert_objectid_to_string(user)
+            return None
         except Exception as e:
             logger.error(f"Error getting user by ID: {e}")
             return None
