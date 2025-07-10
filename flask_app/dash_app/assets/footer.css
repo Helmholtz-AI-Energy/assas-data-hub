@@ -1,0 +1,78 @@
+/* Footer Styling */
+footer {
+    margin-top: auto; /* Push footer to bottom */
+}
+
+/* Footer responsive adjustments */
+@media (max-width: 768px) {
+    footer .row > div {
+        margin-bottom: 1.5rem;
+    }
+    
+    footer .row > div:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Stack footer columns on mobile */
+    footer .col-md-4,
+    footer .col-md-2 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+}
+
+/* Footer link hover effects */
+footer a {
+    transition: all 0.3s ease;
+}
+
+footer a:hover {
+    transform: translateX(3px);
+}
+
+/* Footer social icons */
+footer .fab,
+footer .fas {
+    width: 16px;
+    text-align: center;
+}
+
+/* Footer logo styling */
+footer img {
+    transition: all 0.3s ease;
+}
+
+footer img:hover {
+    transform: scale(1.05);
+    filter: contrast(1.1) brightness(1.05);
+}
+
+/* Sticky footer implementation */
+#dash-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#dash-container > div:first-of-type {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Footer copyright section */
+.footer-copyright {
+    background-color: rgba(0, 0, 0, 0.1);
+    margin: 0 -1.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0;
+}
+
+/* Print styles for footer */
+@media print {
+    footer {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+}

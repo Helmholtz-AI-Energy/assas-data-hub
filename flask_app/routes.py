@@ -4,7 +4,7 @@ import logging
 import uuid
 import shutil
 
-from flask import session, redirect, send_file, request, jsonify
+from flask import session, redirect, send_file, request, jsonify, Response
 from flask import current_app as app
 from pathlib import Path
 
@@ -20,7 +20,7 @@ logger = logging.getLogger("assas_app")
 
 @app.route("/login")
 @auth.login_required
-def check_user():
+def check_user() -> Response:
     """Route to verify user authentication and display user information."""
     current_user = auth.current_user()
     user_info = users.get(current_user)
@@ -39,7 +39,7 @@ def check_user():
 
 @app.route("/logout", methods=["GET"])
 @auth.login_required
-def logout():
+def logout() -> Response:
     """Log out the current user by clearing the session."""
     current_user = auth.current_user()
     logger.info(f"Logging out user: {current_user}")
@@ -55,7 +55,7 @@ def logout():
 
 @app.route("/")
 @auth.login_required
-def from_root_to_home():
+def from_root_to_home() -> Response:
     """Redirect from the root URL to the home page of the application."""
     logger.info("Redirecting from root to home page.")
     return redirect("/assas_app/home")
@@ -63,7 +63,7 @@ def from_root_to_home():
 
 @app.route("/assas_app")
 @auth.login_required
-def from_app_to_home():
+def from_app_to_home() -> Response:
     """Redirect from the /assas_app URL to the home page of the application."""
     logger.info("Redirecting from /assas_app to home page.")
     return redirect("/assas_app/home")
@@ -71,7 +71,7 @@ def from_app_to_home():
 
 @app.route("/assas_app/")
 @auth.login_required
-def from_app_with_slash_to_home():
+def from_app_with_slash_to_home() -> Response:
     """Redirect from the /assas_app/ URL to the home page of the application."""
     logger.info("Redirecting from /assas_app/ to home page.")
     return redirect("/assas_app/home")
@@ -79,7 +79,7 @@ def from_app_with_slash_to_home():
 
 @app.route("/assas_app/hdf5_file", methods=["GET"])
 @auth.login_required
-def get_data_file():
+def get_data_file() -> Response:
     """Handle the request to retrieve a data file based on the provided UUID."""
     logger.info("Received request for data file.")
 
@@ -113,7 +113,7 @@ def get_data_file():
 
 @app.route("/assas_app/hdf5_download", methods=["GET"])
 @auth.login_required
-def get_download_archive():
+def get_download_archive() -> Response:
     """Handle the request to download an archive based on the provided UUID."""
     logger.info("Received request for download archive.")
 
@@ -151,7 +151,7 @@ def get_download_archive():
 
 @app.route("/assas_app/query_meta_data", methods=["GET"])
 @auth.login_required
-def query_data():
+def query_data() -> Response:
     """Handle the request to retrieve meta data variables based on provided UUID."""
     args = request.args
     logger.info(f"Received request with arguments: {args}")

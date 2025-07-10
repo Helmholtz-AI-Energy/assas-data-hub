@@ -19,7 +19,7 @@ class AttrConfig(Config):
 
     """
 
-    def __getattr__(self, key):
+    def __getattr__(self, key: str) -> object:
         """Override __getattr__ to allow attribute-like access to config keys.
 
         Args:
@@ -37,7 +37,7 @@ class AttrConfig(Config):
         except KeyError:
             raise AttributeError(key)
 
-    def __dir__(self):
+    def __dir__(self) -> list:
         """Override dir to include configuration keys in the directory listing.
 
         Returns:
@@ -67,7 +67,7 @@ class CustomFlask(Flask):
     config_class = AttrConfig
 
 
-def init_app():
+def init_app() -> CustomFlask:
     """Construct core Flask application with embedded Dash app."""
     app = CustomFlask(__name__, instance_relative_config=False)
 

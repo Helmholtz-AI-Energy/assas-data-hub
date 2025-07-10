@@ -1,0 +1,651 @@
+/* Minimal Dash Table CSS - Complete Table Display */
+
+/* Force table to display all content */
+.dash-table-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Remove any height restrictions */
+.dash-table-container .dash-spreadsheet-container {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner {
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* Force table layout */
+.dash-table-container table {
+    width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+}
+
+/* Force all cells to be visible */
+.dash-table-container th,
+.dash-table-container td {
+    display: table-cell !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 8px !important;
+    border: 1px solid #ddd !important;
+}
+
+/* Force table structure */
+.dash-table-container thead {
+    display: table-header-group !important;
+}
+
+.dash-table-container tbody {
+    display: table-row-group !important;
+}
+
+.dash-table-container tr {
+    display: table-row !important;
+}
+
+/* Column Widths - Total 100% */
+.dash-table-container [data-dash-column="system_index"] {
+    width: 10% !important;
+    min-width: 50px !important;
+    text-align: center !important;
+}
+
+.dash-table-container [data-dash-column="meta_name"] {
+    width: 15% !important;
+    min-width: 150px !important;
+    text-align: center !important;
+}
+
+.dash-table-container [data-dash-column="system_status"] {
+    width: 15% !important;
+    min-width: 100px !important;
+    text-align: center !important;
+}
+
+.dash-table-container [data-dash-column="system_date"] {
+    width: 15% !important;
+    min-width: 100px !important;
+    text-align: center !important;
+}
+
+.dash-table-container [data-dash-column="system_user"] {
+    width: 10% !important;
+    min-width: 100px !important;
+    text-align: center !important;
+}
+
+.dash-table-container [data-dash-column="system_size"] {
+    width: 10% !important;
+    min-width: 100px !important;
+    text-align: center !important;
+}
+
+.dash-table-container [data-dash-column="system_size_hdf5"] {
+    width: 10% !important;
+    min-width: 100px !important;
+    text-align: center !important;
+}
+
+.dash-table-container [data-dash-column="system_download"] {
+    width: 15% !important;
+    min-width: 150px !important;
+    text-align: center !important;
+}
+
+/* Force Column Display */
+.dash-table-container table th,
+.dash-table-container table td {
+    display: table-cell !important;
+    box-sizing: border-box !important;
+}
+
+/* nth-child Backup Selectors */
+.dash-table-container table th:nth-child(1),
+.dash-table-container table td:nth-child(1) { width: 10% !important; }
+
+.dash-table-container table th:nth-child(2),
+.dash-table-container table td:nth-child(2) { width: 15% !important; }
+
+.dash-table-container table th:nth-child(3),
+.dash-table-container table td:nth-child(3) { width: 15% !important; }
+
+.dash-table-container table th:nth-child(4),
+.dash-table-container table td:nth-child(4) { width: 15% !important; }
+
+.dash-table-container table th:nth-child(5),
+.dash-table-container table td:nth-child(5) { width: 10% !important; }
+
+.dash-table-container table th:nth-child(6),
+.dash-table-container table td:nth-child(6) { width: 10% !important; }
+
+.dash-table-container table th:nth-child(7),
+.dash-table-container table td:nth-child(7) { width: 10% !important; }
+
+.dash-table-container table th:nth-child(8),
+.dash-table-container table td:nth-child(8) { width: 15% !important; }
+
+/* Force all cells to be visible and properly aligned */
+.dash-table-container th,
+.dash-table-container td {
+    display: table-cell !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    padding: 8px 6px !important;  /* Increased padding */
+    border: 1px solid #ddd !important;
+    vertical-align: middle !important;  /* ADD THIS */
+    height: 35px !important;            /* ADD THIS for consistent height */
+    line-height: 1.2 !important;        /* ADD THIS for better text spacing */
+}
+
+/* Perfect vertical centering using absolute positioning */
+.dash-table-container [data-dash-column="meta_name"] a,
+.dash-table-container [data-dash-column="system_download"] a {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100% - 16px) !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.dash-table-container [data-dash-column="system_download"] span {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100% - 16px) !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* WITH this fixed rule that targets only data cells: */
+.dash-table-container tbody td[data-dash-column="system_status"] span {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100% - 16px) !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.dash-table-container [data-dash-column="meta_name"],
+.dash-table-container [data-dash-column="system_download"] {
+    position: relative !important;
+    height: 35px !important;
+    vertical-align: middle !important;
+}
+
+.status-valid {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border: 2px solid #28a745 !important;
+    font-weight: bold !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    display: inline-block !important;
+    width: 90% !important;
+    text-align: center !important;
+}
+
+.status-invalid {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    border: 2px solid #dc3545 !important;
+    font-weight: bold !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    display: inline-block !important;
+    width: 90% !important;
+    text-align: center !important;
+}
+
+.status-converting {
+    background-color: #f1eab8 !important;
+    color: #575224 !important;
+    border: 2px solid #575224 !important;
+    font-weight: bold !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    display: inline-block !important;
+    width: 90% !important;
+    text-align: center !important;
+}
+
+.status-uploaded {
+    background-color: #b4b8ed !important;
+    color: #131370 !important;
+    border: 2px solid #1b134f !important;
+    font-weight: bold !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    display: inline-block !important;
+    width: 90% !important;
+    text-align: center !important;
+}
+
+/* Ensure proper vertical alignment for status spans
+.dash-table-container [data-dash-column="system_status"] span {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100% - 8px) !important;
+}*/
+
+/* Ensure all table rows have consistent height */
+.dash-table-container tbody tr {
+    height: 35px !important;
+    vertical-align: middle !important;
+}
+
+/* Force proper alignment for all table cells */
+.dash-table-container tbody tr td {
+    height: 35px !important;
+    vertical-align: middle !important;
+    position: relative !important;
+}
+/* Container Wrappers */
+.table-responsive,
+.enhanced-table-container {
+    width: 100% !important;
+    overflow: visible !important;
+    margin: 0 !important;
+}
+
+/* Card Containers */
+.card:has(.dash-table-container) {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.card-body:has(.table-responsive) {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 576px) {
+    /* Extra small devices */
+    .dash-table-container {
+        font-size: 10px !important;
+    }
+    
+    .dash-table-container th,
+    .dash-table-container td {
+        padding: 4px 2px !important;
+        font-size: 10px !important;
+    }
+    
+    .dash-table-container th {
+        height: 35px !important;
+    }
+    
+    .dash-table-container td {
+        height: 35px !important;
+        min-height: 35px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Small devices */
+    .dash-table-container {
+        font-size: 11px !important;
+    }
+    
+    .dash-table-container th,
+    .dash-table-container td {
+        padding: 5px 3px !important;
+        font-size: 11px !important;
+    }
+    
+    /* Status badges smaller on mobile */
+    .status-valid,
+    .status-invalid,
+    .status-unknown {
+        padding: 2px 4px !important;
+        font-size: 9px !important;
+        width: 95% !important;
+    }
+    
+    /* Ensure table scrolls horizontally */
+    .table-responsive {
+        overflow-x: auto !important;
+    }
+}
+
+@media (max-width: 992px) {
+    /* Medium devices */
+    .dash-table-container {
+        font-size: 12px !important;
+    }
+    
+    .dash-table-container th,
+    .dash-table-container td {
+        padding: 6px 4px !important;
+        font-size: 12px !important;
+    }
+}
+
+/* Ensure horizontal scrolling works properly */
+.dash-table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.dash-table-container table {
+    min-width: 800px !important;
+}
+
+/* Mobile-friendly pagination */
+@media (max-width: 768px) {
+    .pagination {
+        font-size: 0.8rem !important;
+    }
+    
+    .pagination .page-link {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* Mobile-friendly buttons */
+@media (max-width: 576px) {
+    .btn {
+        font-size: 0.8rem !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .btn-lg {
+        font-size: 0.9rem !important;
+        padding: 0.6rem 1.2rem !important;
+    }
+}
+
+.dash-table-container th {
+    display: table-cell !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: white !important;
+    background-color: #2c3e50 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    padding: 12px 8px !important;
+    border: 1px solid #dee2e6 !important;
+    font-size: 14px !important;
+    height: 45px !important;
+    vertical-align: middle !important;
+}
+
+/* Ensure filter inputs keep their default background */
+.dash-table-container .dash-filter {
+    background-color: white !important;
+    border: 1px solid #ccc !important;
+}
+
+.dash-table-container input[type="text"] {
+    background-color: white !important;
+    color: black !important;
+}
+
+/* ====== DESKTOP PAGINATION STYLING ====== */
+
+/* Desktop - Large pagination buttons with centered numbers */
+@media (min-width: 769px) {
+    .pagination {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        margin: 1rem 0 !important;
+        font-size: 1rem !important;
+    }
+
+    .pagination .page-item {
+        margin: 0 0.25rem !important;
+    }
+
+    .pagination .page-link {
+        padding: 0.75rem 1rem !important;
+        font-size: 1rem !important;
+        border: 1px solid #dee2e6 !important;
+        color: #007bff !important;
+        background-color: white !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        text-align: center !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.2s ease !important;
+        border-radius: 0.375rem !important;
+        line-height: 1 !important;
+        text-decoration: none !important;
+        font-weight: 500 !important;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #e9ecef !important;
+        border-color: #007bff !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        color: #0056b3 !important;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #007bff !important;
+        border-color: #007bff !important;
+        color: white !important;
+        font-weight: bold !important;
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3) !important;
+    }
+
+    .pagination .page-item.active .page-link:hover {
+        background-color: #0056b3 !important;
+        border-color: #0056b3 !important;
+        transform: translateY(-1px) !important;
+    }
+
+    .pagination .page-link:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+        outline: none !important;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d !important;
+        background-color: #fff !important;
+        border-color: #dee2e6 !important;
+        cursor: not-allowed !important;
+        opacity: 0.6 !important;
+    }
+
+    .pagination .page-item.disabled .page-link:hover {
+        transform: none !important;
+        box-shadow: none !important;
+        background-color: #fff !important;
+    }
+
+    /* First/Last button specific styling */
+    .pagination .page-item.page-item-first .page-link,
+    .pagination .page-item.page-item-last .page-link {
+        font-weight: 600 !important;
+    }
+
+    /* Previous/Next button specific styling */
+    .pagination .page-item.page-item-prev .page-link,
+    .pagination .page-item.page-item-next .page-link {
+        font-weight: 600 !important;
+        font-size: 1.1em !important;
+    }
+
+    /* Ensure all pagination elements are visible on desktop */
+    .pagination .page-item {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .pagination .page-link {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+/* Tablet - Medium buttons but still desktop style */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .pagination {
+        font-size: 0.9rem !important;
+        margin: 0.75rem 0 !important;
+    }
+    
+    .pagination .page-link {
+        padding: 0.6rem 0.8rem !important;
+        font-size: 0.9rem !important;
+        min-width: 42px !important;
+        min-height: 42px !important;
+    }
+    
+    .pagination .page-item {
+        margin: 0 0.15rem !important;
+    }
+}
+
+/* MOBILE AND HIGH ZOOM - HIDE DESKTOP PAGINATION */
+@media (max-width: 768px) {
+    /* Hide ALL desktop pagination elements on mobile */
+    .pagination {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: -9999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+    }
+    
+    .pagination .page-item,
+    .pagination .page-link {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
+/* HIGH ZOOM DETECTION - Hide desktop pagination when zoomed */
+@media (max-width: 900px) and (min-resolution: 1.5dppx) {
+    /* This detects high zoom levels on desktop */
+    .pagination {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    .pagination .page-item,
+    .pagination .page-link {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
+/* EXTREME ZOOM PROTECTION */
+@media (max-width: 1200px) and (min-resolution: 2dppx) {
+    /* This catches 200%+ zoom levels */
+    .pagination {
+        display: none !important;
+    }
+}
+
+/* Additional zoom breakpoints */
+@media (max-width: 600px) {
+    .pagination {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination {
+        display: none !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .pagination {
+        display: none !important;
+    }
+}
+
+@media (max-width: 320px) {
+    .pagination {
+        display: none !important;
+    }
+}
+
+/* Pagination container styling for desktop */
+@media (min-width: 769px) {
+    .pagination-container {
+        overflow: visible !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 0.5rem 0 !important;
+    }
+}
+
+/* Hide pagination container on mobile/zoom */
+@media (max-width: 768px) {
+    .pagination-container {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
+/* ====== END DESKTOP PAGINATION STYLING ====== */
+
+/* ====== MOBILE PAGINATION ALTERNATIVE ====== */
+/* You should use mobile-specific pagination buttons for mobile/zoom */
+@media (max-width: 768px) {
+    /* Style your mobile pagination buttons here */
+    .mobile-pagination,
+    .mobile-nav-buttons {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin: 0.5rem 0 !important;
+    }
+    
+    .mobile-pagination .btn,
+    .mobile-nav-buttons .btn {
+        margin: 0 0.25rem !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+}

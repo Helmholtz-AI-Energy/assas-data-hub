@@ -1,0 +1,71 @@
+/* Navbar visibility toggle button */
+#navbar-visibility-toggle:hover {
+    background-color: #2980b9 !important;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+}
+
+#navbar-visibility-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3) !important;
+}
+
+/* Floating show button */
+#navbar-show-button:hover {
+    background-color: #1abc9c !important;
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4) !important;
+}
+
+#navbar-show-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.3) !important;
+}
+
+/* Animation for floating button appearance */
+#floating-button-container {
+    animation: fadeInFloat 0.3s ease-in-out;
+}
+
+@keyframes fadeInFloat {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ensure buttons are accessible on mobile */
+@media (max-width: 768px) {
+    #navbar-visibility-toggle {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 12px !important;
+        top: 5px !important;
+        right: 15px !important;
+    }
+    
+    #navbar-show-button {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 14px !important;
+        top: 15px !important;
+        right: 15px !important;
+    }
+}
+
+/* Navbar manual hide state */
+.navbar-manually-hidden {
+    transform: translateY(-100%) !important;
+    opacity: 0 !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+.navbar-manually-visible {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    transition: all 0.3s ease-in-out !important;
+}

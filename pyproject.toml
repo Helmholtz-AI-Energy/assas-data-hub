@@ -2,6 +2,7 @@
 [tool.ruff]
 line-length = 88
 select = [
+    "ANN",
     "D", # Enable all pydocstyle (PEP 257) checks
     "E",
     "F",

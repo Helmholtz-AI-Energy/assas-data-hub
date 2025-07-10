@@ -12,7 +12,7 @@ from ..components import content_style
 dash.register_page(__name__, path="/details")
 
 
-def layout():
+def layout() -> html.Div:
     """Layout for the Details page."""
     return html.Div(
         [

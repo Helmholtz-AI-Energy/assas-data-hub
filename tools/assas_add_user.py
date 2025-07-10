@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 logger = logging.getLogger('assas_app')
 
 # MongoDB connection setup
-client = MongoClient('mongodb://localhost:27017/')  # Replace with your MongoDB connection string
+client = MongoClient("mongodb://127.0.0.1:27017/")  # Replace with your MongoDB connection string
 db = client['assas']  # Database name
 users_collection = db['users']  # Collection name
 
