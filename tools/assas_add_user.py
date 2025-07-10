@@ -34,6 +34,13 @@ users = [
         "role": "Researcher",
     },
     {
+        "username": "charlie",
+        "password": generate_password_hash("assas2025"),
+        "email": "charlotte.debus@kit.edu",
+        "institute": "KIT (SCC)",
+        "role": "Researcher",
+    },
+    {
         "username": "jure",
         "password": generate_password_hash("assas2025"),
         "email": "jure.brence@ijs.si",
@@ -66,6 +73,13 @@ users = [
         "password": generate_password_hash("assas2025"),
         "email": "bastien.poubeau@asnr.fr",
         "institute": "ASNR (France)",
+        "role": "Researcher",
+    },
+    {
+        "username": "joan",
+        "password": generate_password_hash("assas2025"),
+        "email": "joan.fontanet@ciemat.es",
+        "institute": "Ciemat (Spain)",
         "role": "Researcher",
     }
 ]
