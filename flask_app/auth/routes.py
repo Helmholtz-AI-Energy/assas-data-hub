@@ -1,7 +1,7 @@
-"""Authentication routes."""
+"""Authentication routes with profile page."""
 
 from flask import Blueprint, render_template, session, redirect, url_for
-from ..auth_utils import is_authenticated
+from ..auth_utils import is_authenticated, get_current_user
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -15,8 +15,9 @@ def login_page():
 
 @auth_bp.route('/profile')
 def profile():
-    """User profile page."""
+    """User profile page (Flask route - redirects to Dash page)."""
     if not is_authenticated():
         return redirect(url_for('auth.login_page'))
     
-    return render_template('auth/profile.html', user=session['user'])
+    # Redirect to Dash profile page
+    return redirect('/assas_app/profile')

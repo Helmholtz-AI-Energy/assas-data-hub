@@ -619,7 +619,6 @@ footer = \
 navbar = \
     html.Div(
     [
-    # Top Row - Brand and Logos (Reordered: ASSAS - Brand - KIT) - INCREASED LOGO HEIGHT
     html.Div(
     [
     dbc.Container(
@@ -628,30 +627,27 @@ navbar = \
     [
     html.Div(
     [
-    # ASSAS Logo (First) - INCREASED size
     html.Img(
     src=encode_svg_image_hq(
     "assas_logo_mod.svg"
     ),
-    height="80px",  # Increased from 60px
-    width="160px",  # Increased from 120px
+    height="80px",
+    width="160px",
     style=logo_style(),
     alt="ASSAS Logo",
     className="logo-high-quality logo-assas",
     ),
-    # Brand title (Center)
     html.H1(
     "ASSAS Data Hub",
     style=brand_style(),
     className="brand-title brand-center",
     ),
-    # KIT Logo (Last) - INCREASED size
     html.Img(
     src=encode_svg_image_hq(
     "kit_logo.drawio.svg"
     ),
-    height="80px",  # Increased from 60px
-    width="160px",  # Increased from 120px
+    height="80px",
+    width="160px",
     style=logo_style(),
     alt="KIT Logo",
     className="logo-high-quality logo-kit",
@@ -671,15 +667,12 @@ navbar = \
     ],
     style=top_row_style(),
     ),
-    # Bottom Row - Navigation
     html.Div(
     [
     dbc.Container(
     [
-    # Navigation content wrapper
     html.Div(
     [
-    # Hamburger menu (visible on mobile)
     dbc.Button(
     html.I(className="fas fa-bars"),
     id="navbar-toggler",
@@ -687,7 +680,6 @@ navbar = \
     style=hamburger_style(),
     className="navbar-toggler-mobile d-md-none",
     ),
-    # Navigation menu
     dbc.Collapse(
     [
     dbc.Nav(
@@ -695,9 +687,7 @@ navbar = \
     dbc.NavItem(
     dbc.NavLink(
     [
-    html.I(
-    className="fas fa-home me-2"
-    ),
+    html.I(className="fas fa-home me-2"),
     "Home",
     ],
     href="/assas_app/home",
@@ -709,9 +699,7 @@ navbar = \
     dbc.NavItem(
     dbc.NavLink(
     [
-    html.I(
-    className="fas fa-database me-2"
-    ),  # Fixed missing opening parenthesis
+    html.I(className="fas fa-database me-2"),
     "Database",
     ],
     href="/assas_app/database",
@@ -723,12 +711,23 @@ navbar = \
     dbc.NavItem(
     dbc.NavLink(
     [
-    html.I(
-    className="fas fa-info-circle me-2"
-    ),
+    html.I(className="fas fa-info-circle me-2"),
     "About",
     ],
     href="/assas_app/about",
+    active="exact",
+    style=nav_link_style(),
+    className="nav-link-modern",
+    )
+    ),
+    # Add Profile link
+    dbc.NavItem(
+    dbc.NavLink(
+    [
+    html.I(className="fas fa-user me-2"),
+    "Profile",
+    ],
+    href="/assas_app/profile",
     active="exact",
     style=nav_link_style(),
     className="nav-link-modern",
@@ -765,7 +764,6 @@ navbar = \
     ],
     style=bottom_row_style(),
     ),
-    # Scroll progress indicator
     html.Div(id="scroll-progress", className="scroll-indicator"),
     ],
     id="main-navbar",
@@ -856,6 +854,18 @@ def init_dashboard(server: object) -> object:
 
         """
         if n_clicks:
+            return not is_open
+        return is_open
+
+    # Toggle navbar collapse on mobile - additional callback
+    @dash_app.callback(
+        Output("navbar-collapse", "is_open"),
+        [Input("navbar-toggler", "n_clicks")],
+        [State("navbar-collapse", "is_open")],
+    )
+    def toggle_navbar_collapse_mobile(n, is_open):
+        """Toggle navbar collapse on mobile."""
+        if n:
             return not is_open
         return is_open
 
@@ -974,5 +984,9 @@ function(id) {
             "backgroundColor": "#f8f9fa",
         },
     )
+
+    # Register pages
+    from . import pages
+    from .pages import home, database, about, profile  # Add profile import
 
     return dash_app.server
