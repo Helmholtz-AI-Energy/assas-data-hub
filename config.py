@@ -40,9 +40,24 @@ class Config(object):
     GITHUB_CLIENT_ID = os.environ.get('GITHUB_CLIENT_ID')
     GITHUB_CLIENT_SECRET = os.environ.get('GITHUB_CLIENT_SECRET')
 
-    # Session Configuration
-    PERMANENT_SESSION_LIFETIME = timedelta(hours=8)
+    BWIDM_CLIENT_ID = os.getenv('BWIDM_CLIENT_ID', '')
+    BWIDM_CLIENT_SECRET = os.getenv('BWIDM_CLIENT_SECRET', '')
 
+    # Session Configuration
+    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-fallback-key-change-in-production')
+    PERMANENT_SESSION_LIFETIME = timedelta(
+        hours=int(os.getenv('SESSION_LIFETIME_HOURS', 8))
+    )
+    SESSION_PERMANENT = True
+    SESSION_USE_SIGNER = True
+    SESSION_COOKIE_SECURE = False
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_REFRESH_EACH_REQUEST = True
+    SESSION_COOKIE_NAME = 'assas_session'
+    SESSION_COOKIE_DOMAIN = None
+    SESSION_COOKIE_PATH = '/'
+    
     # AARC Entitlements Configuration
     AARC_GROUP_CLAIM = 'eduperson_entitlement'
     ASSAS_GROUP_PREFIX = 'urn:geant:helmholtz.de:group:HIFIS:'
@@ -61,6 +76,12 @@ class Config(object):
         'test-user-1': 'writer',
         'test-user-2': 'reader',
         # Default role for any GitHub user
+        '*': 'viewer'
+    }
+
+    BWIDM_ROLE_MAPPINGS = {
+        'jonas.dressner@kit.edu': 'admin',
+        'markus.goetz@kit.edu': 'admin',
         '*': 'viewer'
     }
 
