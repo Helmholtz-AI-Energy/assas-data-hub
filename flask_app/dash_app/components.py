@@ -47,29 +47,35 @@ def encode_svg_image_hq(svg_name: str) -> str:
 
     """
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets/", svg_name)
-    
+
     try:
         with open(path, "rb") as file:
             svg_content = file.read()
-            
+
         # Optimize SVG content for better quality
-        svg_string = svg_content.decode('utf-8')
-        
+        svg_string = svg_content.decode("utf-8")
+
         # Add high-quality rendering attributes if not present
-        if 'shape-rendering' not in svg_string:
-            svg_string = svg_string.replace('<svg', '<svg shape-rendering="geometricPrecision"')
-        if 'text-rendering' not in svg_string:
-            svg_string = svg_string.replace('<svg', '<svg text-rendering="optimizeLegibility"')
-        if 'image-rendering' not in svg_string:
-            svg_string = svg_string.replace('<svg', '<svg image-rendering="optimizeQuality"')
-            
+        if "shape-rendering" not in svg_string:
+            svg_string = svg_string.replace(
+                "<svg", '<svg shape-rendering="geometricPrecision"'
+            )
+        if "text-rendering" not in svg_string:
+            svg_string = svg_string.replace(
+                "<svg", '<svg text-rendering="optimizeLegibility"'
+            )
+        if "image-rendering" not in svg_string:
+            svg_string = svg_string.replace(
+                "<svg", '<svg image-rendering="optimizeQuality"'
+            )
+
         # Re-encode with optimizations
-        encoded = base64.b64encode(svg_string.encode('utf-8'))
+        encoded = base64.b64encode(svg_string.encode("utf-8"))
         svg = "data:image/svg+xml;base64,{}".format(encoded.decode())
-        
+
         return svg
-        
-    except Exception as e:
+
+    except Exception:
         # Fallback to original method
         return encode_svg_image(svg_name)
 
@@ -78,7 +84,8 @@ def content_style() -> Dict:
     """Define responsive styles for the content area of the Dash application.
 
     Returns:
-        dict: A dictionary containing CSS styles for the content area with responsive design.
+        dict: A dictionary containing CSS styles for the content area with
+        responsive design.
 
     """
     return {
@@ -92,21 +99,18 @@ def content_style() -> Dict:
         "box-shadow": "0 2px 4px rgba(0, 0, 0, 0.1)",
         "background-color": "#ffffff",
         "fontFamily": "Arial, sans-serif",  # Added Arial font
-        
         # Extra Large desktop
         "@media (min-width: 1200px)": {
             "margin-left": "3rem",
             "margin-right": "3rem",
             "padding": "2rem 1rem",  # Slightly more padding on large screens
         },
-        
         # Large desktop
         "@media (min-width: 992px) and (max-width: 1199px)": {
             "margin-left": "2rem",
             "margin-right": "2rem",
             "padding": "2rem 0.75rem",
         },
-        
         # Tablet styles
         "@media (max-width: 991px) and (min-width: 769px)": {
             "margin-left": "1rem",
@@ -114,7 +118,6 @@ def content_style() -> Dict:
             "padding": "1.5rem 0.5rem",  # Minimal side padding
             "border": "1px solid #dee2e6",
         },
-        
         # Mobile landscape styles
         "@media (max-width: 768px) and (min-width: 577px)": {
             "margin-left": "0.5rem",
@@ -123,7 +126,6 @@ def content_style() -> Dict:
             "border": "1px solid #e9ecef",
             "border-radius": "6px",
         },
-        
         # Mobile portrait styles
         "@media (max-width: 576px)": {
             "margin-left": "0.25rem",  # Minimal margins
@@ -132,7 +134,6 @@ def content_style() -> Dict:
             "border": "1px solid #f8f9fa",
             "border-radius": "4px",
         },
-        
         # Extra small screens
         "@media (max-width: 400px)": {
             "margin-left": "0.125rem",
@@ -162,21 +163,18 @@ def minimal_padding_style() -> Dict:
         "box-shadow": "0 1px 3px rgba(0, 0, 0, 0.08)",
         "background-color": "#ffffff",
         "fontFamily": "Arial, sans-serif",  # Added Arial font
-        
         # Desktop
         "@media (min-width: 992px)": {
             "margin-left": "1.5rem",
             "margin-right": "1.5rem",
             "padding": "1.5rem 0.75rem",
         },
-        
         # Tablet
         "@media (max-width: 991px) and (min-width: 577px)": {
             "margin-left": "0.75rem",
             "margin-right": "0.75rem",
             "padding": "1rem 0.5rem",
         },
-        
         # Mobile
         "@media (max-width: 576px)": {
             "margin-left": "0.25rem",
@@ -204,14 +202,12 @@ def full_width_style() -> Dict:
         "border-radius": "4px",
         "background-color": "#ffffff",
         "fontFamily": "Arial, sans-serif",  # Added Arial font
-        
         # Desktop - still keep some margin for readability
         "@media (min-width: 992px)": {
             "margin-left": "1rem",
             "margin-right": "1rem",
             "padding": "1.5rem 0.5rem",
         },
-        
         # Mobile - maximum width usage
         "@media (max-width: 576px)": {
             "margin-left": "0.125rem",
@@ -315,21 +311,18 @@ def ultra_minimal_style() -> Dict:
         "border-radius": "4px",
         "background-color": "#ffffff",
         "fontFamily": "Arial, sans-serif",  # Added Arial font
-        
         # Desktop - still minimal but readable
         "@media (min-width: 992px)": {
             "margin-left": "1rem",
             "margin-right": "1rem",
             "padding": "1.5rem 0.5rem",
         },
-        
         # Tablet
         "@media (max-width: 991px) and (min-width: 577px)": {
             "margin-left": "0.5rem",
             "margin-right": "0.5rem",
             "padding": "1rem 0.25rem",
         },
-        
         # Mobile - maximum width usage
         "@media (max-width: 576px)": {
             "margin-left": "0.125rem",
@@ -355,19 +348,16 @@ def table_container_style() -> Dict:
         "background-color": "#ffffff",
         "overflow-x": "auto",  # Horizontal scroll for tables
         "fontFamily": "Arial, sans-serif",  # Added Arial font
-        
         # Desktop
         "@media (min-width: 992px)": {
             "margin": "1.5rem 1rem",
             "padding": "1rem 0.5rem",
         },
-        
         # Tablet
         "@media (max-width: 991px) and (min-width: 577px)": {
             "margin": "1rem 0.5rem",
             "padding": "0.75rem 0.25rem",
         },
-        
         # Mobile - edge-to-edge table
         "@media (max-width: 576px)": {
             "margin": "0.5rem 0.125rem",
@@ -382,7 +372,8 @@ def responsive_table_style() -> Dict:
     """Define responsive table styles with ultra-minimal padding.
 
     Returns:
-        dict: A dictionary containing table styles with reduced padding for maximum content width.
+        dict: A dictionary containing table styles with reduced padding for maximum
+        content width.
 
     """
     return {
