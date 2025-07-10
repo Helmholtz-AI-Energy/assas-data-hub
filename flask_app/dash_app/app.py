@@ -14,8 +14,10 @@ from dash import dash, html, Input, Output, State
 from dash.long_callback import DiskcacheLongCallbackManager
 
 from .components import encode_svg_image_hq  # Use high-quality encoder
-from flask import redirect, request, Response
+from flask import redirect, request, Response, session
 from ..auth_utils import auth, is_authenticated, get_current_user
+from ..auth.oauth_auth import oauth_bp, init_oauth
+from ..auth.routes import auth_bp
 
 logger = logging.getLogger("assas_app")
 
@@ -793,17 +795,28 @@ def init_dashboard(server: object) -> object:
         expire=60,
     )
 
+    # Initialize OAuth
+    init_oauth(server)
+
+    # Register blueprints
+    server.register_blueprint(oauth_bp)
+    server.register_blueprint(auth_bp)
+
     # Protect Dash pages
     @server.before_request
-    @auth.login_required
     def restrict_access() -> Response:
         """Restrict access to Dash pages for unauthenticated users."""
         logger.info("Checking authentication for Dash app access.")
-        currrent_user = get_current_user()
-        logger.info(f"Current user: {currrent_user}")
+        current_user = get_current_user()
+        logger.info(f"Current user: {current_user}")
 
+        # Allow auth routes
+        if request.path.startswith('/auth/'):
+            return None
+            
         if not is_authenticated() and request.path.startswith("/assas_app/"):
-            return redirect("/login")
+            session['next_url'] = request.url
+            return redirect("/auth/login")
 
     dash_app = dash.Dash(
         server=server,

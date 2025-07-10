@@ -1,6 +1,7 @@
 """Configuration file for the ASSAS Data Hub application."""
 
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -12,7 +13,6 @@ class Config(object):
 
     DEBUG = os.getenv("DEBUG", "True").lower() == "true"
     DEVELOPMENT = os.getenv("DEVELOPMENT", "True").lower() == "true"
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
 
     ASTEC_ROOT = os.getenv("ASTEC_ROOT", r"/root/astecV3.1.1_linux64/astecV3.1.1")
     ASTEC_TYPE = os.getenv(
@@ -30,3 +30,39 @@ class Config(object):
     # FLASK_HTPASSWD_PATH = os.getenv('FLASK_HTPASSWD_PATH')
     # FLASK_SECRET = os.getenv('FLASK_SECRET', SECRET_KEY)
     # DB_HOST = os.getenv('DB_HOST')
+
+    # OAuth Configuration
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-here'
+
+    # bwIDM Configuration (Primary Identity Provider)
+    BWIDM_CLIENT_ID = os.environ.get('BWIDM_CLIENT_ID')
+    BWIDM_CLIENT_SECRET = os.environ.get('BWIDM_CLIENT_SECRET')
+    BWIDM_DISCOVERY_URL = 'https://login.bwidm.de/auth/realms/bw/.well-known/openid_configuration'
+
+    # GitHub Configuration (Testing)
+    GITHUB_CLIENT_ID = os.environ.get('GITHUB_CLIENT_ID')
+    GITHUB_CLIENT_SECRET = os.environ.get('GITHUB_CLIENT_SECRET')
+
+    # Session Configuration
+    PERMANENT_SESSION_LIFETIME = timedelta(hours=8)
+
+    # AARC Entitlements Configuration
+    AARC_GROUP_CLAIM = 'eduperson_entitlement'
+    ASSAS_GROUP_PREFIX = 'urn:geant:helmholtz.de:group:HIFIS:'
+
+    # Role Mapping
+    ROLE_MAPPINGS = {
+        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:admins': 'admin',
+        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:writers': 'writer',
+        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:readers': 'reader',
+        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:viewers': 'viewer',
+    }
+
+    GITHUB_ROLE_MAPPINGS = {
+        # Map GitHub usernames to roles for testing
+        'ke4920': 'admin',
+        'test-user-1': 'writer',
+        'test-user-2': 'reader',
+        # Default role for any GitHub user
+        '*': 'viewer'
+    }
