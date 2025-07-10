@@ -72,67 +72,106 @@ def get_role_badge_color(role: str) -> str:
     }
     return role_colors.get(role.lower(), 'secondary')
 
-def create_user_info_card() -> dbc.Card:
+def create_user_info_card():
     """Create user information card."""
-    user = get_current_user()
+    current_user = get_current_user()
     
-    if not user:
-        return dbc.Card([
-            dbc.CardBody([
-                html.Div([
-                    html.I(className="fas fa-exclamation-triangle fa-3x text-warning mb-3"),
-                    html.H4("Not Authenticated", className="text-warning"),
-                    html.P("Please log in to view your profile."),
-                    dbc.Button(
-                        [html.I(className="fas fa-sign-in-alt me-2"), "Login"],
-                        href="/auth/login",
-                        color="primary"
-                    )
-                ], className="text-center")
+    if not current_user:
+        return dbc.Alert("User information not available", color="warning")
+    
+    # Safe role handling
+    roles = current_user.get('roles', [])
+    
+    # Handle both string and list roles
+    if isinstance(roles, str):
+        role_list = [roles]
+    elif isinstance(roles, list):
+        # Flatten nested lists and convert to strings
+        role_list = []
+        for role in roles:
+            if isinstance(role, list):
+                role_list.extend([str(r) for r in role])
+            else:
+                role_list.append(str(role))
+    else:
+        role_list = ['viewer']  # Default fallback
+    
+    # Create role badges safely
+    role_badges = []
+    for role in role_list:
+        try:
+            role_str = str(role).strip()
+            if role_str:  # Only add non-empty roles
+                role_badges.append([
+                    html.I(className="fas fa-shield-alt me-1"), 
+                    role_str.title()
+                ])
+        except Exception as e:
+            logger.error(f"Error processing role {role}: {e}")
+            role_badges.append([
+                html.I(className="fas fa-shield-alt me-1"), 
+                "Unknown Role"
             ])
-        ], style=PROFILE_CARD_STYLE)
     
-    # Avatar section
-    avatar_section = html.Div([
-        html.Img(
-            src=user.get('avatar_url', '/assets/default-avatar.png'),
-            style=AVATAR_STYLE,
-            alt="User Avatar"
-        ) if user.get('avatar_url') else html.Div([
-            html.I(
-                className="fas fa-user fa-4x text-secondary",
-                style={"marginBottom": "1rem"}
-            )
-        ], style={"textAlign": "center", "marginBottom": "1rem"}),
-        
-        html.H3(user.get('name', 'Unknown User'), className="text-center mb-2"),
-        html.P(f"@{user.get('username', 'unknown')}", className="text-center text-muted mb-3"),
-        
-        # Role badges
-        html.Div([
-            dbc.Badge(
-                [html.I(className="fas fa-shield-alt me-1"), role.title()],
-                color=get_role_badge_color(role),
-                style=BADGE_STYLE
-            ) for role in user.get('roles', [])
-        ], className="text-center mb-3"),
-        
-        # Provider badge
-        html.Div([
-            dbc.Badge(
-                [
-                    html.I(className=f"fab fa-{user.get('provider', 'github')} me-1"),
-                    f"via {user.get('provider', 'Unknown').title()}"
-                ],
-                color="primary",
-                style=BADGE_STYLE
-            )
-        ], className="text-center")
-    ], className="text-center")
+    # If no valid roles found, add default
+    if not role_badges:
+        role_badges = [[html.I(className="fas fa-shield-alt me-1"), "Viewer"]]
     
     return dbc.Card([
-        dbc.CardBody([avatar_section])
-    ], style=PROFILE_CARD_STYLE)
+        dbc.CardHeader([
+            html.I(className="fas fa-user me-2"),
+            html.Strong("User Information")
+        ]),
+        dbc.CardBody([
+            dbc.Row([
+                dbc.Col([
+                    html.P([
+                        html.Strong("Username: "),
+                        current_user.get('username', 'N/A')
+                    ], className="mb-2"),
+                    html.P([
+                        html.Strong("Email: "),
+                        current_user.get('email', 'N/A')
+                    ], className="mb-2"),
+                    html.P([
+                        html.Strong("Name: "),
+                        current_user.get('name', 'N/A')
+                    ], className="mb-2"),
+                    html.P([
+                        html.Strong("Institute: "),
+                        current_user.get('institute', 'N/A')
+                    ], className="mb-2"),
+                ], md=6),
+                dbc.Col([
+                    html.P([
+                        html.Strong("Roles: "),
+                        html.Div([
+                            dbc.Badge(
+                                role_badge,
+                                color="primary",
+                                className="me-1 mb-1"
+                            ) for role_badge in role_badges
+                        ])
+                    ], className="mb-2"),
+                    html.P([
+                        html.Strong("Provider: "),
+                        current_user.get('provider', 'N/A').replace('_', ' ').title()
+                    ], className="mb-2"),
+                    html.P([
+                        html.Strong("Status: "),
+                        dbc.Badge(
+                            "Active" if current_user.get('is_active', True) else "Inactive",
+                            color="success" if current_user.get('is_active', True) else "danger"
+                        )
+                    ], className="mb-2"),
+                    html.P([
+                        html.Strong("Login Count: "),
+                        str(current_user.get('login_count', 0))
+                    ], className="mb-2"),
+                ], md=6)
+            ])
+        ])
+    ], className="mb-4")
 
 def create_account_details_card() -> dbc.Card:
     """Create account details card."""
@@ -196,6 +235,21 @@ def create_permissions_card() -> dbc.Card:
     if not user:
         return html.Div()
     
+    # Safe role processing - handle both strings and lists
+    processed_roles = []
+    if isinstance(roles, str):
+        processed_roles = [roles]
+    elif isinstance(roles, list):
+        for role in roles:
+            if isinstance(role, list):
+                # Handle nested lists
+                processed_roles.extend([str(r) for r in role if r])
+            elif role:  # Only add non-empty roles
+                processed_roles.append(str(role))
+    
+    # Remove duplicates and convert to lowercase for lookup
+    processed_roles = list(set([role.lower() for role in processed_roles if role]))
+    
     # Define permission mappings
     permission_info = {
         'admin': {
@@ -209,26 +263,26 @@ def create_permissions_card() -> dbc.Card:
                 'View all user data'
             ]
         },
-        'writer': {
-            'color': 'warning',
-            'icon': 'fas fa-edit',
-            'description': 'Can create and modify content',
+        'researcher': {
+            'color': 'primary',
+            'icon': 'fas fa-microscope',
+            'description': 'Research data access and analysis tools',
             'permissions': [
-                'Upload datasets',
-                'Edit metadata',
-                'Create documentation',
-                'Access collaboration tools'
+                'Access research datasets',
+                'Run analysis tools',
+                'Upload research data',
+                'Collaborate with team'
             ]
         },
-        'reader': {
-            'color': 'info',
-            'icon': 'fas fa-book-open',
-            'description': 'Can read and download content',
+        'curator': {
+            'color': 'success',
+            'icon': 'fas fa-tasks',
+            'description': 'Data curation and quality control',
             'permissions': [
-                'Download datasets',
-                'View all documentation',
-                'Access search functions',
-                'Export data'
+                'Review data quality',
+                'Manage metadata',
+                'Approve datasets',
+                'Monitor data integrity'
             ]
         },
         'viewer': {
@@ -238,14 +292,17 @@ def create_permissions_card() -> dbc.Card:
             'permissions': [
                 'Browse public datasets',
                 'View basic information',
-                'Access help documentation'
+                'Access help documentation',
+                'Download permitted data'
             ]
         }
     }
     
     role_cards = []
-    for role in roles:
-        role_info = permission_info.get(role.lower(), {})
+    for role in processed_roles:
+        role_lower = role.lower() if isinstance(role, str) else str(role).lower()
+        role_info = permission_info.get(role_lower, {})
+        
         if role_info:
             role_cards.append(
                 dbc.Card([
@@ -272,14 +329,19 @@ def create_permissions_card() -> dbc.Card:
                 ], className="mb-3", style={"border": f"2px solid var(--bs-{role_info['color']})"})
             )
     
+    # If no valid roles found, show default message
+    if not role_cards:
+        role_cards = [
+            html.P("No specific roles assigned. Contact an administrator for role assignment.", 
+                   className="text-muted")
+        ]
+    
     return dbc.Card([
         dbc.CardHeader([
             html.I(className="fas fa-shield-alt me-2"),
             html.Strong("Roles & Permissions")
         ]),
-        dbc.CardBody(role_cards if role_cards else [
-            html.P("No specific roles assigned.", className="text-muted")
-        ])
+        dbc.CardBody(role_cards)
     ], style=PROFILE_CARD_STYLE)
 
 def create_actions_card() -> dbc.Card:
