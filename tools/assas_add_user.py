@@ -15,14 +15,14 @@ users = [
     {
         "username": "admin",
         "password": generate_password_hash("admin"),
-        "email": "jonas.dressner@kit.edu",
+        "email": "jonas.dressner@kit.edu1",
         "institute": "KIT (SCC)",
         "role": "Administrator",
     },
     {
         "username": "jonas",
         "password": generate_password_hash("r.adio_1"),
-        "email": "jonas.dressner@kit.edu",
+        "email": "jonas.dressner@kit.edu2",
         "institute": "KIT (SCC)",
         "role": "Researcher",
     },

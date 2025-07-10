@@ -23,23 +23,19 @@ class Config(object):
         "BACKUP_DIRECTORY", r"Z:\\scc\\projects\\ASSAS\\backup_mongodb"
     )
 
-    CONNECTIONSTRING = os.getenv("CONNECTIONSTRING", r"mongodb://localhost:27018/")
+    CONNECTIONSTRING = os.getenv("CONNECTIONSTRING", r"mongodb://localhost:27017/")
     MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", r"assas")
 
-    # Optional settings (uncomment in .env as needed)
-    # FLASK_HTPASSWD_PATH = os.getenv('FLASK_HTPASSWD_PATH')
-    # FLASK_SECRET = os.getenv('FLASK_SECRET', SECRET_KEY)
-    # DB_HOST = os.getenv('DB_HOST')
-
+    # URL Configuration
+    SERVER_NAME = os.environ.get('SERVER_NAME')  # e.g., 'localhost:5000' for dev
+    PREFERRED_URL_SCHEME = os.environ.get('PREFERRED_URL_SCHEME', 'http')
+    
+    # For development
+    if os.environ.get('FLASK_ENV') == 'development':
+        SERVER_NAME = 'localhost:5000'
+        PREFERRED_URL_SCHEME = 'http'
+    
     # OAuth Configuration
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-here'
-
-    # bwIDM Configuration (Primary Identity Provider)
-    BWIDM_CLIENT_ID = os.environ.get('BWIDM_CLIENT_ID')
-    BWIDM_CLIENT_SECRET = os.environ.get('BWIDM_CLIENT_SECRET')
-    BWIDM_DISCOVERY_URL = 'https://login.bwidm.de/auth/realms/bw/.well-known/openid_configuration'
-
-    # GitHub Configuration (Testing)
     GITHUB_CLIENT_ID = os.environ.get('GITHUB_CLIENT_ID')
     GITHUB_CLIENT_SECRET = os.environ.get('GITHUB_CLIENT_SECRET')
 
@@ -66,3 +62,15 @@ class Config(object):
         # Default role for any GitHub user
         '*': 'viewer'
     }
+
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+    SERVER_NAME = 'localhost:5000'
+    PREFERRED_URL_SCHEME = 'http'
+
+
+class ProductionConfig(Config):
+    DEBUG = False
+    # SERVER_NAME should be set via environment variable in production
+    PREFERRED_URL_SCHEME = 'https'

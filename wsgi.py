@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     if app.config["DEVELOPMENT"]:
         app.logger.info("Running in development mode")
-        app.run(host="0.0.0.0", port=5000)
+        app.run(host="localhost", port=5000)
 
     else:
         app.logger.info("Running in production mode")

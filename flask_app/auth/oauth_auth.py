@@ -67,7 +67,9 @@ class UserSession:
     
     @staticmethod
     def create_user_session(user_info: Dict, provider: str) -> None:
-        """Create user session from OAuth user info."""
+        """Create user session from OAuth user info and store in MongoDB."""
+        from ..database.user_manager import UserManager
+        
         session.permanent = True
         
         if provider == 'github':
@@ -78,6 +80,29 @@ class UserSession:
             
             role = GitHubRoleProcessor.get_user_role(username, email)
             
+            # Prepare user data for MongoDB
+            user_data = {
+                'username': username,
+                'email': email,
+                'name': name,
+                'provider': provider,
+                'roles': [role],
+                'github_id': user_id,
+                'avatar_url': user_info.get('avatar_url'),
+                'github_profile': user_info.get('html_url'),
+                'is_active': True
+            }
+            
+            # Store/update user in MongoDB
+            try:
+                user_manager = UserManager()
+                stored_user = user_manager.create_or_update_user(user_data)
+                logger.info(f"User stored/updated in MongoDB: {email}")
+            except Exception as e:
+                logger.error(f"Failed to store user in MongoDB: {e}")
+                stored_user = None
+            
+            # Create session
             session['user'] = {
                 'id': user_id,
                 'username': username,
@@ -88,6 +113,7 @@ class UserSession:
                 'roles': [role],
                 'avatar_url': user_info.get('avatar_url'),
                 'github_profile': user_info.get('html_url'),
+                'mongodb_id': str(stored_user.get('_id')) if stored_user else None
             }
         
         logger.info(f"Created session for {provider} user: {session['user'].get('email')}")
@@ -174,35 +200,58 @@ def get_github_user_info(access_token: str) -> Dict:
 # OAuth Routes
 @oauth_bp.route('/login/<provider>')
 def login(provider: str):
-    """Initiate OAuth login flow with proper state management."""
+    """Initiate OAuth login flow."""
+    
     if provider not in ['github', 'bwidm']:
-        flash('Invalid authentication provider', 'error')
+        flash(f'Unknown provider: {provider}', 'error')
         return redirect(url_for('auth.login_page'))
     
-    if provider == 'github' and not current_app.config.get('GITHUB_CLIENT_ID'):
-        flash('GitHub authentication is not configured', 'error')
+    if not current_app.config.get(f'{provider.upper()}_CLIENT_ID'):
+        flash(f'{provider.title()} authentication is not configured', 'error')
         return redirect(url_for('auth.login_page'))
     
     try:
-        client = oauth.create_client(provider)
-        redirect_uri = url_for('oauth.callback', provider=provider, _external=True)
-        
-        # Generate and store state for CSRF protection
+        # Generate state for CSRF protection
         state = secrets.token_urlsafe(32)
         session[f'oauth_state_{provider}'] = state
-        session.modified = True  # Ensure session is saved
+        session.modified = True
         
-        # Create authorization URL with state
-        authorization_url = client.create_authorization_url(
-            redirect_uri,
-            state=state
-        )
+        # EXPLICITLY set the redirect URI
+        redirect_uri = url_for('oauth.callback', provider=provider, _external=True)
+        logger.info(f"OAuth login for {provider}, redirect URI: {redirect_uri}")
         
-        logger.info(f"Generated OAuth state for {provider}: {state}")
-        logger.info(f"Redirecting to {provider} authorization URL")
-        
-        return redirect(authorization_url['url'])
-        
+        if provider == 'github':
+            # Manual GitHub OAuth URL construction
+            params = {
+                'client_id': current_app.config['GITHUB_CLIENT_ID'],
+                'redirect_uri': redirect_uri,
+                'scope': 'user:email read:user',
+                'state': state,
+                'response_type': 'code'
+            }
+            
+            auth_url = 'https://github.com/login/oauth/authorize?' + urlencode(params)
+            logger.info(f"GitHub auth URL: {auth_url}")
+            return redirect(auth_url)
+            
+        elif provider == 'bwidm':
+            # Similar for bwIDM
+            nonce = secrets.token_urlsafe(32)
+            session[f'oidc_nonce_{provider}'] = nonce
+            
+            params = {
+                'client_id': current_app.config['BWIDM_CLIENT_ID'],
+                'redirect_uri': redirect_uri,
+                'scope': 'openid profile email eduperson_entitlement',
+                'response_type': 'code',
+                'state': state,
+                'nonce': nonce
+            }
+            
+            auth_url = 'https://login.bwidm.de/auth/realms/bw/protocol/openid-connect/auth?' + urlencode(params)
+            logger.info(f"bwIDM auth URL: {auth_url}")
+            return redirect(auth_url)
+            
     except Exception as e:
         logger.error(f"OAuth login error for {provider}: {e}")
         flash(f'Authentication error: {str(e)}', 'error')

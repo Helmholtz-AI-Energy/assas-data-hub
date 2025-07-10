@@ -10,7 +10,7 @@ import uuid
 import diskcache
 import dash_bootstrap_components as dbc
 
-from dash import dash, html, Input, Output, State
+from dash import dash, html, Input, Output, State, dcc
 from dash.long_callback import DiskcacheLongCallbackManager
 
 from .components import encode_svg_image_hq  # Use high-quality encoder
@@ -733,6 +733,22 @@ navbar = \
     className="nav-link-modern",
     )
     ),
+    # Admin link (hidden by default)
+    dbc.NavItem(
+    dbc.NavLink(
+        [
+            html.I(className="fas fa-users-cog me-2"),
+            "Admin",
+        ],
+        href="/assas_app/admin",
+        active="exact",
+        style=nav_link_style(),
+        className="nav-link-modern",
+        id="admin-nav-link"
+    ),
+    id="admin-nav-item",
+    style={"display": "none"}  # Hidden by default
+    ),
     ],
     className="nav-items-container",
     horizontal=True,
@@ -804,17 +820,30 @@ def init_dashboard(server: object) -> object:
     @server.before_request
     def restrict_access() -> Response:
         """Restrict access to Dash pages for unauthenticated users."""
-        logger.info("Checking authentication for Dash app access.")
-        current_user = get_current_user()
-        logger.info(f"Current user: {current_user}")
-
+        logger.info(f"Checking authentication for path: {request.path}")
+        
         # Allow auth routes
         if request.path.startswith('/auth/'):
+            logger.info("Allowing auth route")
             return None
+        
+        # Allow static assets
+        if request.path.startswith('/static/') or request.path.startswith('/_dash'):
+            return None
+        
+        # Check authentication for Dash app routes
+        if request.path.startswith("/assas_app/"):
+            current_user = get_current_user()
+            logger.info(f"Current user for Dash access: {current_user}")
             
-        if not is_authenticated() and request.path.startswith("/assas_app/"):
-            session['next_url'] = request.url
-            return redirect("/auth/login")
+            if not is_authenticated():
+                logger.info("User not authenticated, redirecting to login")
+                session['next_url'] = request.url
+                return redirect("/auth/login")
+            
+            logger.info(f"User {current_user.get('email')} authenticated, allowing access")
+    
+        return None
 
     dash_app = dash.Dash(
         server=server,
@@ -856,18 +885,18 @@ def init_dashboard(server: object) -> object:
         if n_clicks:
             return not is_open
         return is_open
-
+    
     # Toggle navbar collapse on mobile - additional callback
-    @dash_app.callback(
-        Output("navbar-collapse", "is_open"),
-        [Input("navbar-toggler", "n_clicks")],
-        [State("navbar-collapse", "is_open")],
-    )
-    def toggle_navbar_collapse_mobile(n, is_open):
-        """Toggle navbar collapse on mobile."""
-        if n:
-            return not is_open
-        return is_open
+    #@dash_app.callback(
+    #    Output("navbar-collapse", "is_open"),
+    #    [Input("navbar-toggler", "n_clicks")],
+    #    [State("navbar-collapse", "is_open")],
+    #)
+    #def toggle_navbar_collapse_mobile(n, is_open):
+    #    """Toggle navbar collapse on mobile."""
+    #    if n:
+    #        return not is_open
+    #    return is_open
 
     # Simplified clientside callback for scroll behavior only
     dash_app.clientside_callback(
@@ -952,6 +981,7 @@ function(id) {
     # Create Dash Layout with Footer
     dash_app.layout = html.Div(
         [
+            dcc.Location(id="url", refresh=False),
             navbar,
             # Main content wrapper
             html.Div(
@@ -984,6 +1014,21 @@ function(id) {
             "backgroundColor": "#f8f9fa",
         },
     )
+
+    # Add the callback to show/hide admin link:
+    @dash_app.callback(
+        Output("admin-nav-item", "style"),
+        Input("url", "pathname"),
+        prevent_initial_call=True
+    )
+    def toggle_admin_nav(pathname):
+        """Show admin nav link only for admin users."""
+        from ..auth_utils import has_role
+        
+        if has_role('admin'):
+            return {"display": "block"}
+        else:
+            return {"display": "none"}
 
     # Register pages
     from . import pages
