@@ -17,6 +17,7 @@ from typing import Dict, List, Any, Optional
 import io
 import base64
 from werkzeug.security import generate_password_hash
+from bson import ObjectId
 
 from ...auth_utils import get_current_user, require_role
 from ...database.user_manager import UserManager
@@ -860,6 +861,51 @@ def create_new_user(username, email, name, institute, provider, password, roles,
         logger.error(f"Error creating user: {e}")
         return False, f"Error creating user: {str(e)}"
 
+def create_delete_confirmation_modal():
+    """Create modal for confirming deletion of selected users."""
+    return dbc.Modal([
+        dbc.ModalHeader(dbc.ModalTitle([
+            html.I(className="fas fa-exclamation-triangle me-2 text-danger"),
+            "Confirm User Deletion"
+        ])),
+        dbc.ModalBody([
+            dbc.Alert([
+                html.H5("⚠️ Warning!", className="alert-heading"),
+                html.P("This action cannot be undone. The selected users will be permanently affected."),
+                html.Hr(),
+                html.Div(id="selected-users-info")
+            ], color="warning"),
+            
+            dbc.Row([
+                dbc.Col([
+                    dbc.Label("Deletion Type:"),
+                    dbc.RadioItems(
+                        id="delete-type-selected",
+                        options=[
+                            {"label": "Soft Delete (Deactivate users)", "value": "soft"},
+                            {"label": "Hard Delete (Permanently remove)", "value": "hard"}
+                        ],
+                        value="soft",
+                        inline=False
+                    )
+                ])
+            ])
+        ]),
+        dbc.ModalFooter([
+            dbc.Button(
+                "Cancel", 
+                id="cancel-delete-selected", 
+                className="me-2", 
+                color="secondary"
+            ),
+            dbc.Button(
+                [html.I(className="fas fa-trash me-2"), "Delete Users"],
+                id="confirm-delete-selected", 
+                color="danger"
+            ),
+        ]),
+    ], id="delete-confirmation-modal", is_open=False)
+
 # Update the layout function to include the add user functionality
 @require_role('admin')
 def layout():
@@ -891,11 +937,18 @@ def layout():
                         html.I(className="fas fa-user-plus me-2"),
                         "Add User"
                     ], id="open-add-user-modal", color="success", size="sm"),
-                    dbc.Badge(
-                        f"Total Users: {stats.get('total_users', 0)}",
-                        color="primary",
-                        className="fs-6 p-2 ms-2"
-                    )
+                    dbc.Button([
+                        html.I(className="fas fa-trash me-2"),
+                        "Delete Selected"
+                    ], id="delete-selected-btn", color="danger", size="sm", disabled=True),
+                    dbc.Button([
+                        html.I(className="fas fa-file-csv me-2"),
+                        "Export CSV"
+                    ], id="export-csv-btn", color="success", outline=True, size="sm"),
+                    dbc.Button([
+                        html.I(className="fas fa-file-excel me-2"),
+                        "Export Excel"
+                    ], id="export-excel-btn", color="info", outline=True, size="sm"),
                 ], className="d-flex align-items-center")
             ], md=6, className="text-end")
         ], className="mb-4"),
@@ -911,14 +964,22 @@ def layout():
         html.H3("Analytics", className="mt-4 mb-3"),
         create_charts(stats),
         
-        # User Management Section with Export (existing)
+        # UPDATED User Management Section with Delete Controls
         html.Hr(),
         dbc.Row([
             dbc.Col([
                 html.H3("User Management", className="mt-4 mb-3"),
-            ], md=8),
+            ], md=6),
             dbc.Col([
                 dbc.ButtonGroup([
+                    dbc.Button([
+                        html.I(className="fas fa-user-plus me-2"),
+                        "Add User"
+                    ], id="open-add-user-modal", color="success", size="sm"),
+                    dbc.Button([
+                        html.I(className="fas fa-trash me-2"),
+                        "Delete Selected"
+                    ], id="delete-selected-btn", color="danger", size="sm", disabled=True),
                     dbc.Button([
                         html.I(className="fas fa-file-csv me-2"),
                         "Export CSV"
@@ -928,13 +989,16 @@ def layout():
                         "Export Excel"
                     ], id="export-excel-btn", color="info", outline=True, size="sm"),
                 ], className="mt-4")
-            ], md=4, className="text-end")
+            ], md=6, className="text-end")
         ]),
         
-        # Export status
+        # Selection info
+        html.Div(id="selection-info", className="mb-3"),
+        
+        # Existing export status
         html.Div(id="export-status", className="mb-3"),
         
-        # Existing user table
+        # UPDATED User Table with Selection
         dash_table.DataTable(
             id='users-table',
             columns=[
@@ -957,6 +1021,11 @@ def layout():
             page_action="native",
             page_current=0,
             page_size=20,
+            
+            # ADD THESE LINES FOR SELECTION
+            row_selectable="multi",
+            selected_rows=[],
+            
             style_cell={
                 'textAlign': 'left',
                 'padding': '10px',
@@ -986,18 +1055,27 @@ def layout():
                     'if': {'filter_query': '{roles} contains admin'},
                     'backgroundColor': '#d1ecf1',
                     'color': 'black',
+                },
+                # ADD THIS FOR SELECTED ROW HIGHLIGHTING
+                {
+                    'if': {'state': 'selected'},
+                    'backgroundColor': '#007bff',
+                    'color': 'white',
                 }
             ]
         ),
         
-        # Add User Modal
+        # Keep all your existing modals
         create_add_user_modal(),
         
-        # Hidden download components (existing)
+        # ADD DELETE CONFIRMATION MODAL
+        create_delete_confirmation_modal(),
+        
+        # Hidden download components
         dcc.Download(id="download-csv"),
         dcc.Download(id="download-excel"),
         
-        # Existing system information section
+        # System Information
         html.Hr(),
         html.H3("System Information", className="mt-4 mb-3"),
         dbc.Card([
@@ -1021,10 +1099,10 @@ def layout():
             ])
         ], style=ADMIN_CARD_STYLE),
         
-        # Refresh data
+        # Refresh data interval
         dcc.Interval(
             id='admin-interval-component',
-            interval=60*1000,  # Update every minute
+            interval=60*1000,
             n_intervals=0
         ),
     ])
@@ -1179,3 +1257,223 @@ def toggle_password_field(provider):
         return {"display": "block"}
     else:
         return {"display": "none"}
+
+# Callback to enable/disable delete button and show selection info
+@callback(
+    [Output("delete-selected-btn", "disabled"),
+     Output("selection-info", "children")],
+    [Input("users-table", "selected_rows")],
+    [State("users-table", "data")]
+)
+def update_delete_button_and_info(selected_rows, table_data):
+    """Enable delete button when users are selected and show selection info."""
+    
+    if not selected_rows:
+        return True, ""  # Disable button, no info
+    
+    num_selected = len(selected_rows)
+    selected_usernames = [table_data[i]['username'] for i in selected_rows if i < len(table_data)]
+    
+    # Check if any admin users are selected
+    admin_selected = []
+    for i in selected_rows:
+        if i < len(table_data):
+            user = table_data[i]
+            if 'admin' in user.get('roles', ''):
+                admin_selected.append(user['username'])
+    
+    info_content = []
+    
+    # Selection summary
+    info_content.append(
+        dbc.Alert([
+            html.I(className="fas fa-info-circle me-2"),
+            f"{num_selected} user(s) selected: {', '.join(selected_usernames[:3])}",
+            "..." if len(selected_usernames) > 3 else ""
+        ], color="info", className="mb-2")
+    )
+    
+    # Admin warning
+    if admin_selected:
+        info_content.append(
+            dbc.Alert([
+                html.I(className="fas fa-exclamation-triangle me-2"),
+                f"⚠️ Warning: {len(admin_selected)} admin user(s) selected: {', '.join(admin_selected)}"
+            ], color="warning", className="mb-2")
+        )
+    
+    return False, html.Div(info_content)  # Enable button, show info
+
+# Callback to open delete confirmation modal
+@callback(
+    [Output("delete-confirmation-modal", "is_open"),
+     Output("selected-users-info", "children")],
+    [Input("delete-selected-btn", "n_clicks"),
+     Input("cancel-delete-selected", "n_clicks"),
+     Input("confirm-delete-selected", "n_clicks")],
+    [State("users-table", "selected_rows"),
+     State("users-table", "data"),
+     State("delete-confirmation-modal", "is_open")]
+)
+def toggle_delete_confirmation_modal(delete_clicks, cancel_clicks, confirm_clicks, 
+                                   selected_rows, table_data, is_open):
+    """Toggle delete confirmation modal and populate with selected user info."""
+    
+    if not ctx.triggered:
+        return False, ""
+    
+    trigger_id = ctx.triggered[0]["prop_id"].split('.')[0]
+    
+    if trigger_id == "delete-selected-btn" and selected_rows:
+        # Open modal and show selected users
+        selected_users_info = []
+        admin_count = 0
+        
+        for i in selected_rows:
+            if i < len(table_data):
+                user = table_data[i]
+                is_admin = 'admin' in user.get('roles', '')
+                if is_admin:
+                    admin_count += 1
+                
+                user_info = html.Div([
+                    html.P([
+                        html.Strong(user.get('username', 'N/A')),
+                        f" ({user.get('email', 'N/A')})",
+                        " - " + user.get('roles', 'No roles'),
+                        html.Span(" [ADMIN]", className="text-danger fw-bold") if is_admin else ""
+                    ], className="mb-1")
+                ])
+                selected_users_info.append(user_info)
+        
+        # Add admin warning if needed
+        warning_content = []
+        if admin_count > 0:
+            remaining_admins = get_remaining_admin_count(selected_rows, table_data)
+            if remaining_admins == 0:
+                warning_content.append(
+                    dbc.Alert([
+                        html.I(className="fas fa-ban me-2"),
+                        "❌ Cannot delete all admin users! At least one admin must remain."
+                    ], color="danger", className="mt-3")
+                )
+            else:
+                warning_content.append(
+                    dbc.Alert([
+                        html.I(className="fas fa-exclamation-triangle me-2"),
+                        f"⚠️ You are about to delete {admin_count} admin user(s). "
+                        f"{remaining_admins} admin(s) will remain."
+                    ], color="warning", className="mt-3")
+                )
+        
+        users_info_content = html.Div([
+            html.P(f"Selected {len(selected_rows)} user(s) for deletion:", className="fw-bold"),
+            html.Div(selected_users_info),
+            html.Div(warning_content)
+        ])
+        
+        return True, users_info_content
+    
+    elif trigger_id in ["cancel-delete-selected", "confirm-delete-selected"]:
+        return False, ""
+    
+    return is_open, ""
+
+def get_remaining_admin_count(selected_rows, table_data):
+    """Calculate how many admin users will remain after deletion."""
+    total_admins = sum(1 for user in table_data if 'admin' in user.get('roles', ''))
+    selected_admins = sum(1 for i in selected_rows 
+                         if i < len(table_data) and 'admin' in table_data[i].get('roles', ''))
+    return total_admins - selected_admins
+
+# Callback to handle the actual deletion
+@callback(
+    [Output("user-operation-alert", "children", allow_duplicate=True),
+     Output("users-table", "data", allow_duplicate=True),
+     Output("users-table", "selected_rows")],
+    [Input("confirm-delete-selected", "n_clicks")],
+    [State("users-table", "selected_rows"),
+     State("users-table", "data"),
+     State("delete-type-selected", "value")],
+    prevent_initial_call=True
+)
+def delete_selected_users(n_clicks, selected_rows, table_data, delete_type):
+    """Delete the selected users."""
+    
+    if not n_clicks or not selected_rows:
+        return "", dash.no_update, []
+    
+    try:
+        user_manager = UserManager()
+        
+        # Check admin constraint
+        remaining_admins = get_remaining_admin_count(selected_rows, table_data)
+        selected_admin_count = sum(1 for i in selected_rows 
+                                 if i < len(table_data) and 'admin' in table_data[i].get('roles', ''))
+        
+        if remaining_admins == 0 and selected_admin_count > 0:
+            alert = dbc.Alert([
+                html.I(className="fas fa-ban me-2"),
+                "Cannot delete all admin users! At least one admin must remain in the system."
+            ], color="danger", dismissable=True)
+            return alert, dash.no_update, selected_rows
+        
+        # Perform deletions
+        successful_deletions = []
+        failed_deletions = []
+        
+        for i in selected_rows:
+            if i < len(table_data):
+                user = table_data[i]
+                username = user.get('username')
+                user_id = user.get('_id') or user.get('id')
+                
+                try:
+                    if delete_type == "soft":
+                        success = user_manager.soft_delete_user(str(user_id))
+                    else:
+                        success = user_manager.delete_user(str(user_id))
+                    
+                    if success:
+                        successful_deletions.append(username)
+                    else:
+                        failed_deletions.append(username)
+                        
+                except Exception as e:
+                    logger.error(f"Error deleting user {username}: {e}")
+                    failed_deletions.append(username)
+        
+        # Create result message
+        alert_content = []
+        
+        if successful_deletions:
+            action_word = "deactivated" if delete_type == "soft" else "deleted"
+            alert_content.append(
+                dbc.Alert([
+                    html.I(className="fas fa-check-circle me-2"),
+                    f"Successfully {action_word} {len(successful_deletions)} user(s): ",
+                    ", ".join(successful_deletions)
+                ], color="success", dismissable=True)
+            )
+        
+        if failed_deletions:
+            alert_content.append(
+                dbc.Alert([
+                    html.I(className="fas fa-exclamation-triangle me-2"),
+                    f"Failed to delete {len(failed_deletions)} user(s): ",
+                    ", ".join(failed_deletions)
+                ], color="danger", dismissable=True)
+            )
+        
+        # Refresh user data
+        updated_users_data = get_users_data()
+        
+        return html.Div(alert_content), updated_users_data, []  # Clear selection
+        
+    except Exception as e:
+        logger.error(f"Error during bulk user deletion: {e}")
+        alert = dbc.Alert([
+            html.I(className="fas fa-exclamation-triangle me-2"),
+            f"Error during deletion: {str(e)}"
+        ], color="danger", dismissable=True)
+        return alert, dash.no_update, selected_rows

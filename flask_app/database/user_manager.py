@@ -263,7 +263,7 @@ class UserManager:
             logger.error(f"Error updating last login for {username}: {e}")
             return False
     
-    def get_user_by_id(self, user_id: str) -> Optional[Dict]:
+    def get_user_by_id(self, user_id) -> Optional[Dict[str, Any]]:
         """Get user by ID."""
         try:
             if isinstance(user_id, str):
@@ -271,7 +271,7 @@ class UserManager:
             user = self.users_collection.find_one({"_id": user_id})
             return user
         except Exception as e:
-            logger.error(f"Error retrieving user by ID {user_id}: {e}")
+            logger.error(f"Error getting user by ID: {e}")
             return None
         
     def create_user(self, user_data: Dict[str, Any]) -> bool:
@@ -306,4 +306,65 @@ class UserManager:
                 
         except Exception as e:
             logger.error(f"Error creating user: {e}")
+            return False
+    
+    def delete_user(self, user_id: str) -> bool:
+        """Delete a user from the database."""
+        try:
+            if isinstance(user_id, str):
+                user_id = ObjectId(user_id)
+            
+            # Get user info before deletion for logging
+            user = self.get_user_by_id(user_id)
+            if not user:
+                logger.error(f"User with ID {user_id} not found")
+                return False
+            
+            # Prevent deletion of the last admin user
+            if 'admin' in user.get('roles', []):
+                admin_count = self.users_collection.count_documents({"roles": "admin"})
+                if admin_count <= 1:
+                    logger.error("Cannot delete the last admin user")
+                    return False
+            
+            # Delete the user
+            result = self.users_collection.delete_one({"_id": user_id})
+            
+            if result.deleted_count > 0:
+                logger.info(f"Deleted user: {user.get('username', 'unknown')} (ID: {user_id})")
+                return True
+            else:
+                logger.error(f"Failed to delete user with ID: {user_id}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error deleting user: {e}")
+            return False
+
+    def soft_delete_user(self, user_id: str) -> bool:
+        """Soft delete a user (mark as inactive instead of deleting)."""
+        try:
+            if isinstance(user_id, str):
+                user_id = ObjectId(user_id)
+            
+            result = self.users_collection.update_one(
+                {"_id": user_id},
+                {
+                    "$set": {
+                        "is_active": False,
+                        "deleted_at": datetime.utcnow(),
+                        "updated_at": datetime.utcnow()
+                    }
+                }
+            )
+            
+            if result.modified_count > 0:
+                logger.info(f"Soft deleted user with ID: {user_id}")
+                return True
+            else:
+                logger.error(f"Failed to soft delete user with ID: {user_id}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error soft deleting user: {e}")
             return False
