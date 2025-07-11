@@ -351,13 +351,56 @@ def create_actions_card() -> dbc.Card:
     if not user:
         return html.Div()
     
-    actions = [
+    # Enhanced logout with confirmation modal
+    logout_section = html.Div([
         dbc.Button(
             [html.I(className="fas fa-sign-out-alt me-2"), "Logout"],
-            href="/auth/logout",
+            id="logout-button",
             color="outline-danger",
-            className="me-2 mb-2"
+            className="me-2 mb-2",
+            n_clicks=0
         ),
+        
+        # Confirmation Modal
+        dbc.Modal([
+            dbc.ModalHeader(
+                dbc.ModalTitle([
+                    html.I(className="fas fa-sign-out-alt me-2"),
+                    "Confirm Logout"
+                ])
+            ),
+            dbc.ModalBody([
+                html.P([
+                    f"Are you sure you want to logout, {user.get('name', 'User')}?"
+                ], className="mb-3"),
+                html.Div([
+                    html.I(className="fas fa-info-circle me-2", style={"color": "#17a2b8"}),
+                    f"You are currently logged in via {user.get('provider', 'Unknown').replace('_', ' ').title()}"
+                ], className="alert alert-info mb-0")
+            ]),
+            dbc.ModalFooter([
+                dbc.Button(
+                    [html.I(className="fas fa-times me-2"), "Cancel"],
+                    id="logout-cancel",
+                    color="secondary",
+                    className="me-2",
+                    n_clicks=0
+                ),
+                dbc.Button(
+                    [html.I(className="fas fa-sign-out-alt me-2"), "Yes, Logout"],
+                    id="logout-confirm",
+                    color="danger",
+                    n_clicks=0
+                )
+            ])
+        ], id="logout-modal", is_open=False),
+        
+        # Hidden redirect component
+        dcc.Location(id="logout-redirect", refresh=True)
+    ])
+    
+    actions = [
+        logout_section,
         dbc.Button(
             [html.I(className="fas fa-home me-2"), "Go to Home"],
             href="/assas_app/home",
@@ -391,6 +434,30 @@ def create_actions_card() -> dbc.Card:
         ]),
         dbc.CardBody(actions)
     ], style=PROFILE_CARD_STYLE)
+
+# Callbacks for logout handling
+@callback(
+    Output("logout-modal", "is_open"),
+    [Input("logout-button", "n_clicks"), Input("logout-cancel", "n_clicks")],
+    [State("logout-modal", "is_open")],
+    prevent_initial_call=True
+)
+def toggle_logout_modal(logout_clicks, cancel_clicks, is_open):
+    """Toggle logout confirmation modal."""
+    if logout_clicks or cancel_clicks:
+        return not is_open
+    return is_open
+
+@callback(
+    Output("logout-redirect", "href"),
+    Input("logout-confirm", "n_clicks"),
+    prevent_initial_call=True
+)
+def confirm_logout(n_clicks):
+    """Handle logout confirmation."""
+    if n_clicks and n_clicks > 0:
+        return "/auth/logout"
+    return dash.no_update
 
 def layout() -> html.Div:  # ruff: noqa: E501
     """Layout for the user profile page.
