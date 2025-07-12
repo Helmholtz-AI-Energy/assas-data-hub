@@ -1036,4 +1036,5 @@ function(id) {
     from . import pages
     from .pages import home, database, about, profile, admin  # Add profile import
 
-    return dash_app.server
+    #return dash_app.server
+    return dash_app
