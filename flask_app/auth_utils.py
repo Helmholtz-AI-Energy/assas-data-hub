@@ -1,13 +1,11 @@
 """Authentication utilities for Flask application using MongoDB."""
 
 import logging
-
-from flask_httpauth import HTTPBasicAuth
+from functools import wraps
+from typing import Optional, List
+from flask import session, request, redirect, url_for, flash
 from werkzeug.security import check_password_hash
-from flask import session
 from pymongo import MongoClient
-
-auth = HTTPBasicAuth()
 
 logger = logging.getLogger("assas_app")
 
@@ -21,7 +19,6 @@ users_collection = db["users"]  # Collection name
 users = users_collection.find()
 
 
-@auth.verify_password
 def verify_password(username_or_email: str, password: str) -> str | None:
     """Verifiy the username or email and password for authentication."""
     logger.info(f"Verifying user/email {username_or_email} with password {password}.")
@@ -39,14 +36,69 @@ def verify_password(username_or_email: str, password: str) -> str | None:
 
 
 def is_authenticated() -> bool:
-    """Check if the user is authenticated."""
-    is_auth = "user" in session
-    logger.info(f"User authentication status: {is_auth}")
-
-    return is_auth
+    """Check if user is authenticated."""
+    return session.get("user", {}).get("authenticated", False)
 
 
-def get_current_user() -> str | None:
-    """Get the currently authenticated user from the session."""
+def get_current_user() -> Optional[dict]:
+    """Get current user information."""
     logger.info("Retrieving current user from session.")
-    return session.get("user", None)
+    return session.get("user")
+
+
+def get_user_roles() -> List[str]:
+    """Get current user's roles."""
+    user = get_current_user()
+    return user.get("roles", []) if user else []
+
+
+def has_role(role: str) -> bool:
+    """Check if current user has specific role."""
+    return role in get_user_roles()
+
+
+def require_auth(f):
+    """Decorator to require authentication."""
+
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not is_authenticated():
+            # Store intended URL
+            session["next_url"] = request.url
+            flash("Please log in to access this page", "warning")
+            return redirect(url_for("auth.login_page"))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def require_role(role: str):
+    """Decorator to require specific role."""
+
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not is_authenticated():
+                session["next_url"] = request.url
+                flash("Please log in to access this page", "warning")
+                return redirect(url_for("auth.login_page"))
+
+            if not has_role(role):
+                flash("Insufficient permissions", "error")
+                return redirect(url_for("dash_app.home"))
+
+            return f(*args, **kwargs)
+
+        return decorated_function
+
+    return decorator
+
+
+# Legacy compatibility
+class auth:
+    """Legacy auth class for compatibility."""
+
+    @staticmethod
+    def login_required(f):
+        """Legacy login_required decorator."""
+        return require_auth(f)

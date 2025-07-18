@@ -10,12 +10,15 @@ import uuid
 import diskcache
 import dash_bootstrap_components as dbc
 
-from dash import dash, html, Input, Output, State
+from dash import dash, html, Input, Output, State, dcc
 from dash.long_callback import DiskcacheLongCallbackManager
 
 from .components import encode_svg_image_hq  # Use high-quality encoder
-from flask import redirect, request, Response
+from flask import redirect, request, Response, session
 from ..auth_utils import auth, is_authenticated, get_current_user
+from ..auth.oauth_auth import oauth_bp, init_oauth
+from ..auth.routes import auth_bp
+from ..auth.basic_auth import basic_auth_bp
 
 logger = logging.getLogger("assas_app")
 
@@ -617,7 +620,6 @@ footer = \
 navbar = \
     html.Div(
     [
-    # Top Row - Brand and Logos (Reordered: ASSAS - Brand - KIT) - INCREASED LOGO HEIGHT
     html.Div(
     [
     dbc.Container(
@@ -626,30 +628,27 @@ navbar = \
     [
     html.Div(
     [
-    # ASSAS Logo (First) - INCREASED size
     html.Img(
     src=encode_svg_image_hq(
     "assas_logo_mod.svg"
     ),
-    height="80px",  # Increased from 60px
-    width="160px",  # Increased from 120px
+    height="80px",
+    width="160px",
     style=logo_style(),
     alt="ASSAS Logo",
     className="logo-high-quality logo-assas",
     ),
-    # Brand title (Center)
     html.H1(
     "ASSAS Data Hub",
     style=brand_style(),
     className="brand-title brand-center",
     ),
-    # KIT Logo (Last) - INCREASED size
     html.Img(
     src=encode_svg_image_hq(
     "kit_logo.drawio.svg"
     ),
-    height="80px",  # Increased from 60px
-    width="160px",  # Increased from 120px
+    height="80px",
+    width="160px",
     style=logo_style(),
     alt="KIT Logo",
     className="logo-high-quality logo-kit",
@@ -669,15 +668,12 @@ navbar = \
     ],
     style=top_row_style(),
     ),
-    # Bottom Row - Navigation
     html.Div(
     [
     dbc.Container(
     [
-    # Navigation content wrapper
     html.Div(
     [
-    # Hamburger menu (visible on mobile)
     dbc.Button(
     html.I(className="fas fa-bars"),
     id="navbar-toggler",
@@ -685,7 +681,6 @@ navbar = \
     style=hamburger_style(),
     className="navbar-toggler-mobile d-md-none",
     ),
-    # Navigation menu
     dbc.Collapse(
     [
     dbc.Nav(
@@ -693,9 +688,7 @@ navbar = \
     dbc.NavItem(
     dbc.NavLink(
     [
-    html.I(
-    className="fas fa-home me-2"
-    ),
+    html.I(className="fas fa-home me-2"),
     "Home",
     ],
     href="/assas_app/home",
@@ -707,9 +700,7 @@ navbar = \
     dbc.NavItem(
     dbc.NavLink(
     [
-    html.I(
-    className="fas fa-database me-2"
-    ),  # Fixed missing opening parenthesis
+    html.I(className="fas fa-database me-2"),
     "Database",
     ],
     href="/assas_app/database",
@@ -721,9 +712,7 @@ navbar = \
     dbc.NavItem(
     dbc.NavLink(
     [
-    html.I(
-    className="fas fa-info-circle me-2"
-    ),
+    html.I(className="fas fa-info-circle me-2"),
     "About",
     ],
     href="/assas_app/about",
@@ -731,6 +720,35 @@ navbar = \
     style=nav_link_style(),
     className="nav-link-modern",
     )
+    ),
+    # Add Profile link
+    dbc.NavItem(
+    dbc.NavLink(
+    [
+    html.I(className="fas fa-user me-2"),
+    "Profile",
+    ],
+    href="/assas_app/profile",
+    active="exact",
+    style=nav_link_style(),
+    className="nav-link-modern",
+    )
+    ),
+    # Admin link (hidden by default)
+    dbc.NavItem(
+    dbc.NavLink(
+        [
+            html.I(className="fas fa-users-cog me-2"),
+            "Admin",
+        ],
+        href="/assas_app/admin",
+        active="exact",
+        style=nav_link_style(),
+        className="nav-link-modern",
+        id="admin-nav-link"
+    ),
+    id="admin-nav-item",
+    style={"display": "none"}  # Hidden by default
     ),
     ],
     className="nav-items-container",
@@ -763,7 +781,6 @@ navbar = \
     ],
     style=bottom_row_style(),
     ),
-    # Scroll progress indicator
     html.Div(id="scroll-progress", className="scroll-indicator"),
     ],
     id="main-navbar",
@@ -793,17 +810,42 @@ def init_dashboard(server: object) -> object:
         expire=60,
     )
 
+    # Initialize OAuth
+    init_oauth(server)
+
+    # Register blueprints
+    server.register_blueprint(oauth_bp)
+    server.register_blueprint(auth_bp)
+    server.register_blueprint(basic_auth_bp)  # Add this line
+    
     # Protect Dash pages
     @server.before_request
-    @auth.login_required
     def restrict_access() -> Response:
         """Restrict access to Dash pages for unauthenticated users."""
-        logger.info("Checking authentication for Dash app access.")
-        currrent_user = get_current_user()
-        logger.info(f"Current user: {currrent_user}")
-
-        if not is_authenticated() and request.path.startswith("/assas_app/"):
-            return redirect("/login")
+        logger.info(f"Checking authentication for path: {request.path}")
+        
+        # Allow auth routes
+        if request.path.startswith('/auth/'):
+            logger.info("Allowing auth route")
+            return None
+        
+        # Allow static assets
+        if request.path.startswith('/static/') or request.path.startswith('/_dash'):
+            return None
+        
+        # Check authentication for Dash app routes
+        if request.path.startswith("/assas_app/"):
+            current_user = get_current_user()
+            logger.info(f"Current user for Dash access: {current_user}")
+            
+            if not is_authenticated():
+                logger.info("User not authenticated, redirecting to login")
+                session['next_url'] = request.url
+                return redirect("/auth/login")
+            
+            logger.info(f"User {current_user.get('email')} authenticated, allowing access")
+    
+        return None
 
     dash_app = dash.Dash(
         server=server,
@@ -845,6 +887,18 @@ def init_dashboard(server: object) -> object:
         if n_clicks:
             return not is_open
         return is_open
+    
+    # Toggle navbar collapse on mobile - additional callback
+    #@dash_app.callback(
+    #    Output("navbar-collapse", "is_open"),
+    #    [Input("navbar-toggler", "n_clicks")],
+    #    [State("navbar-collapse", "is_open")],
+    #)
+    #def toggle_navbar_collapse_mobile(n, is_open):
+    #    """Toggle navbar collapse on mobile."""
+    #    if n:
+    #        return not is_open
+    #    return is_open
 
     # Simplified clientside callback for scroll behavior only
     dash_app.clientside_callback(
@@ -929,6 +983,7 @@ function(id) {
     # Create Dash Layout with Footer
     dash_app.layout = html.Div(
         [
+            dcc.Location(id="url", refresh=False),
             navbar,
             # Main content wrapper
             html.Div(
@@ -961,5 +1016,24 @@ function(id) {
             "backgroundColor": "#f8f9fa",
         },
     )
+
+    # Add the callback to show/hide admin link:
+    @dash_app.callback(
+        Output("admin-nav-item", "style"),
+        Input("url", "pathname"),
+        prevent_initial_call=True
+    )
+    def toggle_admin_nav(pathname):
+        """Show admin nav link only for admin users."""
+        from ..auth_utils import has_role
+        
+        if has_role('admin'):
+            return {"display": "block"}
+        else:
+            return {"display": "none"}
+
+    # Register pages
+    from . import pages
+    from .pages import home, database, about, profile, admin  # Add profile import
 
     return dash_app.server

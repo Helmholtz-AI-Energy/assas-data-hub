@@ -12,6 +12,8 @@ import pandas as pd
 import logging
 import shutil
 import math
+import io
+import base64
 
 from pymongo import MongoClient
 from dash import (
@@ -24,6 +26,7 @@ from dash import (
     State,
     callback_context,
 )
+from dash.exceptions import PreventUpdate
 from flask import current_app as app
 from zipfile import ZipFile
 from uuid import uuid4
@@ -83,6 +86,28 @@ def update_table_data() -> pd.DataFrame:
     )
 
     table_data_local = database_manager.get_all_database_entries()
+
+    # 🔧 FIX: Clean complex data types that DataTable can't handle
+    def clean_column_data(df):
+        """Clean DataFrame columns to ensure DataTable compatibility."""
+        df_clean = df.copy()
+        
+        # Convert complex data types to strings
+        for col in df_clean.columns:
+            if col in ['meta_data_variables', 'meta_keywords', 'meta_tags']:
+                # Convert lists/dicts to JSON strings
+                df_clean[col] = df_clean[col].apply(lambda x: 
+                    str(x) if x is not None else ""
+                )
+            elif col.startswith('meta_') and df_clean[col].dtype == 'object':
+                # Convert any other complex metadata to strings
+                df_clean[col] = df_clean[col].astype(str).fillna("")
+        
+        return df_clean
+    
+    # Clean the data first
+    table_data_local = clean_column_data(table_data_local)
+    
     table_data_local["system_download"] = [
         f'<a href="/assas_app/hdf5_file?uuid={entry.system_uuid}">hdf5 file</a>'
         if entry.system_status == "Valid"
@@ -1143,11 +1168,15 @@ def layout() -> html.Div:
         [
         dbc.CardHeader(
         [
+        # Enhanced header with export buttons
+        dbc.Row(
+        [
+        # Title Section (Left)
+        dbc.Col(
+        [
         html.H4(
         [
-        html.I(
-        className="fas fa-table me-2"
-        ),
+        html.I(className="fas fa-table me-2"),
         html.Span(
         "Dataset Overview",
         className="d-none d-sm-inline",
@@ -1163,14 +1192,95 @@ def layout() -> html.Div:
         },
         )
         ],
+        xs=12,
+        md=6,
+        className="d-flex align-items-center mb-2 mb-md-0"
+        ),
+        # Export Buttons Section (Right)
+        dbc.Col(
+        [
+        html.Div(
+        [
+        # Export label (hidden on mobile)
+        html.Span(
+        "Export:",
+        className="me-2 text-muted fw-bold d-none d-lg-inline",
+        style={
+        "fontSize": "0.9rem",
+        "alignSelf": "center"
+        }
+        ),
+        # Export buttons group
+        dbc.ButtonGroup(
+        [
+        dbc.Button(
+        [
+        html.I(className="fas fa-file-csv me-1"),
+        html.Span("CSV", className="d-none d-md-inline"),
+        ],
+        id="export-csv-btn",
+        color="success",
+        outline=True,
+        size="sm",
+        className="export-btn",
+        style={
+        "fontSize": "clamp(0.7rem, 1.5vw, 0.8rem)",
+        "fontWeight": "600",
+        "borderRadius": "0.375rem 0 0 0.375rem",
+        "minWidth": "50px"
+        }
+        ),
+        dbc.Button(
+        [
+        html.I(className="fas fa-file-excel me-1"),
+        html.Span("Excel", className="d-none d-md-inline"),
+        ],
+        id="export-excel-btn", 
+        color="success",
+        outline=True,
+        size="sm",
+        className="export-btn",
+        style={
+        "fontSize": "clamp(0.7rem, 1.5vw, 0.8rem)",
+        "fontWeight": "600",
+        "borderRadius": "0 0.375rem 0.375rem 0",
+        "minWidth": "50px"
+        }
+        )
+        ],
+        size="sm"
+        ),
+        ],
+        className="d-flex align-items-center justify-content-end"
+        ),
+        # Export status
+        html.Div(
+        "",
+        id="export-status-database",
+        className="text-muted small text-end mt-1",
+        style={
+        "fontSize": "0.7rem",
+        "minHeight": "1rem"
+        }
+        )
+        ],
+        xs=12,
+        md=6,
+        className="d-flex flex-column align-items-end"
+        ),
+        ],
+        className="align-items-center",
+        )
+        ],
         style={
         "padding": "1rem",
         "backgroundColor": "#f8f9fa",
         },
         ),
+        # Add export options BELOW the settings section in CardBody:
         dbc.CardBody(
         [
-        # Mobile-responsive pagination and settings
+        # Mobile-responsive pagination and settings (existing code)
         dbc.Row(
         [
         dbc.Col(
@@ -1319,25 +1429,18 @@ def layout() -> html.Div:
         PAGE_SIZE
         ),
         disabled=False,
-        # size="sm",  # Changed from lg to sm for mobile
         style={
         "fontSize": "clamp(0.7rem, 1.8vw, 0.8rem)",
-        "width": "80px",  # Fixed narrow width
-        "maxWidth": "80px",  # Ensure it doesn't grow
-        "minWidth": "60px",  # Minimum width for mobile
-        "textAlign": "center",  # Center the number
-        "flex": "0 0 auto",  # Don't grow or shrink
+        "width": "80px",
+        "maxWidth": "80px",
+        "minWidth": "60px",
+        "textAlign": "center",
+        "flex": "0 0 auto",
         },
         ),
         ],
         className="mb-3 responsive-input-group",
         ),
-        # Add tooltip container
-        # html.Div(
-        #    id="page-size-tooltip",
-        #    className="input-validation-tooltip hidden",
-        #    style={"display": "none"}
-        # )
         ],
         style={
         "position": "relative"
@@ -1348,9 +1451,50 @@ def layout() -> html.Div:
         md=4,
         ),
         ],
-        className="mb-4",
+        className="mb-3",
         ),
-        # Enhanced Table Container - Mobile Responsive
+        # NEW: Export Options Section (below settings)
+        dbc.Row(
+        [
+        dbc.Col(
+        [
+        html.Div(
+        [
+        html.H6(
+        [
+        html.I(className="fas fa-file-export me-2"),
+        "Export Options"
+        ],
+        className="mb-2 text-secondary",
+        style={
+        "fontSize": "clamp(0.8rem, 2vw, 0.9rem)"
+        },
+        ),
+        dbc.Checklist(
+        options=[
+        {"label": "Current page only", "value": "current_page"},
+        {"label": "Apply current filters", "value": "apply_filters"},
+        {"label": "Include metadata links", "value": "include_links"}
+        ],
+        value=["apply_filters"],
+        id="export-options",
+        inline=True,
+        className="export-options-list",
+        style={
+        "fontSize": "clamp(0.7rem, 1.5vw, 0.75rem)",
+        "color": "#6c757d"
+        }
+        )
+        ],
+        className="export-options-container"
+        )
+        ],
+        xs=12,
+        className="mb-3"
+        )
+        ]
+        ),
+        # Enhanced Table Container - Mobile Responsive (existing table code stays the same)
         html.Div(
         [
         dash_table.DataTable(
@@ -1379,14 +1523,14 @@ def layout() -> html.Div:
         "name": "Status",
         "id": "system_status",
         "selectable": True,
-        "presentation": "markdown",  # Enable HTML for colored status
+        "presentation": "markdown",
         "type": "text",
         "deletable": False,
         "renamable": False,
         "hideable": False,
         },
         {
-        "name": "Date",  # Shortened for mobile
+        "name": "Date",
         "id": "system_date",
         "selectable": True,
         "type": "datetime",
@@ -1404,7 +1548,7 @@ def layout() -> html.Div:
         "hideable": False,
         },
         {
-        "name": "Binary Size",  # Shortened for mobile
+        "name": "Binary Size",
         "id": "system_size",
         "selectable": True,
         "type": "text",
@@ -1413,7 +1557,7 @@ def layout() -> html.Div:
         "hideable": False,
         },
         {
-        "name": "HDF5 Size",  # Shortened for mobile
+        "name": "HDF5 Size",
         "id": "system_size_hdf5",
         "selectable": True,
         "type": "text",
@@ -1590,15 +1734,18 @@ def layout() -> html.Div:
         "minHeight": "300px",
         "height": "auto",
         "maxHeight": "none",
-        "padding": "0.5rem",  # Reduced padding for mobile
+        "padding": "0.5rem",
         "backgroundColor": "#ffffff",
         "borderRadius": "8px",
         "boxShadow": "inset 0 2px 4px rgba(0, 0, 0, 0.05)",
         },
         ),
+        # Hidden download components
+        dcc.Download(id="download-csv-database"),
+        dcc.Download(id="download-excel-database"),
         ],
         style={"padding": "1rem"},
-        ),  # Reduced padding
+        ),
         ],
         style={
         **CARD_STYLE,
@@ -2233,3 +2380,257 @@ def handle_mobile_navigation(
     next_disabled = new_page >= max_pages
 
     return new_page, prev_disabled, next_disabled
+
+# Add these callback functions for export functionality
+
+def prepare_export_data(filter_query, sort_by, export_options):
+    """Prepare data for export with filters and sorting applied."""
+    try:
+        # Get fresh data
+        df = update_table_data()
+        
+        # Apply filters if requested
+        if "apply_filters" in export_options and filter_query:
+            df = apply_filters(df, filter_query)
+        
+        # Apply sorting if requested
+        if sort_by and len(sort_by) > 0:
+            df = df.sort_values(
+                [col["column_id"] for col in sort_by],
+                ascending=[col["direction"] == "asc" for col in sort_by],
+                inplace=False,
+            )
+        
+        return df
+    except Exception as e:
+        logger.error(f"Error preparing export data: {e}")
+        return pd.DataFrame()  # Return empty DataFrame on error
+
+def clean_data_for_export(df, export_options):
+    """Clean data for export by removing HTML and preparing for CSV/Excel."""
+    try:
+        df_clean = df.copy()
+        
+        # Remove HTML from specific columns
+        html_columns = ['meta_name', 'system_status', 'system_download']
+        
+        for col in html_columns:
+            if col in df_clean.columns:
+                if col == 'meta_name':
+                    # Extract text from links for dataset names
+                    df_clean[col] = df_clean[col].astype(str).str.extract(r'>([^<]+)<', expand=False).fillna(df_clean[col])
+                elif col == 'system_status':
+                    # Extract status text from HTML spans
+                    df_clean[col] = df_clean[col].astype(str).str.extract(r'>([^<]+)<', expand=False).fillna(df_clean[col])
+                elif col == 'system_download':
+                    if "include_links" not in export_options:
+                        # Replace download links with simple text
+                        df_clean[col] = df_clean[col].apply(lambda x: 
+                            "hdf5 file available" if "hdf5 file" in str(x) and "no-download" not in str(x)
+                            else "no hdf5 file"
+                        )
+        
+        # Clean column names for better readability
+        column_mapping = {
+            'system_index': 'Index',
+            'meta_name': 'Dataset Name',
+            'system_status': 'Status',
+            'system_date': 'Upload Date',
+            'system_user': 'User',
+            'system_size': 'Binary Size',
+            'system_size_hdf5': 'HDF5 Size',
+            'system_download': 'Download Status',
+            'system_uuid': 'UUID'
+        }
+        
+        # Rename columns that exist in the dataframe
+        existing_columns = {k: v for k, v in column_mapping.items() if k in df_clean.columns}
+        df_clean = df_clean.rename(columns=existing_columns)
+        
+        return df_clean
+    except Exception as e:
+        logger.error(f"Error cleaning export data: {e}")
+        return df  # Return original DataFrame on error
+
+def format_excel_export_basic(worksheet, df):
+    """Apply basic formatting to Excel export."""
+    try:
+        from openpyxl.styles import Font, PatternFill
+        
+        # Header formatting
+        header_fill = PatternFill(start_color="007bff", end_color="007bff", fill_type="solid")
+        header_font = Font(color="FFFFFF", bold=True)
+        
+        # Apply header formatting
+        for col_num, column in enumerate(df.columns, 1):
+            cell = worksheet.cell(row=1, column=col_num)
+            cell.fill = header_fill
+            cell.font = header_font
+        
+        # Auto-adjust column widths
+        for column in worksheet.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            
+            adjusted_width = min(max_length + 2, 50)
+            worksheet.column_dimensions[column_letter].width = adjusted_width
+    except Exception as e:
+        logger.error(f"Error formatting Excel export: {e}")
+
+def add_metadata_sheet_basic(writer, filter_query, sort_by, export_options):
+    """Add basic metadata sheet to Excel export."""
+    try:
+        # Create metadata information
+        metadata_info = [
+            ["Export Information", ""],
+            ["Export Date", pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")],
+            ["Export Source", "ASSAS Database Training Dataset Index"],
+            ["Applied Filters", filter_query if filter_query else "None"],
+            ["Applied Sorting", ", ".join([f"{col['column_id']} ({col['direction']})" for col in (sort_by or [])]) if sort_by else "None"],
+            ["Export Options", ", ".join(export_options) if export_options else "Default"],
+        ]
+        
+        # Convert to DataFrame and add to Excel
+        metadata_df = pd.DataFrame(metadata_info, columns=['Field', 'Value'])
+        metadata_df.to_excel(writer, sheet_name='Export Info', index=False)
+    except Exception as e:
+               logger.error(f"Error adding metadata sheet: {e}")
+
+
+@callback(
+    [Output("download-csv-database", "data"),
+     Output("export-status-database", "children")],
+    Input("export-csv-btn", "n_clicks"),
+    [State("datatable-paging-and-sorting", "derived_viewport_data"),
+     State("datatable-paging-and-sorting", "data"), 
+     State("datatable-paging-and-sorting", "filter_query"),
+     State("datatable-paging-and-sorting", "sort_by"),
+     State("export-options", "value")],
+    prevent_initial_call=True
+)
+def export_csv(n_clicks, current_page_data, all_data, filter_query, sort_by, export_options):
+
+
+    if not n_clicks:
+        raise PreventUpdate
+    
+    try:
+        export_options = export_options or []
+        
+        # Determine what data to export
+        if "current_page" in export_options:
+            export_data = current_page_data or []
+            status_msg = f"✅ Exported {len(export_data)} records (current page) to CSV"
+        else:
+            # Get all data with current filters and sorting
+            df = prepare_export_data(filter_query, sort_by, export_options)
+            export_data = df.to_dict('records')
+            status_msg = f"✅ Exported {len(export_data)} records to CSV"
+        
+        if not export_data:
+            logger.warning("No data to export")
+            return dash.no_update, "⚠️ No data to export"
+        
+        # Convert to DataFrame for CSV export
+        df_export = pd.DataFrame(export_data)
+        
+        # Clean data for export
+        df_export = clean_data_for_export(df_export, export_options)
+        
+        # Generate timestamp for filename
+        timestamp = pd.Timestamp.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"assas_database_export_{timestamp}.csv"
+        
+        # Create CSV download
+        csv_string = df_export.to_csv(index=False, encoding='utf-8')
+        
+        return dict(content=csv_string, filename=filename), status_msg
+        
+    except Exception as e:
+        logger.error(f"CSV export error: {e}")
+        return dash.no_update, f"❌ Export failed: {str(e)}"
+    
+@callback(
+    [Output("download-excel-database", "data"),
+     Output("export-status-database", "children", allow_duplicate=True)],
+    Input("export-excel-btn", "n_clicks"),
+    [State("datatable-paging-and-sorting", "derived_viewport_data"),
+     State("datatable-paging-and-sorting", "data"),
+     State("datatable-paging-and-sorting", "filter_query"),
+     State("datatable-paging-and-sorting", "sort_by"),
+     State("export-options", "value")],
+    prevent_initial_call=True
+)
+def export_excel(n_clicks, current_page_data, all_data, filter_query, sort_by, export_options):
+    """Export table data to Excel format."""
+    if not n_clicks:
+        raise PreventUpdate
+    
+    try:
+        export_options = export_options or []
+        
+        # Determine what data to export
+        if "current_page" in export_options:
+            export_data = current_page_data or []
+            status_msg = f"✅ Exported {len(export_data)} records (current page) to Excel"
+        else:
+            # Get all data with current filters and sorting
+            df = prepare_export_data(filter_query, sort_by, export_options)
+            export_data = df.to_dict('records')
+            status_msg = f"✅ Exported {len(export_data)} records to Excel"
+        
+        if not export_data:
+            return dash.no_update, "⚠️ No data to export"
+        
+        # Convert to DataFrame for Excel export
+        df_export = pd.DataFrame(export_data)
+        
+        # Clean data for export
+        df_export = clean_data_for_export(df_export, export_options)
+        
+        # Generate timestamp for filename
+        timestamp = pd.Timestamp.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"assas_database_export_{timestamp}.xlsx"
+        
+        # 🔧 FIX: Create Excel file in memory with proper encoding
+        buffer = io.BytesIO()
+        
+        with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+            # Main data sheet
+            df_export.to_excel(writer, sheet_name='ASSAS Database', index=False)
+            
+            # Get workbook and worksheet for formatting
+            workbook = writer.book
+            worksheet = workbook['ASSAS Database']
+            
+            # Apply basic formatting
+            format_excel_export_basic(worksheet, df_export)
+            
+            # Add metadata sheet
+            add_metadata_sheet_basic(writer, filter_query, sort_by, export_options)
+        
+        # 🔧 FIX: Encode binary data to base64 for JSON serialization
+        buffer.seek(0)
+        excel_data = buffer.getvalue()
+        
+        # Encode to base64 string for JSON serialization
+        encoded_data = base64.b64encode(excel_data).decode('utf-8')
+        
+        return {
+            "content": encoded_data,
+            "filename": filename,
+            "base64": True,  # Tell Dash this is base64 encoded
+            "type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }, status_msg
+        
+    except Exception as e:
+        logger.error(f"Excel export error: {e}")
+        return dash.no_update, f"❌ Export failed: {str(e)}"
+
