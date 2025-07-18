@@ -168,3 +168,6 @@ tmp/
 upload/
 .vscode
 *.code-workspace
+
+tools/assas_add_user*.py
+tools/assas_add_user.py
