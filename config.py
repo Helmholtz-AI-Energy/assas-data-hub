@@ -29,12 +29,14 @@ class Config(object):
     SERVER_NAME = os.environ.get("SERVER_NAME")
     PREFERRED_URL_SCHEME = os.environ.get("PREFERRED_URL_SCHEME", "http")
 
-    # Basic Auth Configuration    # OAuth Configuration
-    GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")
-    GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
+    GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID", "")
+    GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET", "")
 
     BWIDM_CLIENT_ID = os.getenv("BWIDM_CLIENT_ID", "")
     BWIDM_CLIENT_SECRET = os.getenv("BWIDM_CLIENT_SECRET", "")
+
+    HELMHOLTZ_CLIENT_ID = os.getenv("HELMHOLTZ_CLIENT_ID", "")
+    HELMHOLTZ_CLIENT_SECRET = os.getenv("HELMHOLTZ_CLIENT_SECRET", "")
 
     # Session Configuration
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-fallback-key-change-in-production")

@@ -38,6 +38,7 @@ jobs:
         run: |
           docker build -f Dockerfile.base \
             --build-arg SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}" \
+            --build-arg GIT_BRANCH="${GITHUB_REF_NAME}" \
             -t assas-data-hub-ruff .
 
       # Step 3: Run Ruff linting inside the Docker container

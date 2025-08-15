@@ -42,6 +42,19 @@ def init_oauth(app):
             client_kwargs={"scope": "user:email read:user"},
         )
         logger.info("GitHub OAuth provider registered")
+        
+    # Register Helmholtz provider
+    if app.config.get("HELMHOLTZ_CLIENT_ID"):
+        oauth.register(
+            name="helmholtz",
+            client_id=app.config["HELMHOLTZ_CLIENT_ID"],
+            client_secret=app.config["HELMHOLTZ_CLIENT_SECRET"],
+            access_token_url="https://helmholtz.de/login/oauth/access_token",
+            authorize_url="https://helmholtz.de/login/oauth/authorize",
+            api_base_url="https://api.helmholtz.de/",
+            client_kwargs={"scope": "user:email read:user"},
+        )
+        logger.info("Helmholtz OAuth provider registered")
 
 
 class GitHubRoleProcessor:
