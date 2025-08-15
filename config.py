@@ -16,9 +16,7 @@ class Config(object):
     DEVELOPMENT = os.getenv("DEVELOPMENT", "True").lower() == "true"
 
     ASTEC_ROOT = os.getenv("ASTEC_ROOT", r"/root/astecV3.1.1_linux64/astecV3.1.1")
-    ASTEC_TYPE = os.getenv(
-        "ASTEC_TYPE", r"linux_64"
-    )  # Assuming ASTEC_TYPE is the correct variable
+    ASTEC_TYPE = os.getenv("ASTEC_TYPE", r"linux_64")
 
     BACKUP_DIRECTORY = os.getenv(
         "BACKUP_DIRECTORY", r"Z:\\scc\\projects\\ASSAS\\backup_mongodb"
@@ -28,123 +26,122 @@ class Config(object):
     MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", r"assas")
 
     # URL Configuration
-    SERVER_NAME = os.environ.get('SERVER_NAME')  # e.g., 'localhost:5000' for dev
-    PREFERRED_URL_SCHEME = os.environ.get('PREFERRED_URL_SCHEME', 'http')
-    
-    # For development
-    if os.environ.get('FLASK_ENV') == 'development':
-        SERVER_NAME = 'localhost:5000'
-        PREFERRED_URL_SCHEME = 'http'
-    
-    # OAuth Configuration
-    GITHUB_CLIENT_ID = os.environ.get('GITHUB_CLIENT_ID')
-    GITHUB_CLIENT_SECRET = os.environ.get('GITHUB_CLIENT_SECRET')
+    SERVER_NAME = os.environ.get("SERVER_NAME")
+    PREFERRED_URL_SCHEME = os.environ.get("PREFERRED_URL_SCHEME", "http")
 
-    BWIDM_CLIENT_ID = os.getenv('BWIDM_CLIENT_ID', '')
-    BWIDM_CLIENT_SECRET = os.getenv('BWIDM_CLIENT_SECRET', '')
+    # Basic Auth Configuration    # OAuth Configuration
+    GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")
+    GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
+
+    BWIDM_CLIENT_ID = os.getenv("BWIDM_CLIENT_ID", "")
+    BWIDM_CLIENT_SECRET = os.getenv("BWIDM_CLIENT_SECRET", "")
 
     # Session Configuration
-    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-fallback-key-change-in-production')
+    SECRET_KEY = os.getenv("SECRET_KEY", "dev-fallback-key-change-in-production")
     PERMANENT_SESSION_LIFETIME = timedelta(
-        hours=int(os.getenv('SESSION_LIFETIME_HOURS', 8))
+        hours=int(os.getenv("SESSION_LIFETIME_HOURS", 8))
     )
     SESSION_PERMANENT = True
     SESSION_USE_SIGNER = True
     SESSION_COOKIE_SECURE = False
     SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SAMESITE = "Lax"
     SESSION_REFRESH_EACH_REQUEST = True
-    SESSION_COOKIE_NAME = 'assas_session'
+    SESSION_COOKIE_NAME = "assas_session"
     SESSION_COOKIE_DOMAIN = None
-    SESSION_COOKIE_PATH = '/'
-    
+    SESSION_COOKIE_PATH = "/"
+
     # AARC Entitlements Configuration
-    AARC_GROUP_CLAIM = 'eduperson_entitlement'
-    ASSAS_GROUP_PREFIX = 'urn:geant:helmholtz.de:group:HIFIS:'
+    AARC_GROUP_CLAIM = "eduperson_entitlement"
+    ASSAS_GROUP_PREFIX = "urn:geant:helmholtz.de:group:HIFIS:"
 
     # Role Mapping (exactly like your assas_add_user.py)
     ROLE_MAPPING = {
-        'Administrator': ['admin'],
-        'Researcher': ['researcher'],
-        'User': ['viewer'],
-        'Curator': ['curator']
+        "Administrator": ["admin"],
+        "Researcher": ["researcher"],
+        "User": ["viewer"],
+        "Curator": ["curator"],
     }
-    
+
     # Available roles for the system (4 roles only)
     AVAILABLE_ROLES = [
         {
-            'value': 'admin',
-            'label': 'Administrator',
-            'description': 'Full system access and user management'
+            "value": "admin",
+            "label": "Administrator",
+            "description": "Full system access and user management",
         },
         {
-            'value': 'researcher',
-            'label': 'Researcher', 
-            'description': 'Research data access and analysis tools'
+            "value": "researcher",
+            "label": "Researcher",
+            "description": "Research data access and analysis tools",
         },
         {
-            'value': 'curator',
-            'label': 'Curator',
-            'description': 'Data curation and quality control'
+            "value": "curator",
+            "label": "Curator",
+            "description": "Data curation and quality control",
         },
         {
-            'value': 'viewer',
-            'label': 'User',
-            'description': 'Basic view access to content'
-        }
+            "value": "viewer",
+            "label": "User",
+            "description": "Basic view access to content",
+        },
     ]
 
     # AARC Entitlement to Role Mapping
     AARC_ROLE_MAPPINGS = {
-        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:admins': ['admin'],
-        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:researchers': ['researcher'],
-        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:curators': ['curator'],
-        'urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:viewers': ['viewer'],
+        "urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:admins": ["admin"],
+        "urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:researchers": ["researcher"],
+        "urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:curators": ["curator"],
+        "urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:viewers": ["viewer"],
     }
 
     # GitHub Role Mappings
     GITHUB_ROLE_MAPPINGS = {
-        'ke4920': ['admin'],
-        'jonas-dressner': ['admin'],
-        'markus-goetz': ['admin'],
-        '*': ['viewer']  # Default role
+        "ke4920": ["admin"],
+        "jonas-dressner": ["admin"],
+        "markus-goetz": ["admin"],
+        "*": ["viewer"],  # Default role
     }
-    
+
     # bwIDM Role Mappings
     BWIDM_ROLE_MAPPINGS = {
-        'jonas.dressner@kit.edu': ['admin'],
-        'markus.goetz@kit.edu': ['admin'],
-        'charlotte.debus@kit.edu': ['researcher'],
-        'anastasia.stakhanova@kit.edu': ['researcher'],
-        '*': ['viewer']  # Default role
+        "jonas.dressner@kit.edu": ["admin"],
+        "markus.goetz@kit.edu": ["admin"],
+        "charlotte.debus@kit.edu": ["researcher"],
+        "anastasia.stakhanova@kit.edu": ["researcher"],
+        "*": ["viewer"],  # Default role
     }
 
 
 class DevelopmentConfig(Config):
+    """Development configuration class for the ASSAS Data Hub application."""
+
     DEBUG = True
-    SERVER_NAME = 'localhost:5000'
-    PREFERRED_URL_SCHEME = 'http'
+    SERVER_NAME = "assas.scc.kit.edu:5000"
+    PREFERRED_URL_SCHEME = "http"
 
     # Development basic auth users
     BASIC_AUTH_USERS = {
-        'admin_local': {
-            'password_hash': generate_password_hash('admin123'),  # Change this!
-            'roles': ['admin'],
-            'email': 'admin@dev.local',
-            'name': 'Development Admin',
-            'is_active': True
+        "admin_local": {
+            "password_hash": generate_password_hash("admin123"),  # Change this!
+            "roles": ["admin"],
+            "email": "admin@dev.local",
+            "name": "Development Admin",
+            "is_active": True,
         },
-        'user': {
-            'password_hash': generate_password_hash('user123'),   # Change this!
-            'roles': ['viewer'],
-            'email': 'user@dev.local',
-            'name': 'Development User',
-            'is_active': True
-        }
+        "user": {
+            "password_hash": generate_password_hash("user123"),  # Change this!
+            "roles": ["viewer"],
+            "email": "user@dev.local",
+            "name": "Development User",
+            "is_active": True,
+        },
     }
 
 
 class ProductionConfig(Config):
+    """Production configuration class for the ASSAS Data Hub application."""
+
     DEBUG = False
     # SERVER_NAME should be set via environment variable in production
-    PREFERRED_URL_SCHEME = 'https'
+    PREFERRED_URL_SCHEME = "https"

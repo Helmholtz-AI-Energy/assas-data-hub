@@ -14,6 +14,8 @@ exclude = [
     "doc/",
     "test/",
     "tools/",
+    "flask_app/auth/",
+    "flask_app/dash_app/pages/database.py"
 ]
 [tool.black]
 line-length = 88

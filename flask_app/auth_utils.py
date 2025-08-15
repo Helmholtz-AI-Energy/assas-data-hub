@@ -57,11 +57,11 @@ def has_role(role: str) -> bool:
     return role in get_user_roles()
 
 
-def require_auth(f):
-    """Decorator to require authentication."""
+def require_auth(f: callable) -> callable:
+    """Get decorator for authentication."""
 
     @wraps(f)
-    def decorated_function(*args, **kwargs):
+    def decorated_function(*args: any, **kwargs: any) -> any:
         if not is_authenticated():
             # Store intended URL
             session["next_url"] = request.url
@@ -72,12 +72,12 @@ def require_auth(f):
     return decorated_function
 
 
-def require_role(role: str):
-    """Decorator to require specific role."""
+def require_role(role: str) -> callable:
+    """Get decorator for specific role."""
 
-    def decorator(f):
+    def decorator(f: callable) -> callable:
         @wraps(f)
-        def decorated_function(*args, **kwargs):
+        def decorated_function(*args: any, **kwargs: any) -> any:
             if not is_authenticated():
                 session["next_url"] = request.url
                 flash("Please log in to access this page", "warning")
@@ -99,6 +99,6 @@ class auth:
     """Legacy auth class for compatibility."""
 
     @staticmethod
-    def login_required(f):
+    def login_required(f: callable) -> callable:
         """Legacy login_required decorator."""
         return require_auth(f)

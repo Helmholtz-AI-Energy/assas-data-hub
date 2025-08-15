@@ -223,7 +223,7 @@ def layout() -> html.Div:
                                         "transform": "translateY(-2px)",
                                         "boxShadow": (
                                             "0 4px 12px rgba(40, 167, 69, 0.4)",
-                                        )
+                                        ),
                                     },
                                 },
                             ),
@@ -813,15 +813,14 @@ def layout() -> html.Div:
                                     html.Ul(
                                         [
                                             html.Li(
-                                                "NetCDF4 with CF-1.8 metadata " \
+                                                "NetCDF4 with CF-1.8 metadata "
                                                 "conventions"
                                             ),
                                             html.Li(
-                                                "HDF5 hierarchical data format " \
-                                                "support"
+                                                "HDF5 hierarchical data format support"
                                             ),
                                             html.Li(
-                                                "ASTEC-specific variable naming " \
+                                                "ASTEC-specific variable naming "
                                                 "standards"
                                             ),
                                             html.Li(
@@ -910,7 +909,7 @@ def layout() -> html.Div:
                                                 "Jupyter Notebook direct integration"
                                             ),
                                             html.Li(
-                                                "MATLAB Data Import/Export " \
+                                                "MATLAB Data Import/Export "
                                                 "compatibility"
                                             ),
                                             html.Li(
@@ -1284,8 +1283,8 @@ def layout() -> html.Div:
                                     ":hover": {
                                         "backgroundColor": "#545b62",
                                         "transform": "translateY(-2px)",
-                                        "boxShadow": \
-                                        "0 4px 12px rgba(108, 117, 125, 0.4)",
+                                        "boxShadow": "0 4px 12px "
+                                        "rgba(108, 117, 125, 0.4)",
                                     },
                                 },
                             ),

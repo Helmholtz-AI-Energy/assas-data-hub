@@ -15,7 +15,7 @@ from dash.long_callback import DiskcacheLongCallbackManager
 
 from .components import encode_svg_image_hq  # Use high-quality encoder
 from flask import redirect, request, Response, session
-from ..auth_utils import auth, is_authenticated, get_current_user
+from ..auth_utils import is_authenticated, get_current_user
 from ..auth.oauth_auth import oauth_bp, init_oauth
 from ..auth.routes import auth_bp
 from ..auth.basic_auth import basic_auth_bp
@@ -363,430 +363,469 @@ def footer_copyright_style() -> dict:
 
 
 # Footer component
-footer = \
-    html.Footer(
+footer = html.Footer(
     [
-    dbc.Container(
-    [
-    dbc.Row(
-    [
-    # Organization Info
-    dbc.Col(
-    [
-    html.H5("ASSAS Project", style=footer_title_style()),
-    html.P(
-    [
-    "Artificial intelligence for Simulation of Severe AccidentS.",
-    ],
-    style={"lineHeight": "1.6", "marginBottom": "1rem"},
-    ),
-    html.Div(
-    [
-    html.I(className="fas fa-map-marker-alt me-2"),
-    "Karlsruhe Institute of Technology (KIT)",
-    ],
-    style={"marginBottom": "0.5rem"},
-    ),
-    html.Div(
-    [
-    html.I(className="fas fa-envelope me-2"),
-    html.A(
-    "jonas.dressner@kit.edu",
-    href="mailto:jonas.dressner@kit.edu",
-    style=footer_link_style(),
-    ),
-    ],
-    style={"display": "inline-block"},
-    ),
-    ],
-    md=4,
-    sm=12,
-    style=footer_section_style(),
-    ),
-    # Quick Links
-    dbc.Col(
-    [
-    html.H5("Quick Links", style=footer_title_style()),
-    html.Div(
-    [
-    html.A(
-    "Home",
-    href="/assas_app/home",
-    style=footer_link_style(),
-    ),
-    html.A(
-    "Database",
-    href="/assas_app/database",
-    style=footer_link_style(),
-    ),
-    html.A(
-    "About",
-    href="/assas_app/about",
-    style=footer_link_style(),
-    ),
-    html.A(
-    "Documentation",
-    href="#",
-    style=footer_link_style(),
-    ),
-    html.A(
-    "API Reference",
-    href="#",
-    style=footer_link_style(),
-    ),
-    ]
-    ),
-    ],
-    md=2,
-    sm=6,
-    style=footer_section_style(),
-    ),
-    # Resources
-    dbc.Col(
-    [
-    html.H5("Resources", style=footer_title_style()),
-    html.Div(
-    [
-    html.A(
-    "Research Papers",
-    href="#",
-    style=footer_link_style(),
-    ),
-    html.A(
-    "Data Sets",
-    href="#",
-    style=footer_link_style(),
-    ),
-    html.A(
-    "Tutorials",
-    href="#",
-    style=footer_link_style(),
-    ),
-    html.A(
-    "FAQ", href="#", style=footer_link_style()
-    ),
-    html.A(
-    "Support",
-    href="#",
-    style=footer_link_style(),
-    ),
-    ]
-    ),
-    ],
-    md=2,
-    sm=6,
-    style=footer_section_style(),
-    ),
-    # Partners & Social
-    dbc.Col(
-    [
-    html.H5("Partners", style=footer_title_style()),
-    html.Div(
-    [
-    # Partner logos
-    html.Div(
-    [
-    html.Img(
-    src=encode_svg_image_hq(
-    "kit_logo.drawio.svg"
-    ),
-    height="40px",
-    width="80px",
-    style={
-    "backgroundColor": "#ffffff",
-    "padding": "4px",
-    "borderRadius": "4px",
-    "marginBottom": "1rem",
-    "filter": "contrast(1.05) brightness(1.02)",
-    },
-    alt="KIT Logo",
-    )
-    ],
-    style={"marginBottom": "1rem"},
-    ),
-    # Social links
-    html.Div(
-    [
-    html.A(
-    [
-    html.I(
-    className="fab fa-github me-2"
-    ),
-    "GitHub",
-    ],
-    href="https://github.com/Helmholtz-AI-Energy/assas-data-hub",
-    style=footer_link_style(),
-    target="_blank",
-    ),
-    html.A(
-    [
-    html.I(
-    className="fas fa-globe me-2"
-    ),
-    "Website",
-    ],
-    href="#",
-    style=footer_link_style(),
-    target="_blank",
-    ),
-    ]
-    ),
-    ]
-    ),
-    ],
-    md=4,
-    sm=12,
-    style=footer_section_style(),
-    ),
-    ]
-    ),
-    # Copyright section
-    html.Hr(style={"borderColor": "#34495e", "margin": "2rem 0 1.5rem 0"}),
-    dbc.Row(
-    [
-    dbc.Col(
-    [
-    html.Div(
-    [
-    html.P(
-    [
-    "© 2024 ASSAS Data Hub. All rights reserved. | ",
-    html.A(
-    "Privacy Policy",
-    href="#",
-    style=footer_link_style(),
-    ),
-    " | ",
-    html.A(
-    "Terms of Service",
-    href="#",
-    style=footer_link_style(),
-    ),
-    " | ",
-    html.A(
-    "Imprint",
-    href="#",
-    style=footer_link_style(),
-    ),
-    ],
-    style={
-    "margin": "0",
-    "display": "flex",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "flexWrap": "wrap",
-    "gap": "0.5rem",
-    },
-    ),
-    html.P(
-    [
-    "Powered by ",
-    html.A(
-    "Dash",
-    href="https://plotly.com/dash/",
-    style=footer_link_style(),
-    target="_blank",
-    ),
-    " & ",
-    html.A(
-    "Flask",
-    href="https://flask.palletsprojects.com/",
-    style=footer_link_style(),
-    target="_blank",
-    ),
-    ],
-    style={
-    "margin": "0.5rem 0 0 0",
-    "fontSize": "0.8rem",
-    "color": "#7f8c8d",
-    },
-    ),
-    ],
-    style=footer_copyright_style(),
-    )
-    ],
-    width=12,
-    )
-    ]
-    ),
-    ],
-    fluid=True,
-    )
+        dbc.Container(
+            [
+                dbc.Row(
+                    [
+                        # Organization Info
+                        dbc.Col(
+                            [
+                                html.H5("ASSAS Project", style=footer_title_style()),
+                                html.P(
+                                    [
+                                        "Artificial Intelligence for "
+                                        "Simulation of Severe AccidentS.",
+                                    ],
+                                    style={"lineHeight": "1.6", "marginBottom": "1rem"},
+                                ),
+                                html.Div(
+                                    [
+                                        html.I(className="fas fa-map-marker-alt me-2"),
+                                        "Karlsruhe Institute of Technology (KIT)",
+                                    ],
+                                    style={"marginBottom": "0.5rem"},
+                                ),
+                                html.Div(
+                                    [
+                                        html.I(className="fas fa-envelope me-2"),
+                                        html.A(
+                                            "jonas.dressner@kit.edu",
+                                            href="mailto:jonas.dressner@kit.edu",
+                                            style=footer_link_style(),
+                                        ),
+                                    ],
+                                    style={"display": "inline-block"},
+                                ),
+                            ],
+                            md=4,
+                            sm=12,
+                            style=footer_section_style(),
+                        ),
+                        # Quick Links
+                        dbc.Col(
+                            [
+                                html.H5("Quick Links", style=footer_title_style()),
+                                html.Div(
+                                    [
+                                        html.A(
+                                            "Home",
+                                            href="/assas_app/home",
+                                            style=footer_link_style(),
+                                        ),
+                                        html.A(
+                                            "Database",
+                                            href="/assas_app/database",
+                                            style=footer_link_style(),
+                                        ),
+                                        html.A(
+                                            "About",
+                                            href="/assas_app/about",
+                                            style=footer_link_style(),
+                                        ),
+                                        html.A(
+                                            "Documentation",
+                                            href="#",
+                                            style=footer_link_style(),
+                                        ),
+                                        html.A(
+                                            "API Reference",
+                                            href="#",
+                                            style=footer_link_style(),
+                                        ),
+                                    ]
+                                ),
+                            ],
+                            md=2,
+                            sm=6,
+                            style=footer_section_style(),
+                        ),
+                        # Resources
+                        dbc.Col(
+                            [
+                                html.H5("Resources", style=footer_title_style()),
+                                html.Div(
+                                    [
+                                        html.A(
+                                            "Research Papers",
+                                            href="#",
+                                            style=footer_link_style(),
+                                        ),
+                                        html.A(
+                                            "Data Sets",
+                                            href="#",
+                                            style=footer_link_style(),
+                                        ),
+                                        html.A(
+                                            "Tutorials",
+                                            href="#",
+                                            style=footer_link_style(),
+                                        ),
+                                        html.A(
+                                            "FAQ", href="#", style=footer_link_style()
+                                        ),
+                                        html.A(
+                                            "Support",
+                                            href="#",
+                                            style=footer_link_style(),
+                                        ),
+                                    ]
+                                ),
+                            ],
+                            md=2,
+                            sm=6,
+                            style=footer_section_style(),
+                        ),
+                        # Partners & Social
+                        dbc.Col(
+                            [
+                                html.H5("Partners", style=footer_title_style()),
+                                html.Div(
+                                    [
+                                        # Partner logos
+                                        html.Div(
+                                            [
+                                                html.Img(
+                                                    src=encode_svg_image_hq(
+                                                        "kit_logo.drawio.svg"
+                                                    ),
+                                                    height="40px",
+                                                    width="80px",
+                                                    style={
+                                                        "backgroundColor": "#ffffff",
+                                                        "padding": "4px",
+                                                        "borderRadius": "4px",
+                                                        "marginBottom": "1rem",
+                                                        "filter": "contrast(1.05)"
+                                                        "brightness(1.02)",
+                                                    },
+                                                    alt="KIT Logo",
+                                                )
+                                            ],
+                                            style={"marginBottom": "1rem"},
+                                        ),
+                                        # Social links
+                                        html.Div(
+                                            [
+                                                html.A(
+                                                    [
+                                                        html.I(
+                                                            className=(
+                                                                "fab fa-github me-2"
+                                                            ),
+                                                        ),
+                                                        "GitHub",
+                                                    ],
+                                                    href=(
+                                                        "https://github.com/"
+                                                        "Helmholtz-AI-Energy/"
+                                                        "assas-data-hub"
+                                                    ),
+                                                    style=footer_link_style(),
+                                                    target="_blank",
+                                                ),
+                                                html.A(
+                                                    [
+                                                        html.I(
+                                                            className=(
+                                                                "fas fa-globe me-2"
+                                                            ),
+                                                        ),
+                                                        "Website",
+                                                    ],
+                                                    href="#",
+                                                    style=footer_link_style(),
+                                                    target="_blank",
+                                                ),
+                                            ]
+                                        ),
+                                    ]
+                                ),
+                            ],
+                            md=4,
+                            sm=12,
+                            style=footer_section_style(),
+                        ),
+                    ]
+                ),
+                # Copyright section
+                html.Hr(style={"borderColor": "#34495e", "margin": "2rem 0 1.5rem 0"}),
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [
+                                html.Div(
+                                    [
+                                        html.P(
+                                            [
+                                                (
+                                                    "© 2024 ASSAS Data Hub. "
+                                                    "All rights reserved. | "
+                                                ),
+                                                html.A(
+                                                    "Privacy Policy",
+                                                    href="#",
+                                                    style=footer_link_style(),
+                                                ),
+                                                " | ",
+                                                html.A(
+                                                    "Terms of Service",
+                                                    href="#",
+                                                    style=footer_link_style(),
+                                                ),
+                                                " | ",
+                                                html.A(
+                                                    "Imprint",
+                                                    href="#",
+                                                    style=footer_link_style(),
+                                                ),
+                                            ],
+                                            style={
+                                                "margin": "0",
+                                                "display": "flex",
+                                                "alignItems": "center",
+                                                "justifyContent": "center",
+                                                "flexWrap": "wrap",
+                                                "gap": "0.5rem",
+                                            },
+                                        ),
+                                        html.P(
+                                            [
+                                                "Powered by ",
+                                                html.A(
+                                                    "Dash",
+                                                    href="https://plotly.com/dash/",
+                                                    style=footer_link_style(),
+                                                    target="_blank",
+                                                ),
+                                                " & ",
+                                                html.A(
+                                                    "Flask",
+                                                    href=(
+                                                        "https://"
+                                                        "flask.palletsprojects.com/"
+                                                    ),
+                                                    style=footer_link_style(),
+                                                    target="_blank",
+                                                ),
+                                            ],
+                                            style={
+                                                "margin": "0.5rem 0 0 0",
+                                                "fontSize": "0.8rem",
+                                                "color": "#7f8c8d",
+                                            },
+                                        ),
+                                    ],
+                                    style=footer_copyright_style(),
+                                )
+                            ],
+                            width=12,
+                        )
+                    ]
+                ),
+            ],
+            fluid=True,
+        )
     ],
     style=footer_style(),
-    )
+)
 
 # Two-row navbar structure without toggle button
-navbar = \
-    html.Div(
+navbar = html.Div(
     [
-    html.Div(
-    [
-    dbc.Container(
-    [
-    html.A(
-    [
-    html.Div(
-    [
-    html.Img(
-    src=encode_svg_image_hq(
-    "assas_logo_mod.svg"
-    ),
-    height="80px",
-    width="160px",
-    style=logo_style(),
-    alt="ASSAS Logo",
-    className="logo-high-quality logo-assas",
-    ),
-    html.H1(
-    "ASSAS Data Hub",
-    style=brand_style(),
-    className="brand-title brand-center",
-    ),
-    html.Img(
-    src=encode_svg_image_hq(
-    "kit_logo.drawio.svg"
-    ),
-    height="80px",
-    width="160px",
-    style=logo_style(),
-    alt="KIT Logo",
-    className="logo-high-quality logo-kit",
-    ),
-    ],
-    style=brand_container_style(),
-    )
-    ],
-    href="/assas_app/home",
-    style={"textDecoration": "none"},
-    className="brand-link",
-    )
-    ],
-    fluid=True,
-    style={"maxWidth": "1400px"},
-    )
-    ],
-    style=top_row_style(),
-    ),
-    html.Div(
-    [
-    dbc.Container(
-    [
-    html.Div(
-    [
-    dbc.Button(
-    html.I(className="fas fa-bars"),
-    id="navbar-toggler",
-    n_clicks=0,
-    style=hamburger_style(),
-    className="navbar-toggler-mobile d-md-none",
-    ),
-    dbc.Collapse(
-    [
-    dbc.Nav(
-    [
-    dbc.NavItem(
-    dbc.NavLink(
-    [
-    html.I(className="fas fa-home me-2"),
-    "Home",
-    ],
-    href="/assas_app/home",
-    active="exact",
-    style=nav_link_style(),
-    className="nav-link-modern",
-    )
-    ),
-    dbc.NavItem(
-    dbc.NavLink(
-    [
-    html.I(className="fas fa-database me-2"),
-    "Database",
-    ],
-    href="/assas_app/database",
-    active="exact",
-    style=nav_link_style(),
-    className="nav-link-modern",
-    )
-    ),
-    dbc.NavItem(
-    dbc.NavLink(
-    [
-    html.I(className="fas fa-info-circle me-2"),
-    "About",
-    ],
-    href="/assas_app/about",
-    active="exact",
-    style=nav_link_style(),
-    className="nav-link-modern",
-    )
-    ),
-    # Add Profile link
-    dbc.NavItem(
-    dbc.NavLink(
-    [
-    html.I(className="fas fa-user me-2"),
-    "Profile",
-    ],
-    href="/assas_app/profile",
-    active="exact",
-    style=nav_link_style(),
-    className="nav-link-modern",
-    )
-    ),
-    # Admin link (hidden by default)
-    dbc.NavItem(
-    dbc.NavLink(
-        [
-            html.I(className="fas fa-users-cog me-2"),
-            "Admin",
-        ],
-        href="/assas_app/admin",
-        active="exact",
-        style=nav_link_style(),
-        className="nav-link-modern",
-        id="admin-nav-link"
-    ),
-    id="admin-nav-item",
-    style={"display": "none"}  # Hidden by default
-    ),
-    ],
-    className="nav-items-container",
-    horizontal=True,
-    style={
-    "display": "flex",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "gap": "1rem",
-    "width": "100%",
-    },
-    )
-    ],
-    id="navbar-collapse",
-    is_open=False,
-    className="navbar-collapse-custom",
-    ),
-    ],
-    style={
-    "display": "flex",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "width": "100%",
-    "position": "relative",
-    },
-    )
-    ],
-    fluid=True,
-    )
-    ],
-    style=bottom_row_style(),
-    ),
-    html.Div(id="scroll-progress", className="scroll-indicator"),
+        html.Div(
+            [
+                dbc.Container(
+                    [
+                        html.A(
+                            [
+                                html.Div(
+                                    [
+                                        html.Img(
+                                            src=encode_svg_image_hq(
+                                                "assas_logo_mod.svg"
+                                            ),
+                                            height="80px",
+                                            width="160px",
+                                            style=logo_style(),
+                                            alt="ASSAS Logo",
+                                            className="logo-high-quality logo-assas",
+                                        ),
+                                        html.H1(
+                                            "ASSAS Data Hub",
+                                            style=brand_style(),
+                                            className="brand-title brand-center",
+                                        ),
+                                        html.Img(
+                                            src=encode_svg_image_hq(
+                                                "kit_logo.drawio.svg"
+                                            ),
+                                            height="80px",
+                                            width="160px",
+                                            style=logo_style(),
+                                            alt="KIT Logo",
+                                            className="logo-high-quality logo-kit",
+                                        ),
+                                    ],
+                                    style=brand_container_style(),
+                                )
+                            ],
+                            href="/assas_app/home",
+                            style={"textDecoration": "none"},
+                            className="brand-link",
+                        )
+                    ],
+                    fluid=True,
+                    style={"maxWidth": "1400px"},
+                )
+            ],
+            style=top_row_style(),
+        ),
+        html.Div(
+            [
+                dbc.Container(
+                    [
+                        html.Div(
+                            [
+                                dbc.Button(
+                                    html.I(className="fas fa-bars"),
+                                    id="navbar-toggler",
+                                    n_clicks=0,
+                                    style=hamburger_style(),
+                                    className="navbar-toggler-mobile d-md-none",
+                                ),
+                                dbc.Collapse(
+                                    [
+                                        dbc.Nav(
+                                            [
+                                                dbc.NavItem(
+                                                    dbc.NavLink(
+                                                        [
+                                                            html.I(
+                                                                className=(
+                                                                    "fas fa-home me-2"
+                                                                ),
+                                                            ),
+                                                            "Home",
+                                                        ],
+                                                        href="/assas_app/home",
+                                                        active="exact",
+                                                        style=nav_link_style(),
+                                                        className="nav-link-modern",
+                                                    )
+                                                ),
+                                                dbc.NavItem(
+                                                    dbc.NavLink(
+                                                        [
+                                                            html.I(
+                                                                className=(
+                                                                    "fas fa-"
+                                                                    "database me-2"
+                                                                ),
+                                                            ),
+                                                            "Database",
+                                                        ],
+                                                        href="/assas_app/database",
+                                                        active="exact",
+                                                        style=nav_link_style(),
+                                                        className="nav-link-modern",
+                                                    )
+                                                ),
+                                                dbc.NavItem(
+                                                    dbc.NavLink(
+                                                        [
+                                                            html.I(
+                                                                className=(
+                                                                    "fas fa-info"
+                                                                    "-circle me-2"
+                                                                ),
+                                                            ),
+                                                            "About",
+                                                        ],
+                                                        href="/assas_app/about",
+                                                        active="exact",
+                                                        style=nav_link_style(),
+                                                        className="nav-link-modern",
+                                                    )
+                                                ),
+                                                # Add Profile link
+                                                dbc.NavItem(
+                                                    dbc.NavLink(
+                                                        [
+                                                            html.I(
+                                                                className=(
+                                                                    "fas fa-user me-2"
+                                                                ),
+                                                            ),
+                                                            "Profile",
+                                                        ],
+                                                        href="/assas_app/profile",
+                                                        active="exact",
+                                                        style=nav_link_style(),
+                                                        className="nav-link-modern",
+                                                    )
+                                                ),
+                                                # Admin link (hidden by default)
+                                                dbc.NavItem(
+                                                    dbc.NavLink(
+                                                        [
+                                                            html.I(
+                                                                className=(
+                                                                    "fas fa-users"
+                                                                    "-cog me-2"
+                                                                ),
+                                                            ),
+                                                            "Admin",
+                                                        ],
+                                                        href="/assas_app/admin",
+                                                        active="exact",
+                                                        style=nav_link_style(),
+                                                        className="nav-link-modern",
+                                                        id="admin-nav-link",
+                                                    ),
+                                                    id="admin-nav-item",
+                                                    style={
+                                                        "display": "none"
+                                                    },  # Hidden by default
+                                                ),
+                                            ],
+                                            className="nav-items-container",
+                                            horizontal=True,
+                                            style={
+                                                "display": "flex",
+                                                "alignItems": "center",
+                                                "justifyContent": "center",
+                                                "gap": "1rem",
+                                                "width": "100%",
+                                            },
+                                        )
+                                    ],
+                                    id="navbar-collapse",
+                                    is_open=False,
+                                    className="navbar-collapse-custom",
+                                ),
+                            ],
+                            style={
+                                "display": "flex",
+                                "alignItems": "center",
+                                "justifyContent": "center",
+                                "width": "100%",
+                                "position": "relative",
+                            },
+                        )
+                    ],
+                    fluid=True,
+                )
+            ],
+            style=bottom_row_style(),
+        ),
+        html.Div(id="scroll-progress", className="scroll-indicator"),
     ],
     id="main-navbar",
     style=modern_navbar_style(),
     className="navbar-two-row sticky-top",
-    )
+)
 
 
 def init_dashboard(server: object) -> object:
@@ -817,34 +856,36 @@ def init_dashboard(server: object) -> object:
     server.register_blueprint(oauth_bp)
     server.register_blueprint(auth_bp)
     server.register_blueprint(basic_auth_bp)  # Add this line
-    
+
     # Protect Dash pages
     @server.before_request
     def restrict_access() -> Response:
         """Restrict access to Dash pages for unauthenticated users."""
         logger.info(f"Checking authentication for path: {request.path}")
-        
+
         # Allow auth routes
-        if request.path.startswith('/auth/'):
+        if request.path.startswith("/auth/"):
             logger.info("Allowing auth route")
             return None
-        
+
         # Allow static assets
-        if request.path.startswith('/static/') or request.path.startswith('/_dash'):
+        if request.path.startswith("/static/") or request.path.startswith("/_dash"):
             return None
-        
+
         # Check authentication for Dash app routes
         if request.path.startswith("/assas_app/"):
             current_user = get_current_user()
             logger.info(f"Current user for Dash access: {current_user}")
-            
+
             if not is_authenticated():
                 logger.info("User not authenticated, redirecting to login")
-                session['next_url'] = request.url
+                session["next_url"] = request.url
                 return redirect("/auth/login")
-            
-            logger.info(f"User {current_user.get('email')} authenticated, allowing access")
-    
+
+            logger.info(
+                f"User {current_user.get('email')} authenticated, allowing access"
+            )
+
         return None
 
     dash_app = dash.Dash(
@@ -873,7 +914,7 @@ def init_dashboard(server: object) -> object:
     def toggle_navbar_collapse(
         n_clicks: int | None,
         is_open: bool,
-    )-> bool:
+    ) -> bool:
         """Toggle the navbar collapse state.
 
         Args:
@@ -887,22 +928,9 @@ def init_dashboard(server: object) -> object:
         if n_clicks:
             return not is_open
         return is_open
-    
-    # Toggle navbar collapse on mobile - additional callback
-    #@dash_app.callback(
-    #    Output("navbar-collapse", "is_open"),
-    #    [Input("navbar-toggler", "n_clicks")],
-    #    [State("navbar-collapse", "is_open")],
-    #)
-    #def toggle_navbar_collapse_mobile(n, is_open):
-    #    """Toggle navbar collapse on mobile."""
-    #    if n:
-    #        return not is_open
-    #    return is_open
 
-    # Simplified clientside callback for scroll behavior only
     dash_app.clientside_callback(
-"""
+        """
 function(id) {
     let lastScrollTop = 0;
 
@@ -1021,19 +1049,18 @@ function(id) {
     @dash_app.callback(
         Output("admin-nav-item", "style"),
         Input("url", "pathname"),
-        prevent_initial_call=True
+        prevent_initial_call=True,
     )
-    def toggle_admin_nav(pathname):
+    def toggle_admin_nav(pathname: str) -> dict:
         """Show admin nav link only for admin users."""
         from ..auth_utils import has_role
-        
-        if has_role('admin'):
+
+        if has_role("admin"):
             return {"display": "block"}
         else:
             return {"display": "none"}
 
     # Register pages
-    from . import pages
-    from .pages import home, database, about, profile, admin  # Add profile import
 
-    return dash_app.server
+    return dash_app
+    # return dash_app.server
