@@ -11,7 +11,7 @@ from flask import (
 )
 from ..auth_utils import is_authenticated, get_current_user
 
-auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
+auth_bp = Blueprint("auth", __name__, url_prefix="/test/auth")
 
 
 @auth_bp.route("/login")

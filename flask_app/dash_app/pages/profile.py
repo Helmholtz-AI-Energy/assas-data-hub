@@ -522,7 +522,7 @@ def create_actions_card() -> dbc.Card:
         logout_section,
         dbc.Button(
             [html.I(className="fas fa-home me-2"), "Go to Home"],
-            href="/assas_app/home",
+            href="/test/assas_app/home",
             color="outline-primary",
             className="me-2 mb-2",
         ),
@@ -539,7 +539,7 @@ def create_actions_card() -> dbc.Card:
         actions.append(
             dbc.Button(
                 [html.I(className="fas fa-bug me-2"), "Debug Session"],
-                href="/auth/debug/session",
+                href="/test/auth/debug/session",
                 color="outline-warning",
                 className="me-2 mb-2",
                 target="_blank",
@@ -579,7 +579,7 @@ def toggle_logout_modal(logout_clicks: int, cancel_clicks: int, is_open: bool) -
 def confirm_logout(n_clicks: int | None) -> str:
     """Handle logout confirmation."""
     if n_clicks and n_clicks > 0:
-        return "/auth/logout"
+        return "/test/auth/logout"
     return dash.no_update
 
 

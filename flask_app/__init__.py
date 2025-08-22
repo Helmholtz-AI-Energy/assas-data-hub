@@ -5,6 +5,7 @@ import secrets
 
 from flask import Flask
 from flask.config import Config
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 class AttrConfig(Config):
@@ -71,6 +72,10 @@ class CustomFlask(Flask):
 def init_app() -> CustomFlask:
     """Construct core Flask application with embedded Dash app."""
     app = CustomFlask(__name__, instance_relative_config=False)
+
+    app.wsgi_app = ProxyFix(
+        app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1
+    )
 
     # DEBUG TEST ROUTES
     @app.route("/debug/test-error")

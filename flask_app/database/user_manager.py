@@ -21,7 +21,7 @@ class UserManager:
 
             # MANUAL FIX: Use the database/collection where users actually are
             # Update these based on your debug script results:
-            db_name = "assas"  # Or whatever the debug script shows
+            db_name = "assas_dev"  # Or whatever the debug script shows
             collection_name = "users"  # Or whatever has your users
 
             self.client = MongoClient(connection_string)

@@ -21,7 +21,7 @@ from ..auth_utils import get_current_user
 logger = logging.getLogger("assas_app")
 
 # HTTP Basic Auth Blueprint
-basic_auth_bp = Blueprint("basic_auth", __name__, url_prefix="/auth/basic")
+basic_auth_bp = Blueprint("basic_auth", __name__, url_prefix="/test/auth/basic")
 
 # Initialize HTTP Basic Auth
 http_basic_auth = HTTPBasicAuth()

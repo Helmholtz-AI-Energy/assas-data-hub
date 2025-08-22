@@ -671,7 +671,7 @@ navbar = html.Div(
                                     style=brand_container_style(),
                                 )
                             ],
-                            href="/assas_app/home",
+                            href="/test/assas_app/home",
                             style={"textDecoration": "none"},
                             className="brand-link",
                         )
@@ -709,7 +709,7 @@ navbar = html.Div(
                                                             ),
                                                             "Home",
                                                         ],
-                                                        href="/assas_app/home",
+                                                        href="/test/assas_app/home",
                                                         active="exact",
                                                         style=nav_link_style(),
                                                         className="nav-link-modern",
@@ -726,7 +726,7 @@ navbar = html.Div(
                                                             ),
                                                             "Database",
                                                         ],
-                                                        href="/assas_app/database",
+                                                        href="/test/assas_app/database",
                                                         active="exact",
                                                         style=nav_link_style(),
                                                         className="nav-link-modern",
@@ -743,7 +743,7 @@ navbar = html.Div(
                                                             ),
                                                             "About",
                                                         ],
-                                                        href="/assas_app/about",
+                                                        href="/test/assas_app/about",
                                                         active="exact",
                                                         style=nav_link_style(),
                                                         className="nav-link-modern",
@@ -760,7 +760,7 @@ navbar = html.Div(
                                                             ),
                                                             "Profile",
                                                         ],
-                                                        href="/assas_app/profile",
+                                                        href="/test/assas_app/profile",
                                                         active="exact",
                                                         style=nav_link_style(),
                                                         className="nav-link-modern",
@@ -778,7 +778,7 @@ navbar = html.Div(
                                                             ),
                                                             "Admin",
                                                         ],
-                                                        href="/assas_app/admin",
+                                                        href="/test/assas_app/admin",
                                                         active="exact",
                                                         style=nav_link_style(),
                                                         className="nav-link-modern",
@@ -864,7 +864,7 @@ def init_dashboard(server: object) -> object:
         logger.info(f"Checking authentication for path: {request.path}")
 
         # Allow auth routes
-        if request.path.startswith("/auth/"):
+        if request.path.startswith("/test/auth/"):
             logger.info("Allowing auth route")
             return None
 
@@ -873,14 +873,14 @@ def init_dashboard(server: object) -> object:
             return None
 
         # Check authentication for Dash app routes
-        if request.path.startswith("/assas_app/"):
+        if request.path.startswith("/test/assas_app/"):
             current_user = get_current_user()
             logger.info(f"Current user for Dash access: {current_user}")
 
             if not is_authenticated():
                 logger.info("User not authenticated, redirecting to login")
                 session["next_url"] = request.url
-                return redirect("/auth/login")
+                return redirect("/test/auth/login")
 
             logger.info(
                 f"User {current_user.get('email')} authenticated, allowing access"
@@ -890,8 +890,8 @@ def init_dashboard(server: object) -> object:
 
     dash_app = dash.Dash(
         server=server,
-        url_base_pathname="/assas_app/",
-        title="ASSAS Data Hub",
+        url_base_pathname="/test/assas_app/",
+        title="ASSAS Data Hub Test",
         external_stylesheets=[
             dbc.themes.BOOTSTRAP,
             "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css",
@@ -1062,5 +1062,5 @@ function(id) {
 
     # Register pages
 
-    return dash_app
-    # return dash_app.server
+    # return dash_app
+    return dash_app.server

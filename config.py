@@ -114,13 +114,18 @@ class Config(object):
         "*": ["viewer"],  # Default role
     }
 
+    HELMHOLTZ_ROLE_MAPPINGS = {
+        "your-helmholtz-username-or-claim": ["admin"],
+        "*": ["viewer"],
+    }
+
 
 class DevelopmentConfig(Config):
     """Development configuration class for the ASSAS Data Hub application."""
 
     DEBUG = True
-    SERVER_NAME = "assas.scc.kit.edu:5000"
-    PREFERRED_URL_SCHEME = "http"
+    SERVER_NAME = None  # "assas.scc.kit.edu:5000"
+    PREFERRED_URL_SCHEME = "https"
 
     # Development basic auth users
     BASIC_AUTH_USERS = {

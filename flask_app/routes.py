@@ -58,26 +58,26 @@ def logout() -> Response:
 def from_root_to_home() -> Response:
     """Redirect from the root URL to the home page of the application."""
     logger.info("Redirecting from root to home page.")
-    return redirect("/assas_app/home")
+    return redirect("/test/assas_app/home")
 
 
-@app.route("/assas_app")
+@app.route("/test/assas_app")
 @auth.login_required
 def from_app_to_home() -> Response:
-    """Redirect from the /assas_app URL to the home page of the application."""
-    logger.info("Redirecting from /assas_app to home page.")
-    return redirect("/assas_app/home")
+    """Redirect from the /test/assas_app URL to the home page of the application."""
+    logger.info("Redirecting from /test/assas_app to home page.")
+    return redirect("/test/assas_app/home")
 
 
-@app.route("/assas_app/")
+@app.route("/test/assas_app/")
 @auth.login_required
 def from_app_with_slash_to_home() -> Response:
-    """Redirect from the /assas_app/ URL to the home page of the application."""
-    logger.info("Redirecting from /assas_app/ to home page.")
-    return redirect("/assas_app/home")
+    """Redirect from the /test/assas_app/ URL to the home page of the application."""
+    logger.info("Redirecting from /test/assas_app/ to home page.")
+    return redirect("/test/assas_app/home")
 
 
-@app.route("/assas_app/hdf5_file", methods=["GET"])
+@app.route("/test/assas_app/hdf5_file", methods=["GET"])
 @auth.login_required
 def get_data_file() -> Response:
     """Handle the request to retrieve a data file based on the provided UUID."""
@@ -111,7 +111,7 @@ def get_data_file() -> Response:
         )
 
 
-@app.route("/assas_app/hdf5_download", methods=["GET"])
+@app.route("/test/assas_app/hdf5_download", methods=["GET"])
 @auth.login_required
 def get_download_archive() -> Response:
     """Handle the request to download an archive based on the provided UUID."""
@@ -149,7 +149,7 @@ def get_download_archive() -> Response:
         return jsonify(error="Document not found"), 404
 
 
-@app.route("/assas_app/query_meta_data", methods=["GET"])
+@app.route("/test/assas_app/query_meta_data", methods=["GET"])
 @auth.login_required
 def query_data() -> Response:
     """Handle the request to retrieve meta data variables based on provided UUID."""

@@ -20,7 +20,7 @@ from flask import (
 logger = logging.getLogger("assas_app")
 
 # OAuth Blueprint
-oauth_bp = Blueprint("oauth", __name__, url_prefix="/auth")
+oauth_bp = Blueprint("oauth", __name__, url_prefix="/test/auth")
 
 # Initialize OAuth
 oauth = OAuth()
@@ -49,9 +49,9 @@ def init_oauth(app):
             name="helmholtz",
             client_id=app.config["HELMHOLTZ_CLIENT_ID"],
             client_secret=app.config["HELMHOLTZ_CLIENT_SECRET"],
-            access_token_url="https://helmholtz.de/login/oauth/access_token",
-            authorize_url="https://helmholtz.de/login/oauth/authorize",
-            api_base_url="https://api.helmholtz.de/",
+            access_token_url="https://login.helmholtz.de/oauth2/token",
+            authorize_url="https://login.helmholtz.de/oauth2-as/oauth2-authz",
+            api_base_url="https://login.helmholtz.de/oauthhome",
             client_kwargs={"scope": "user:email read:user"},
         )
         logger.info("Helmholtz OAuth provider registered")
@@ -76,6 +76,24 @@ class GitHubRoleProcessor:
         )
         return default_role
 
+class HelmholtzRoleProcessor:
+    """Process Helmholtz user data and assign roles."""
+
+    @staticmethod
+    def get_user_role(username: str, email: str) -> str:
+        """Get role for Helmholtz user based on configuration."""
+        role_mappings = current_app.config.get("HELMHOLTZ_ROLE_MAPPINGS", {})
+
+        if username in role_mappings:
+            role = role_mappings[username]
+            logger.info(f"Assigned role '{role}' to Helmholtz user '{username}'")
+            return role
+
+        default_role = role_mappings.get("*", "viewer")
+        logger.info(
+            f"Assigned default role '{default_role}' to Helmholtz user '{username}'"
+        )
+        return default_role
 
 class UserSession:
     """Manage user session data."""
@@ -130,10 +148,125 @@ class UserSession:
                 "github_profile": user_info.get("html_url"),
                 "mongodb_id": str(stored_user.get("_id")) if stored_user else None,
             }
+        
+        elif provider == "helmholtz":
+            email = user_info.get("email")
+            name = user_info.get("name") or email.split("@")[0] if email else "Unknown"
+            username = email.split("@")[0] if email else "unknown"
+            user_id = user_info.get("sub")  # Use sub claim as unique ID
+            
+            role = HelmholtzRoleProcessor.get_user_role(username, email)
+
+            # Prepare user data for MongoDB
+            user_data = {
+                "username": username,
+                "email": email,
+                "name": name,
+                "provider": provider,
+                "roles": [role],
+                "helmholtz_sub": user_id,
+                "is_active": True,
+            }
+
+            # Store/update user in MongoDB
+            try:
+                user_manager = UserManager()
+                stored_user = user_manager.create_or_update_user(user_data)
+                logger.info(f"User stored/updated in MongoDB: {email}")
+            except Exception as e:
+                logger.error(f"Failed to store user in MongoDB: {e}")
+                stored_user = None
+
+            # Create session
+            session["user"] = {
+                "id": user_id,
+                "username": username,
+                "email": email,
+                "name": name,
+                "provider": provider,
+                "authenticated": True,
+                "roles": [role],
+                "mongodb_id": str(stored_user.get("_id")) if stored_user else None,
+            }
 
         logger.info(
             f"Created session for {provider} user: {session['user'].get('email')}"
         )
+
+def exchange_helmholtz_code_for_token(code: str, redirect_uri: str) -> str:
+    """Exchange Helmholtz authorization code for access token."""
+    import base64
+    
+    # Prepare client credentials for HTTP Basic Auth
+    client_id = current_app.config["HELMHOLTZ_CLIENT_ID"]
+    client_secret = current_app.config["HELMHOLTZ_CLIENT_SECRET"]
+    
+    # Create Basic Auth header
+    credentials = f"{client_id}:{client_secret}"
+    encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
+    
+    token_data = {
+        "code": code,
+        "redirect_uri": redirect_uri,
+        "grant_type": "authorization_code",
+    }
+    
+    # Use HTTP Basic Auth for client authentication
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": f"Basic {encoded_credentials}",
+        "User-Agent": "ASSAS-Data-Hub"
+    }
+    
+    logger.info("Exchanging Helmholtz authorization code for access token...")
+    logger.info(f"Token endpoint: https://login.helmholtz.de/oauth2/token")
+    logger.info(f"Client ID: {client_id}")
+    logger.info(f"Redirect URI: {redirect_uri}")
+    logger.info("Using HTTP Basic Authentication for client credentials")
+    
+    try:
+        response = requests.post(
+            "https://login.helmholtz.de/oauth2/token",
+            data=token_data,  # Don't include client credentials in body
+            headers=headers,
+            timeout=30,
+        )
+        
+        logger.info(f"Token response status: {response.status_code}")
+        logger.info(f"Token response headers: {dict(response.headers)}")
+        
+        if response.status_code != 200:
+            logger.error(f"Token exchange failed: {response.status_code} - {response.text}")
+            raise Exception(f"Token exchange failed: {response.status_code} - {response.text}")
+        
+        token_info = response.json()
+        logger.info("Token exchange successful")
+        
+        if "error" in token_info:
+            logger.error(f"Helmholtz token error: {token_info}")
+            raise Exception(f"Helmholtz token error: {token_info.get('error_description', token_info.get('error'))}")
+        
+        access_token = token_info.get("access_token")
+        if not access_token:
+            logger.error(f"No access token in response: {token_info}")
+            raise Exception("No access token received from Helmholtz")
+        
+        return access_token
+        
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Request error during token exchange: {e}")
+        raise Exception(f"Network error during token exchange: {e}")
+
+def get_helmholtz_user_info(access_token: str) -> dict:
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = requests.get(
+        "https://login.helmholtz.de/oauth2/userinfo",
+        headers=headers,
+        timeout=30,
+    )
+    response.raise_for_status()
+    return response.json()
 
 
 def exchange_github_code_for_token(code: str, redirect_uri: str) -> str:
@@ -228,7 +361,7 @@ def get_github_user_info(access_token: str) -> Dict:
 @oauth_bp.route("/login/<provider>")
 def login(provider: str):
     """Initiate OAuth login flow."""
-    if provider not in ["github", "bwidm"]:
+    if provider not in ["github", "bwidm", "helmholtz"]:
         flash(f"Unknown provider: {provider}", "error")
         return redirect(url_for("auth.login_page"))
 
@@ -280,6 +413,23 @@ def login(provider: str):
             )
             logger.info(f"bwIDM auth URL: {auth_url}")
             return redirect(auth_url)
+        
+        elif provider == "helmholtz":
+            # Helmholtz OAuth URL construction
+            params = {
+                "client_id": current_app.config["HELMHOLTZ_CLIENT_ID"],
+                "redirect_uri": redirect_uri,
+                "scope": "openid profile email",
+                "response_type": "code",
+                "state": state,
+            }
+
+            auth_url = (
+                "https://login.helmholtz.de/oauth2-as/oauth2-authz?"
+                + urlencode(params)
+            )
+            logger.info(f"Helmholtz auth URL: {auth_url}")
+            return redirect(auth_url)
 
     except Exception as e:
         logger.error(f"OAuth login error for {provider}: {e}")
@@ -290,7 +440,7 @@ def login(provider: str):
 @oauth_bp.route("/callback/<provider>")
 def callback(provider: str):
     """Handle OAuth callback with manual token exchange."""
-    if provider not in ["github", "bwidm"]:
+    if provider not in ["github", "bwidm", "helmholtz"]:
         flash("Invalid authentication provider", "error")
         return redirect(url_for("auth.login_page"))
 
@@ -338,6 +488,18 @@ def callback(provider: str):
 
             logger.info(
                 f"GitHub user authenticated: {user_info.get('login')} ({user_info.get('email')})"
+            )
+        
+        if provider == "helmholtz":
+            # Manual token exchange for Helmholtz
+            redirect_uri = url_for("oauth.callback", provider=provider, _external=True)
+            access_token = exchange_helmholtz_code_for_token(code, redirect_uri)
+
+            # Get user information
+            user_info = get_helmholtz_user_info(access_token)
+
+            logger.info(
+                f"Helmholtz user authenticated: {user_info.get('email')}"
             )
 
         # Create user session
