@@ -67,6 +67,27 @@ users = [
         "email": "bastien.poubeau@asnr.fr",
         "institute": "ASNR (France)",
         "role": "Researcher",
+    },
+    {
+        "username": "gaetan",
+        "password": generate_password_hash("assas2025"),
+        "email": "blondet@phimeca.com",
+        "institute": "Phimeca (France)",
+        "role": "Researcher",
+    },
+    {
+        "username": "solenn",
+        "password": generate_password_hash("assas2025"),
+        "email": "dumont@phimeca.com",
+        "institute": "Phimeca (France)",
+        "role": "Researcher",
+    },
+    {
+        "username": "albert",
+        "password": generate_password_hash("assas2025"),
+        "email": "albert.malkhasyan@belv.be",
+        "institute": "Bel V (Belgium)",
+        "role": "Researcher",
     }
 ]
 
