@@ -10,6 +10,7 @@ from dash import html, dcc, Input, Output, callback, State
 import logging
 
 from ...auth_utils import get_current_user, get_user_roles, has_role
+from ...utils.url_utils import build_auth_url, get_base_url, get_auth_base_url
 
 logger = logging.getLogger("assas_app")
 
@@ -522,13 +523,13 @@ def create_actions_card() -> dbc.Card:
         logout_section,
         dbc.Button(
             [html.I(className="fas fa-home me-2"), "Go to Home"],
-            href="/test/assas_app/home",
+            href=f"{get_base_url()}/home",
             color="outline-primary",
             className="me-2 mb-2",
         ),
         dbc.Button(
             [html.I(className="fas fa-database me-2"), "Browse Database"],
-            href="/assas_app/database",
+            href=f"{get_base_url()}/database",
             color="outline-info",
             className="me-2 mb-2",
         ),
@@ -539,7 +540,7 @@ def create_actions_card() -> dbc.Card:
         actions.append(
             dbc.Button(
                 [html.I(className="fas fa-bug me-2"), "Debug Session"],
-                href="/test/auth/debug/session",
+                href=f"{get_auth_base_url()}/debug/session",
                 color="outline-warning",
                 className="me-2 mb-2",
                 target="_blank",
@@ -579,7 +580,7 @@ def toggle_logout_modal(logout_clicks: int, cancel_clicks: int, is_open: bool) -
 def confirm_logout(n_clicks: int | None) -> str:
     """Handle logout confirmation."""
     if n_clicks and n_clicks > 0:
-        return "/test/auth/logout"
+        return f"{get_auth_base_url()}/logout"
     return dash.no_update
 
 
@@ -625,7 +626,7 @@ def layout() -> html.Div:  # ruff: noqa: E501
                                                         ),
                                                         "Login",
                                                     ],
-                                                    href="/auth/login",
+                                                    href=f"{get_auth_base_url()}/login",
                                                     color="primary",
                                                     size="lg",
                                                 ),
@@ -671,9 +672,12 @@ def layout() -> html.Div:  # ruff: noqa: E501
                                                 html.I(className="fas fa-key me-2"),
                                                 "Change Password",
                                             ],
-                                            href="/auth/basic/change-password",
+                                            href=(
+                                                build_auth_url("basic/change-password")
+                                            ),
                                             color="warning",
                                             className="me-2",
+                                            external_link=True,
                                         ),
                                         html.Small(
                                             "Change your login password",

@@ -15,6 +15,8 @@ class Config(object):
     DEBUG = os.getenv("DEBUG", "True").lower() == "true"
     DEVELOPMENT = os.getenv("DEVELOPMENT", "True").lower() == "true"
 
+    BASE_URL = os.getenv("BASE_URL", "/assas_app")
+
     ASTEC_ROOT = os.getenv("ASTEC_ROOT", r"/root/astecV3.1.1_linux64/astecV3.1.1")
     ASTEC_TYPE = os.getenv("ASTEC_TYPE", r"linux_64")
 
@@ -24,6 +26,7 @@ class Config(object):
 
     CONNECTIONSTRING = os.getenv("CONNECTIONSTRING", r"mongodb://localhost:27017/")
     MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", r"assas")
+    USER_COLLECTION_NAME = os.getenv("USER_COLLECTION_NAME", r"users")
 
     # URL Configuration
     SERVER_NAME = os.environ.get("SERVER_NAME")
@@ -84,7 +87,7 @@ class Config(object):
         },
         {
             "value": "viewer",
-            "label": "User",
+            "label": "Viewer",
             "description": "Basic view access to content",
         },
     ]

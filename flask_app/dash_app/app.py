@@ -1,8 +1,4 @@
-"""Create a Plotly Dash app with Flask integration.
-
-This module initializes a Dash application with Flask, sets up the navbar,
-and configures authentication and long callbacks using diskcache.
-"""
+"""Create a Plotly Dash app with Flask integration."""
 
 import os
 import logging
@@ -13,12 +9,16 @@ import dash_bootstrap_components as dbc
 from dash import dash, html, Input, Output, State, dcc
 from dash.long_callback import DiskcacheLongCallbackManager
 
-from .components import encode_svg_image_hq  # Use high-quality encoder
+from .components import encode_svg_image_hq
 from flask import redirect, request, Response, session
 from ..auth_utils import is_authenticated, get_current_user
-from ..auth.oauth_auth import oauth_bp, init_oauth
-from ..auth.routes import auth_bp
-from ..auth.basic_auth import basic_auth_bp
+from ..auth.oauth_auth import init_oauth
+from ..utils.url_utils import (
+    get_base_url,
+    get_auth_base_url,
+    get_dash_base_url,
+    build_auth_url,
+)
 
 logger = logging.getLogger("assas_app")
 
@@ -403,26 +403,30 @@ footer = html.Footer(
                             sm=12,
                             style=footer_section_style(),
                         ),
-                        # Quick Links
+                        # Quick Links - Updated to use dynamic URLs
                         dbc.Col(
                             [
                                 html.H5("Quick Links", style=footer_title_style()),
                                 html.Div(
-                                    [
+                                    id="footer-links",  # Make this dynamic
+                                    children=[
                                         html.A(
                                             "Home",
-                                            href="/assas_app/home",
+                                            href="#",  # Will be updated by callback
                                             style=footer_link_style(),
+                                            id="footer-home-link",
                                         ),
                                         html.A(
                                             "Database",
-                                            href="/assas_app/database",
+                                            href="#",  # Will be updated by callback
                                             style=footer_link_style(),
+                                            id="footer-database-link",
                                         ),
                                         html.A(
                                             "About",
-                                            href="/assas_app/about",
+                                            href="#",  # Will be updated by callback
                                             style=footer_link_style(),
+                                            id="footer-about-link",
                                         ),
                                         html.A(
                                             "Documentation",
@@ -434,7 +438,7 @@ footer = html.Footer(
                                             href="#",
                                             style=footer_link_style(),
                                         ),
-                                    ]
+                                    ],
                                 ),
                             ],
                             md=2,
@@ -631,210 +635,212 @@ footer = html.Footer(
     style=footer_style(),
 )
 
-# Two-row navbar structure without toggle button
-navbar = html.Div(
-    [
-        html.Div(
-            [
-                dbc.Container(
-                    [
-                        html.A(
-                            [
-                                html.Div(
-                                    [
-                                        html.Img(
-                                            src=encode_svg_image_hq(
-                                                "assas_logo_mod.svg"
+
+def create_navbar() -> html.Div:
+    """Create navbar with dynamic URLs."""
+    return html.Div(
+        [
+            html.Div(
+                [
+                    dbc.Container(
+                        [
+                            html.A(
+                                [
+                                    html.Div(
+                                        [
+                                            html.Img(
+                                                src=encode_svg_image_hq(
+                                                    "assas_logo_mod.svg"
+                                                ),
+                                                height="80px",
+                                                width="160px",
+                                                style=logo_style(),
+                                                alt="ASSAS Logo",
+                                                className=(
+                                                    "logo-high-quality logo-assas",
+                                                ),
                                             ),
-                                            height="80px",
-                                            width="160px",
-                                            style=logo_style(),
-                                            alt="ASSAS Logo",
-                                            className="logo-high-quality logo-assas",
-                                        ),
-                                        html.H1(
-                                            "ASSAS Data Hub",
-                                            style=brand_style(),
-                                            className="brand-title brand-center",
-                                        ),
-                                        html.Img(
-                                            src=encode_svg_image_hq(
-                                                "kit_logo.drawio.svg"
+                                            html.H1(
+                                                "ASSAS Data Hub",
+                                                style=brand_style(),
+                                                className="brand-title brand-center",
                                             ),
-                                            height="80px",
-                                            width="160px",
-                                            style=logo_style(),
-                                            alt="KIT Logo",
-                                            className="logo-high-quality logo-kit",
-                                        ),
-                                    ],
-                                    style=brand_container_style(),
-                                )
-                            ],
-                            href="/test/assas_app/home",
-                            style={"textDecoration": "none"},
-                            className="brand-link",
-                        )
-                    ],
-                    fluid=True,
-                    style={"maxWidth": "1400px"},
-                )
-            ],
-            style=top_row_style(),
-        ),
-        html.Div(
-            [
-                dbc.Container(
-                    [
-                        html.Div(
-                            [
-                                dbc.Button(
-                                    html.I(className="fas fa-bars"),
-                                    id="navbar-toggler",
-                                    n_clicks=0,
-                                    style=hamburger_style(),
-                                    className="navbar-toggler-mobile d-md-none",
-                                ),
-                                dbc.Collapse(
-                                    [
-                                        dbc.Nav(
-                                            [
-                                                dbc.NavItem(
-                                                    dbc.NavLink(
-                                                        [
-                                                            html.I(
-                                                                className=(
-                                                                    "fas fa-home me-2"
-                                                                ),
-                                                            ),
-                                                            "Home",
-                                                        ],
-                                                        href="/test/assas_app/home",
-                                                        active="exact",
-                                                        style=nav_link_style(),
-                                                        className="nav-link-modern",
-                                                    )
+                                            html.Img(
+                                                src=encode_svg_image_hq(
+                                                    "kit_logo.drawio.svg"
                                                 ),
-                                                dbc.NavItem(
-                                                    dbc.NavLink(
-                                                        [
-                                                            html.I(
-                                                                className=(
-                                                                    "fas fa-"
-                                                                    "database me-2"
+                                                height="80px",
+                                                width="160px",
+                                                style=logo_style(),
+                                                alt="KIT Logo",
+                                                className="logo-high-quality logo-kit",
+                                            ),
+                                        ],
+                                        style=brand_container_style(),
+                                    )
+                                ],
+                                href="#",  # Will be updated by callback
+                                style={"textDecoration": "none"},
+                                className="brand-link",
+                                id="navbar-brand-link",
+                            )
+                        ],
+                        fluid=True,
+                        style={"maxWidth": "1400px"},
+                    )
+                ],
+                style=top_row_style(),
+            ),
+            html.Div(
+                [
+                    dbc.Container(
+                        [
+                            html.Div(
+                                [
+                                    dbc.Button(
+                                        html.I(className="fas fa-bars"),
+                                        id="navbar-toggler",
+                                        n_clicks=0,
+                                        style=hamburger_style(),
+                                        className="navbar-toggler-mobile d-md-none",
+                                    ),
+                                    dbc.Collapse(
+                                        [
+                                            dbc.Nav(
+                                                [
+                                                    dbc.NavItem(
+                                                        dbc.NavLink(
+                                                            [
+                                                                html.I(
+                                                                    className=(
+                                                                        "fas fa-"
+                                                                        "home me-2"
+                                                                    ),
                                                                 ),
-                                                            ),
-                                                            "Database",
-                                                        ],
-                                                        href="/test/assas_app/database",
-                                                        active="exact",
-                                                        style=nav_link_style(),
-                                                        className="nav-link-modern",
-                                                    )
-                                                ),
-                                                dbc.NavItem(
-                                                    dbc.NavLink(
-                                                        [
-                                                            html.I(
-                                                                className=(
-                                                                    "fas fa-info"
-                                                                    "-circle me-2"
-                                                                ),
-                                                            ),
-                                                            "About",
-                                                        ],
-                                                        href="/test/assas_app/about",
-                                                        active="exact",
-                                                        style=nav_link_style(),
-                                                        className="nav-link-modern",
-                                                    )
-                                                ),
-                                                # Add Profile link
-                                                dbc.NavItem(
-                                                    dbc.NavLink(
-                                                        [
-                                                            html.I(
-                                                                className=(
-                                                                    "fas fa-user me-2"
-                                                                ),
-                                                            ),
-                                                            "Profile",
-                                                        ],
-                                                        href="/test/assas_app/profile",
-                                                        active="exact",
-                                                        style=nav_link_style(),
-                                                        className="nav-link-modern",
-                                                    )
-                                                ),
-                                                # Admin link (hidden by default)
-                                                dbc.NavItem(
-                                                    dbc.NavLink(
-                                                        [
-                                                            html.I(
-                                                                className=(
-                                                                    "fas fa-users"
-                                                                    "-cog me-2"
-                                                                ),
-                                                            ),
-                                                            "Admin",
-                                                        ],
-                                                        href="/test/assas_app/admin",
-                                                        active="exact",
-                                                        style=nav_link_style(),
-                                                        className="nav-link-modern",
-                                                        id="admin-nav-link",
+                                                                "Home",
+                                                            ],
+                                                            href="#",  # Dynamic
+                                                            active="exact",
+                                                            style=nav_link_style(),
+                                                            className="nav-link-modern",
+                                                            id="nav-home-link",
+                                                        )
                                                     ),
-                                                    id="admin-nav-item",
-                                                    style={
-                                                        "display": "none"
-                                                    },  # Hidden by default
-                                                ),
-                                            ],
-                                            className="nav-items-container",
-                                            horizontal=True,
-                                            style={
-                                                "display": "flex",
-                                                "alignItems": "center",
-                                                "justifyContent": "center",
-                                                "gap": "1rem",
-                                                "width": "100%",
-                                            },
-                                        )
-                                    ],
-                                    id="navbar-collapse",
-                                    is_open=False,
-                                    className="navbar-collapse-custom",
-                                ),
-                            ],
-                            style={
-                                "display": "flex",
-                                "alignItems": "center",
-                                "justifyContent": "center",
-                                "width": "100%",
-                                "position": "relative",
-                            },
-                        )
-                    ],
-                    fluid=True,
-                )
-            ],
-            style=bottom_row_style(),
-        ),
-        html.Div(id="scroll-progress", className="scroll-indicator"),
-    ],
-    id="main-navbar",
-    style=modern_navbar_style(),
-    className="navbar-two-row sticky-top",
-)
+                                                    dbc.NavItem(
+                                                        dbc.NavLink(
+                                                            [
+                                                                html.I(
+                                                                    className=(
+                                                                        "fas fa-"
+                                                                        "database me-2"
+                                                                    ),
+                                                                ),
+                                                                "Database",
+                                                            ],
+                                                            href="#",  # Dynamic
+                                                            active="exact",
+                                                            style=nav_link_style(),
+                                                            className="nav-link-modern",
+                                                            id="nav-database-link",
+                                                        )
+                                                    ),
+                                                    dbc.NavItem(
+                                                        dbc.NavLink(
+                                                            [
+                                                                html.I(
+                                                                    className=(
+                                                                        "fas fa-info-"
+                                                                        "circle me-2"
+                                                                    ),
+                                                                ),
+                                                                "About",
+                                                            ],
+                                                            href="#",  # Dynamic
+                                                            active="exact",
+                                                            style=nav_link_style(),
+                                                            className="nav-link-modern",
+                                                            id="nav-about-link",
+                                                        )
+                                                    ),
+                                                    dbc.NavItem(
+                                                        dbc.NavLink(
+                                                            [
+                                                                html.I(
+                                                                    className=(
+                                                                        "fas fa-"
+                                                                        "user me-2"
+                                                                    )
+                                                                ),
+                                                                "Profile",
+                                                            ],
+                                                            href="#",  # Dynamic
+                                                            active="exact",
+                                                            style=nav_link_style(),
+                                                            className="nav-link-modern",
+                                                            id="nav-profile-link",
+                                                        )
+                                                    ),
+                                                    dbc.NavItem(
+                                                        dbc.NavLink(
+                                                            [
+                                                                html.I(
+                                                                    className=(
+                                                                        "fas fa-users-"
+                                                                        "cog me-2"
+                                                                    ),
+                                                                ),
+                                                                "Admin",
+                                                            ],
+                                                            href="#",  # Dynamic
+                                                            active="exact",
+                                                            style=nav_link_style(),
+                                                            className="nav-link-modern",
+                                                            id="admin-nav-link",
+                                                        ),
+                                                        id="admin-nav-item",
+                                                        style={"display": "none"},
+                                                    ),
+                                                ],
+                                                className="nav-items-container",
+                                                horizontal=True,
+                                                style={
+                                                    "display": "flex",
+                                                    "alignItems": "center",
+                                                    "justifyContent": "center",
+                                                    "gap": "1rem",
+                                                    "width": "100%",
+                                                },
+                                            )
+                                        ],
+                                        id="navbar-collapse",
+                                        is_open=False,
+                                        className="navbar-collapse-custom",
+                                    ),
+                                ],
+                                style={
+                                    "display": "flex",
+                                    "alignItems": "center",
+                                    "justifyContent": "center",
+                                    "width": "100%",
+                                    "position": "relative",
+                                },
+                            )
+                        ],
+                        fluid=True,
+                    )
+                ],
+                style=bottom_row_style(),
+            ),
+            html.Div(id="scroll-progress", className="scroll-indicator"),
+        ],
+        id="main-navbar",
+        style=modern_navbar_style(),
+        className="navbar-two-row sticky-top",
+    )
 
 
 def init_dashboard(server: object) -> object:
-    """Create a Plotly Dash dashboard.
-
-    Args:
-        server: The Flask server instance to attach the Dash app to.
-
-    """
+    """Create a Plotly Dash dashboard."""
     pages_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pages")
     assets_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
     logger.debug("pages folder %s, assets_folder %s" % (pages_folder, assets_folder))
@@ -852,11 +858,6 @@ def init_dashboard(server: object) -> object:
     # Initialize OAuth
     init_oauth(server)
 
-    # Register blueprints
-    server.register_blueprint(oauth_bp)
-    server.register_blueprint(auth_bp)
-    server.register_blueprint(basic_auth_bp)  # Add this line
-
     # Protect Dash pages
     @server.before_request
     def restrict_access() -> Response:
@@ -864,7 +865,8 @@ def init_dashboard(server: object) -> object:
         logger.info(f"Checking authentication for path: {request.path}")
 
         # Allow auth routes
-        if request.path.startswith("/test/auth/"):
+        auth_base = get_auth_base_url()
+        if request.path.startswith(f"{auth_base}/"):
             logger.info("Allowing auth route")
             return None
 
@@ -873,14 +875,15 @@ def init_dashboard(server: object) -> object:
             return None
 
         # Check authentication for Dash app routes
-        if request.path.startswith("/test/assas_app/"):
+        dash_base = get_base_url()
+        if request.path.startswith(f"{dash_base}/"):
             current_user = get_current_user()
             logger.info(f"Current user for Dash access: {current_user}")
 
             if not is_authenticated():
                 logger.info("User not authenticated, redirecting to login")
                 session["next_url"] = request.url
-                return redirect("/test/auth/login")
+                return redirect(build_auth_url("/login"))
 
             logger.info(
                 f"User {current_user.get('email')} authenticated, allowing access"
@@ -890,12 +893,11 @@ def init_dashboard(server: object) -> object:
 
     dash_app = dash.Dash(
         server=server,
-        url_base_pathname="/test/assas_app/",
-        title="ASSAS Data Hub Test",
+        url_base_pathname=get_dash_base_url(),  # Use dynamic base URL
+        title="ASSAS Data Hub",
         external_stylesheets=[
             dbc.themes.BOOTSTRAP,
             "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css",
-            # Font Awesome icons
         ],
         use_pages=True,
         pages_folder=pages_folder,
@@ -903,6 +905,41 @@ def init_dashboard(server: object) -> object:
         long_callback_manager=long_callback_manager,
         suppress_callback_exceptions=True,
     )
+
+    # Create navbar
+    navbar = create_navbar()
+
+    # Add callback to update navbar and footer links dynamically
+    @dash_app.callback(
+        [
+            Output("navbar-brand-link", "href"),
+            Output("nav-home-link", "href"),
+            Output("nav-database-link", "href"),
+            Output("nav-about-link", "href"),
+            Output("nav-profile-link", "href"),
+            Output("admin-nav-link", "href"),
+            Output("footer-home-link", "href"),
+            Output("footer-database-link", "href"),
+            Output("footer-about-link", "href"),
+        ],
+        Input("url", "pathname"),
+        prevent_initial_call=False,
+    )
+    def update_navigation_links(pathname: str) -> tuple[str, ...]:
+        """Update all navigation links to use current base URL."""
+        base_url = get_base_url()
+
+        return (
+            f"{base_url}/home",  # navbar brand
+            f"{base_url}/home",  # nav home
+            f"{base_url}/database",  # nav database
+            f"{base_url}/about",  # nav about
+            f"{base_url}/profile",  # nav profile
+            f"{base_url}/admin",  # nav admin
+            f"{base_url}/home",  # footer home
+            f"{base_url}/database",  # footer database
+            f"{base_url}/about",  # footer about
+        )
 
     # Navbar toggle callback - WORKING BURGER MENU
     @dash_app.callback(

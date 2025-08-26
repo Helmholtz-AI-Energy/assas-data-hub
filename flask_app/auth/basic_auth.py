@@ -17,13 +17,17 @@ from bson import ObjectId
 
 from ..database.user_manager import UserManager
 from ..auth_utils import get_current_user
+from ..utils.url_utils import get_base_url, get_auth_base_url, build_url, build_auth_url
+from ..utils.blueprint_utils import safe_register_blueprint
 
 logger = logging.getLogger("assas_app")
 
-# HTTP Basic Auth Blueprint
-basic_auth_bp = Blueprint("basic_auth", __name__, url_prefix="/test/auth/basic")
+basic_auth_bp = Blueprint(
+    name="basic_auth", 
+    import_name=__name__, 
+    url_prefix=f"{get_auth_base_url()}/basic"
+)
 
-# Initialize HTTP Basic Auth
 http_basic_auth = HTTPBasicAuth()
 
 
@@ -47,7 +51,8 @@ class BasicAuthUserManager:
             # Get users with basic auth password hash
             db_users_with_basic_auth = user_manager.get_users_with_basic_auth()
             logger.info(
-                f"Found {len(db_users_with_basic_auth)} users with basic auth passwords in database"
+                f"Found {len(db_users_with_basic_auth)} users with "
+                f"basic auth passwords in database."
             )
 
             for user in db_users_with_basic_auth:
@@ -77,7 +82,7 @@ class BasicAuthUserManager:
                     continue
 
                 # Check if user has OAuth provider but wants basic auth access
-                if user.get("provider") in ["github", "bwidm"]:
+                if user.get("provider") in ["github", "helmholtz"]:
                     # Generate a basic auth entry for OAuth users (they need to set password first)
                     temp_basic_auth = user.get("temp_basic_auth_password_hash")
                     if temp_basic_auth:
@@ -108,6 +113,7 @@ class BasicAuthUserManager:
     def verify_password(username: str, password: str) -> bool:
         """Verify username and password against all sources."""
         users = BasicAuthUserManager.get_basic_auth_users()
+        logger.info(f"Found {len(users)} basic auth users.")
 
         if username not in users:
             logger.warning(f"Basic auth attempt for unknown user: {username}")
@@ -215,9 +221,6 @@ class BasicAuthSession:
         )
 
 
-# Update your login handler to convert ObjectId to string
-
-
 def convert_objectid_to_string(obj):
     """Recursively convert ObjectId objects to strings for JSON serialization."""
     if isinstance(obj, ObjectId):
@@ -230,12 +233,12 @@ def convert_objectid_to_string(obj):
         return obj
 
 
-# Routes
+# Routes - now use centralized URL functions
 @basic_auth_bp.route("/login", methods=["GET", "POST"])
 def basic_login():
     """Basic Auth login form."""
     if get_current_user():
-        return redirect("/assas_app/")
+        return redirect(build_url("/"))
 
     if request.method == "POST":
         username = request.form.get("username", "").strip()
@@ -264,7 +267,7 @@ def basic_login():
 
             # Redirect to intended page or home
             next_page = session.pop("next_url", None)
-            return redirect(next_page or "/assas_app/")
+            return redirect(next_page or build_url("/"))
         else:
             flash("Invalid username or password", "error")
             return render_template("auth/basic_login.html")
@@ -279,12 +282,12 @@ def set_basic_auth_password():
 
     if not current_user:
         flash("Please log in first", "error")
-        return redirect("/auth/login")
+        return redirect(build_auth_url("/login"))
 
     # Only allow OAuth users to set basic auth password
-    if current_user.get("provider") not in ["github", "bwidm"]:
+    if current_user.get("provider") not in ["github", "bwidm", "helmholtz"]:
         flash("This feature is only available for OAuth users", "error")
-        return redirect("/assas_app/profile")
+        return redirect(build_url("/profile"))
 
     if request.method == "POST":
         password = request.form.get("password", "")
@@ -314,7 +317,7 @@ def set_basic_auth_password():
                     "success",
                 )
                 logger.info(f"OAuth user {username} set basic auth password")
-                return redirect("/assas_app/profile")
+                return redirect(build_url("/profile"))
             else:
                 flash("Failed to set basic auth password", "error")
 
@@ -360,7 +363,8 @@ def change_password():
 
     if not current_user:
         flash("Please log in first", "error")
-        return redirect("/auth/login")
+        auth_base = get_auth_base_url()
+        return redirect(f"{auth_base}/login")
 
     # Allow both basic auth users and OAuth users with basic auth enabled
     auth_method = current_user.get("auth_method")
@@ -368,7 +372,8 @@ def change_password():
 
     if not (auth_method == "basic_auth" or provider in ["github", "bwidm"]):
         flash("Password change not available for your account type", "error")
-        return redirect("/assas_app/profile")
+        base_url = get_base_url()
+        return redirect(f"{base_url}/profile")
 
     if request.method == "POST":
         current_password = request.form.get("current_password", "")
@@ -418,7 +423,8 @@ def change_password():
                 logger.info(
                     f"Password updated for user: {username} (method: {auth_method})"
                 )
-                return redirect("/assas_app/profile")
+                base_url = get_base_url()
+                return redirect(f"{base_url}/profile")
             else:
                 flash("Failed to update password", "error")
 
@@ -426,7 +432,10 @@ def change_password():
             logger.error(f"Error updating password for {username}: {e}")
             flash("An error occurred while updating password", "error")
 
-    return render_template("auth/change_password.html")
+    return render_template(
+        "auth/change_password.html",
+        base_url=get_base_url()
+    )
 
 
 @basic_auth_bp.route("/admin/create-user", methods=["POST"])
@@ -525,3 +534,12 @@ def init_basic_auth(app):
     # This function can be used for any additional basic auth setup
     logger.info("Basic Auth initialized")
     pass
+
+
+# Register blueprint with dynamic URL prefix
+def register_basic_auth_blueprint(app):
+    """Register the basic auth blueprint with the app."""
+    auth_base = app.config.get("AUTH_BASE_URL", "/test/auth")
+    basic_auth_bp.url_prefix = f"{auth_base}/basic"
+    
+    safe_register_blueprint(app, basic_auth_bp)

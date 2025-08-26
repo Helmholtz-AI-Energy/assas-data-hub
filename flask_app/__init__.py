@@ -2,10 +2,13 @@
 
 import os
 import secrets
+from venv import logger
 
 from flask import Flask
 from flask.config import Config
 from werkzeug.middleware.proxy_fix import ProxyFix
+
+from .utils.url_utils import get_base_url, get_auth_base_url
 
 
 class AttrConfig(Config):
@@ -124,12 +127,37 @@ def init_app() -> CustomFlask:
         app.logger.info("Loaded DevelopmentConfig (default)")
 
     with app.app_context():
-        # Import parts of our core Flask app
-        from . import routes  # noqa: F401
+        # Register blueprints first (before routes)
+        from .auth.basic_auth import register_basic_auth_blueprint
+        from .auth.oauth_auth import oauth_bp, init_oauth
+        from .auth.routes import auth_bp
 
-        # Import Dash application
+        init_oauth(app)
+
+        # Register all auth blueprints
+        register_basic_auth_blueprint(app)
+
+        # Register oauth blueprint
+        if "oauth" not in app.blueprints:
+            app.register_blueprint(oauth_bp)
+            logger.info("OAuth blueprint registered")
+
+        # Register auth routes blueprint
+        if "auth" not in app.blueprints:
+            app.register_blueprint(auth_bp)
+            logger.info("Auth routes blueprint registered")
+
+        # Initialize routes
+        from .routes import init_routes
+
+        init_routes()
+
+        # Initialize Dash application last
         from .dash_app.app import init_dashboard
 
         app = init_dashboard(app)
+
+        logger.info(f"App initialized with BASE_URL: {get_base_url()}")
+        logger.info(f"App initialized with AUTH_BASE_URL: {get_auth_base_url()}")
 
         return app

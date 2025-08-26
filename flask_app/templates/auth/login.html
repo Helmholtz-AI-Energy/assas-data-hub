@@ -107,29 +107,6 @@
                 </div>
             </div>
 
-            <!-- bwIDM Authentication (Future) -->
-            <div class="provider-section">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0">
-                        <i class="fas fa-university me-2"></i>
-                        bwIDM Authentication
-                    </h5>
-                    <span class="badge bg-secondary badge-status">Coming Soon</span>
-                </div>
-
-                <p class="text-muted small mb-3">
-                    Institutional login via Baden-Württemberg Identity Management.
-                    This will be available for production use.
-                </p>
-
-                <div class="d-grid">
-                    <button class="btn btn-bwidm btn-lg" disabled>
-                        <i class="fas fa-university me-2"></i>
-                        Sign in with bwIDM
-                    </button>
-                </div>
-            </div>
-
             <!-- Helmholtz AAI Authentication -->
             <div class="provider-section">
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -172,8 +149,6 @@
                 <small class="text-muted">
                     <div>Environment: Development</div>
                     <div>GitHub OAuth: {{ "✓ Configured" if config.GITHUB_CLIENT_ID else "✗ Not configured" }}</div>
-                    <div>bwIDM OAuth: {{ "✓ Configured" if config.get('BWIDM_CLIENT_ID') else "✗ Not configured" }}
-                    </div>
                     <div>Helmholtz OAuth: {{ "✓ Configured" if config.get('HELMHOLTZ_CLIENT_ID') else "✗ Not configured"
                         }}</div>
                 </small>

@@ -16,13 +16,15 @@ from flask import (
     flash,
     jsonify,
 )
-
+from ..utils.url_utils import get_auth_base_url
 logger = logging.getLogger("assas_app")
 
-# OAuth Blueprint
-oauth_bp = Blueprint("oauth", __name__, url_prefix="/test/auth")
+oauth_bp = Blueprint(
+    name="oauth", 
+    import_name=__name__, 
+    url_prefix=f"{get_auth_base_url()}"
+)
 
-# Initialize OAuth
 oauth = OAuth()
 
 
@@ -265,6 +267,16 @@ def get_helmholtz_user_info(access_token: str) -> dict:
         headers=headers,
         timeout=30,
     )
+
+    logger.info(f"User info response headers: {dict(response.headers)}")
+    logger.info(f"User info response status: {response.status_code}")
+    
+    user_info = response.json()
+    
+    # Extract eduperson_entitlement
+    entitlements = user_info.get("eduperson_entitlement", [])
+    logger.info(f"User entitlements: {entitlements}")
+    
     response.raise_for_status()
     return response.json()
 
@@ -509,7 +521,7 @@ def callback(provider: str):
 
         # Redirect to intended page or home
         next_page = session.pop("next_url", None)
-        return redirect(next_page or "/assas_app/home")
+        return redirect(next_page or f"{get_base_url()}/home")
 
     except Exception as e:
         logger.error(f"Callback error for {provider}: {e}")

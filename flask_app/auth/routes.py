@@ -10,8 +10,13 @@ from flask import (
     request,
 )
 from ..auth_utils import is_authenticated, get_current_user
+from ..utils.url_utils import get_auth_base_url, get_base_url
 
-auth_bp = Blueprint("auth", __name__, url_prefix="/test/auth")
+auth_bp = Blueprint(
+    name="auth", 
+    import_name=__name__, 
+    url_prefix=f"{get_auth_base_url()}"
+)
 
 
 @auth_bp.route("/login")
@@ -19,7 +24,7 @@ def login_page():
     """Display login page."""
     if is_authenticated():
         # Fix: Redirect to Dash app home instead of non-existent Flask route
-        return redirect("/assas_app/")
+        return redirect(f"{get_base_url()}/")
 
     return render_template("auth/login.html")
 
@@ -31,7 +36,7 @@ def profile():
         return redirect(url_for("auth.login_page"))
 
     # Redirect to Dash profile page
-    return redirect("/assas_app/profile")
+    return redirect(f"{get_base_url()}/profile")
 
 
 # Add this debug route to your auth routes

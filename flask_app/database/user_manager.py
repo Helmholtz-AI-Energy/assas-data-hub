@@ -1,11 +1,16 @@
 """User Management for MongoDB operations."""
 
 import logging
+import os
 
+from types import TracebackType
 from typing import List, Dict, Optional, Any, Union
+from typing_extensions import Self
 from datetime import datetime
 from pymongo import MongoClient
 from bson import ObjectId
+from flask import current_app
+from dotenv import load_dotenv
 
 logger = logging.getLogger("assas_app")
 
@@ -14,15 +19,33 @@ class UserManager:
     """Manage user operations in MongoDB."""
 
     def __init__(self) -> None:
-        """Initialize UserManager with MongoDB connection."""
+        """Initialize UserManager with MongoDB connection from config."""
         try:
-            # MongoDB connection
-            connection_string = "mongodb://localhost:27017/"
+            # Get configuration from Flask app or environment
+            if current_app:
+                # Use Flask app configuration
+                connection_string = current_app.config.get(
+                    "CONNECTIONSTRING", "mongodb://localhost:27017/"
+                )
+                db_name = current_app.config.get("MONGO_DB_NAME", "assas_dev")
+                collection_name = current_app.config.get(
+                    "USER_COLLECTION_NAME", "users"
+                )
+                logger.info("Using Flask app configuration")
+            else:
+                # Fall back to environment variables or defaults
+                load_dotenv()
 
-            # MANUAL FIX: Use the database/collection where users actually are
-            # Update these based on your debug script results:
-            db_name = "assas_dev"  # Or whatever the debug script shows
-            collection_name = "users"  # Or whatever has your users
+                connection_string = os.getenv(
+                    "CONNECTIONSTRING", "mongodb://localhost:27017/"
+                )
+                db_name = os.getenv("MONGO_DB_NAME", "assas_dev")
+                collection_name = os.getenv("USER_COLLECTION_NAME", "users")
+                logger.info("Using environment configuration")
+
+            logger.info(f"Connecting to MongoDB: {connection_string}")
+            logger.info(f"Database: {db_name}")
+            logger.info(f"Collection: {collection_name}")
 
             self.client = MongoClient(connection_string)
             self.db = self.client[db_name]
@@ -221,10 +244,10 @@ class UserManager:
                         "github_profile": user_data.get("github_profile"),
                     }
                 )
-            elif user_data.get("provider") == "bwidm":
+            elif user_data.get("provider") == "helmholtz":
                 user_doc.update(
                     {
-                        "bwidm_sub": user_data.get("bwidm_sub"),
+                        "helmholtz_sub": user_data.get("helmholtz_sub"),
                         "institution": user_data.get("institution"),
                         "entitlements": user_data.get("entitlements", []),
                         "affiliations": user_data.get("affiliations", []),
@@ -418,3 +441,47 @@ class UserManager:
         except Exception as e:
             logger.error(f"Error soft deleting user: {e}")
             return False
+
+    def close(self) -> None:
+        """Close the MongoDB connection."""
+        try:
+            if hasattr(self, "client"):
+                self.client.close()
+                logger.info("MongoDB connection closed")
+        except Exception as e:
+            logger.warning(f"Error closing MongoDB connection: {e}")
+
+    def __enter__(self) -> Self:
+        """Context manager entry."""
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type | None,
+        exc_val: Exception | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        """Context manager exit."""
+        self.close()
+
+
+# Utility function to create UserManager with proper error handling
+def get_user_manager() -> UserManager:
+    """Get a UserManager instance with proper error handling."""
+    try:
+        return UserManager()
+    except Exception as e:
+        logger.error(f"Failed to create UserManager: {e}")
+        raise
+
+
+# Optional: Create a singleton pattern for UserManager if needed
+_user_manager_instance = None
+
+
+def get_user_manager_singleton() -> UserManager:
+    """Get a singleton UserManager instance."""
+    global _user_manager_instance
+    if _user_manager_instance is None:
+        _user_manager_instance = UserManager()
+    return _user_manager_instance
