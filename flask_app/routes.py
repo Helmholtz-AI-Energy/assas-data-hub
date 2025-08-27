@@ -19,15 +19,23 @@ from assasdb import AssasDatabaseManager, AssasDatabaseHandler
 logger = logging.getLogger("assas_app")
 
 
+@app.route("/")
+def from_root_to_home() -> Response:
+    """Redirect from the root URL to the home page."""
+    logger.info("Redirecting from root to home page.")
+    return redirect(build_url("/home"))
+
+
+# Legacy auth routes (consider moving to API)
 @app.route("/login")
 @auth.login_required
 def check_user() -> Response:
-    """Route to verify user authentication and display user information."""
+    """Legacy route - consider using /api/v1/auth/user instead."""
     current_user = auth.current_user()
     user_info = users.get(current_user)
 
     if user_info:
-        logger.info(f"User {current_user} has been authenticated.")
+        logger.info(f"User {current_user} authenticated via legacy route.")
         return jsonify(
             message=f"Hello, {current_user}!",
             email=user_info["email"],
@@ -41,38 +49,30 @@ def check_user() -> Response:
 @app.route("/logout", methods=["GET"])
 @auth.login_required
 def logout() -> Response:
-    """Log out the current user by clearing the session."""
+    """Legacy logout - consider using POST /api/v1/auth/logout instead."""
     current_user = auth.current_user()
-    logger.info(f"Logging out user: {current_user}")
+    logger.info(f"Legacy logout for user: {current_user}")
 
-    # Clear the session
     session.clear()
-
     response = jsonify(message="You have been logged out.")
     response.status_code = 401
-
     return response
 
 
-@app.route("/")
-@auth.login_required
-def from_root_to_home() -> Response:
-    """Redirect from the root URL to the home page of the application."""
-    logger.info("Redirecting from root to home page.")
-    return redirect(build_url("/home"))
+def register_legacy_routes() -> None:
+    """Register legacy routes that redirect to new API."""
+    base_url = get_base_url()
+
+    @app.route(f"{base_url}")
+    @app.route(f"{base_url}/")
+    def redirect_to_home() -> Response:
+        """Redirect base URL to home."""
+        return redirect(build_url("/home"))
 
 
 def register_dynamic_routes() -> None:
     """Register routes dynamically based on BASE_URL configuration."""
     base_url = get_base_url()
-
-    @app.route(f"{base_url}")
-    @app.route(f"{base_url}/")
-    @auth.login_required
-    def from_app_to_home() -> Response:
-        """Redirect from the base URL to the home page of the application."""
-        logger.info(f"Redirecting from {base_url} to home page.")
-        return redirect(build_url("/home"))
 
     @app.route(f"{base_url}/hdf5_file", methods=["GET"])
     @auth.login_required
@@ -193,7 +193,7 @@ def register_dynamic_routes() -> None:
 
         try:
             # Get all documents
-            documents = manager.database_handler.get_file_documents()
+            documents = manager.database_handler.get_all_file_documents()
 
             if not documents:
                 logger.info("No datasets found.")
@@ -382,5 +382,7 @@ def register_dynamic_routes() -> None:
 
 
 def init_routes() -> None:
-    """Initialize routes - call this after app configuration is loaded."""
-    register_dynamic_routes()
+    """Initialize routes - now mainly legacy support."""
+    register_legacy_routes()
+    # register_dynamic_routes()
+    logger.info("Legacy routes initialized. Consider migrating to /api/v1/ endpoints.")
