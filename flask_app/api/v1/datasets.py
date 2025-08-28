@@ -569,11 +569,7 @@ def get_dataset_metadata(dataset_id: uuid.UUID) -> Response:
         if not document:
             return APIResponse.not_found("Dataset not found")
 
-        metadata = {
-            "dataset_id": str(dataset_id),
-            "variables": document.get("meta_data_variables", {}),
-            "filepath": document.get("system_result", ""),
-        }
+        metadata = DatasetService.serialize_dataset(document, include_full_data=True)
 
         return APIResponse.success({"metadata": metadata})
 
@@ -757,34 +753,45 @@ def get_dataset_data(dataset_id: uuid.UUID) -> Response:
             time_indices = [int(i.strip()) for i in time_indices_param.split(",")]
 
         # Get data using NetCDF4 handler
-        handler = DatasetService.get_variable_handler(result_filepath)
+        handler = DatasetService.get_variable_handler()
 
         data_result = {}
 
         # Get time points if requested
         if include_time:
-            if time_indices:
-                time_data = handler.get_time_points_by_indices(time_indices)
-            elif time_start is not None or time_end is not None:
-                time_data = handler.get_time_points_by_range(time_start, time_end)
-            else:
-                time_data = handler.get_time_points()
+            try:
+                if time_indices:
+                    time_data = handler.get_time_points_by_indices(
+                        result_filepath, time_indices
+                    )
+                elif time_start is not None or time_end is not None:
+                    time_data = handler.get_time_points_by_range(
+                        result_filepath, time_start, time_end
+                    )
+                else:
+                    time_data = handler.get_time_points(result_filepath)
 
-            data_result["time_points"] = DatasetService.serialize_numpy_array(time_data)
+                data_result["time_points"] = DatasetService.serialize_numpy_array(
+                    time_data
+                )
+
+            except Exception as time_error:
+                logger.warning(f"Failed to get time points: {time_error}")
+                data_result["time_points"] = None
 
         # Get variable data
         for variable_name in variable_names:
             try:
                 if time_indices:
                     var_data = handler.get_variable_data_by_indices(
-                        variable_name, time_indices
+                        result_filepath, variable_name, time_indices
                     )
                 elif time_start is not None or time_end is not None:
                     var_data = handler.get_variable_data_by_range(
-                        variable_name, time_start, time_end
+                        result_filepath, variable_name, time_start, time_end
                     )
                 else:
-                    var_data = handler.get_variable_data(variable_name)
+                    var_data = handler.get_variable_data(result_filepath, variable_name)
 
                 data_result[variable_name] = DatasetService.serialize_numpy_array(
                     var_data
@@ -808,7 +815,11 @@ def get_dataset_data(dataset_id: uuid.UUID) -> Response:
 
             # Convert to DataFrame and then CSV
             df_data = {}
-            if include_time and "time_points" in data_result:
+            if (
+                include_time
+                and "time_points" in data_result
+                and data_result["time_points"]
+            ):
                 df_data["time_points"] = data_result["time_points"]
 
             for var_name in variable_names:
@@ -825,16 +836,17 @@ def get_dataset_data(dataset_id: uuid.UUID) -> Response:
                         else:
                             df_data[var_name] = var_data
 
-            df = pd.DataFrame(df_data)
-            csv_buffer = io.StringIO()
-            df.to_csv(csv_buffer, index=False)
+            if df_data:  # Only create DataFrame if we have data
+                df = pd.DataFrame(df_data)
+                csv_buffer = io.StringIO()
+                df.to_csv(csv_buffer, index=False)
 
-            response_data.update(
-                {
-                    "csv_data": csv_buffer.getvalue(),
-                    "columns": df.columns.tolist(),
-                }
-            )
+                response_data.update(
+                    {
+                        "csv_data": csv_buffer.getvalue(),
+                        "columns": df.columns.tolist(),
+                    }
+                )
 
         elif format_type == "array":
             # Return raw array format for easier processing
@@ -843,7 +855,7 @@ def get_dataset_data(dataset_id: uuid.UUID) -> Response:
                 for var in variable_names
                 if data_result.get(var) is not None
             }
-            if include_time:
+            if include_time and data_result.get("time_points"):
                 response_data["arrays"]["time_points"] = data_result.get("time_points")
 
         return APIResponse.success(response_data)
@@ -888,17 +900,25 @@ def get_variable_data(dataset_id: uuid.UUID, variable_name: str) -> Response:
             time_indices = [int(i.strip()) for i in time_indices_param.split(",")]
 
         # Get data using NetCDF4 handler
-        handler = DatasetService.get_variable_handler(result_filepath)
+        handler = DatasetService.get_variable_handler()
 
         # Get variable data
-        if time_indices:
-            var_data = handler.get_variable_data_by_indices(variable_name, time_indices)
-        elif time_start is not None or time_end is not None:
-            var_data = handler.get_variable_data_by_range(
-                variable_name, time_start, time_end
+        try:
+            if time_indices:
+                var_data = handler.get_variable_data_by_indices(
+                    result_filepath, variable_name, time_indices
+                )
+            elif time_start is not None or time_end is not None:
+                var_data = handler.get_variable_data_by_range(
+                    result_filepath, variable_name, time_start, time_end
+                )
+            else:
+                var_data = handler.get_variable_data(result_filepath, variable_name)
+        except Exception as data_error:
+            logger.error(f"Failed to get variable data: {data_error}")
+            return APIResponse.error(
+                f"Failed to retrieve variable data: {str(data_error)}", 500
             )
-        else:
-            var_data = handler.get_variable_data(variable_name)
 
         response_data = {
             "dataset_id": str(dataset_id),
@@ -909,8 +929,12 @@ def get_variable_data(dataset_id: uuid.UUID, variable_name: str) -> Response:
 
         # Include statistics if requested
         if include_stats:
-            stats = handler.get_variable_statistics(variable_name)
-            response_data["statistics"] = stats
+            try:
+                stats = handler.get_variable_statistics(result_filepath, variable_name)
+                response_data["statistics"] = DatasetService.serialize_statistics(stats)
+            except Exception as stats_error:
+                logger.warning(f"Failed to compute statistics: {stats_error}")
+                response_data["statistics"] = {"error": str(stats_error)}
 
         # Handle CSV format
         if format_type == "csv":
