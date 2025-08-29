@@ -16,7 +16,7 @@ from flask import (
     flash,
     jsonify,
 )
-from ..utils.url_utils import get_auth_base_url
+from ..utils.url_utils import get_auth_base_url, get_base_url
 logger = logging.getLogger("assas_app")
 
 oauth_bp = Blueprint(
@@ -82,20 +82,24 @@ class HelmholtzRoleProcessor:
     """Process Helmholtz user data and assign roles."""
 
     @staticmethod
-    def get_user_role(username: str, email: str) -> str:
-        """Get role for Helmholtz user based on configuration."""
-        role_mappings = current_app.config.get("HELMHOLTZ_ROLE_MAPPINGS", {})
-
-        if username in role_mappings:
-            role = role_mappings[username]
-            logger.info(f"Assigned role '{role}' to Helmholtz user '{username}'")
-            return role
-
-        default_role = role_mappings.get("*", "viewer")
+    def get_user_role(username: str, email: str, entitlements: list = None) -> str:
+        """Get role for Helmholtz user based on entitlement."""
+        entitlements = entitlements or []
+        role_map = current_app.config.get("HELMHOLTZ_ENTITLEMENT_ROLE_MAP", {})
+        for ent in entitlements:
+            for ent_prefix, role in role_map.items():
+                # Accept both exact match and match before '#'
+                if ent == ent_prefix or ent.startswith(ent_prefix + "#"):
+                    logger.info(
+                        f"Assigned role {role} to Helmholtz user "
+                        f"{username} via entitlement {ent}"
+                    )
+                    return role
+        # Default role if no entitlement matches
         logger.info(
-            f"Assigned default role '{default_role}' to Helmholtz user '{username}'"
+            f"No entitlement found for {username}, assigning default role 'viewer'"
         )
-        return default_role
+        return "viewer"
 
 class UserSession:
     """Manage user session data."""
@@ -155,9 +159,12 @@ class UserSession:
             email = user_info.get("email")
             name = user_info.get("name") or email.split("@")[0] if email else "Unknown"
             username = email.split("@")[0] if email else "unknown"
-            user_id = user_info.get("sub")  # Use sub claim as unique ID
-            
-            role = HelmholtzRoleProcessor.get_user_role(username, email)
+            user_id = user_info.get("sub")
+            entitlements = user_info.get("eduperson_entitlement", [])
+
+            logger.info(f"Entitlements for {username}: {entitlements}")
+
+            role = HelmholtzRoleProcessor.get_user_role(username, email, entitlements)
 
             # Prepare user data for MongoDB
             user_data = {

@@ -5,6 +5,7 @@ import logging
 import uuid
 import diskcache
 import dash_bootstrap_components as dbc
+import flask
 
 from dash import dash, html, Input, Output, State, dcc
 from dash.long_callback import DiskcacheLongCallbackManager
@@ -21,6 +22,25 @@ from ..utils.url_utils import (
 )
 
 logger = logging.getLogger("assas_app")
+
+
+def get_user_role() -> str:
+    """Get the current user's role from the session."""
+    user = flask.session.get("user", {})
+    roles = user.get("roles", [])
+    return roles[0] if roles else "viewer"
+
+
+def get_allowed_pages(role: str) -> list[str]:
+    """Get the list of allowed pages for a specific user role."""
+    if role == "admin":
+        return ["home", "database", "about", "profile", "admin"]
+    elif role == "curator":
+        return ["home", "database", "about", "profile"]
+    elif role == "researcher":
+        return ["home", "database", "about", "profile"]
+    else:
+        return ["home"]
 
 
 def modern_navbar_style() -> dict:
@@ -636,61 +656,212 @@ footer = html.Footer(
 )
 
 
-def create_navbar() -> html.Div:
+def create_navbar_header() -> html.Div:
+    """Create the navbar header."""
+    header = (
+        html.Div(
+            [
+                dbc.Container(
+                    [
+                        html.A(
+                            [
+                                html.Div(
+                                    [
+                                        html.Img(
+                                            src=encode_svg_image_hq(
+                                                "assas_logo_mod.svg"
+                                            ),
+                                            height="80px",
+                                            width="160px",
+                                            style=logo_style(),
+                                            alt="ASSAS Logo",
+                                            className="logo-high-quality logo-assas",
+                                        ),
+                                        html.H1(
+                                            "ASSAS Data Hub",
+                                            style=brand_style(),
+                                            className="brand-title brand-center",
+                                        ),
+                                        html.Img(
+                                            src=encode_svg_image_hq(
+                                                "kit_logo.drawio.svg"
+                                            ),
+                                            height="80px",
+                                            width="160px",
+                                            style=logo_style(),
+                                            alt="KIT Logo",
+                                            className="logo-high-quality logo-kit",
+                                        ),
+                                    ],
+                                    style=brand_container_style(),
+                                )
+                            ],
+                            href="#",
+                            style={"textDecoration": "none"},
+                            className="brand-link",
+                            id="navbar-brand-link",
+                        )
+                    ],
+                    fluid=True,
+                    style={"maxWidth": "1400px"},
+                )
+            ],
+            style=top_row_style(),
+        ),
+    )
+
+    return header
+
+
+def create_navbar_items_role_based(allowed_pages: str) -> list[dbc.NavItem]:
+    """Create navbar with dynamic URLs and role-based visibility."""
+    nav_items = []
+
+    # if "home" in allowed_pages:
+    nav_items.append(
+        dbc.NavItem(
+            dbc.NavLink(
+                [html.I(className="fas fa-home me-2"), "Home"],
+                href="#",  # Dynamic
+                active="exact",
+                style=nav_link_style()
+                if "home" in allowed_pages
+                else {"display": "none"},
+                className="nav-link-modern",
+                id="nav-home-link",
+            )
+        )
+    )
+    # if "database" in allowed_pages:
+    nav_items.append(
+        dbc.NavItem(
+            dbc.NavLink(
+                [html.I(className="fas fa-database me-2"), "Database"],
+                href="#",  # Dynamic
+                active="exact",
+                style=nav_link_style()
+                if "database" in allowed_pages
+                else {"display": "none"},
+                className="nav-link-modern",
+                id="nav-database-link",
+            )
+        )
+    )
+    # if "about" in allowed_pages:
+    nav_items.append(
+        dbc.NavItem(
+            dbc.NavLink(
+                [html.I(className="fas fa-info-circle me-2"), "About"],
+                href="#",  # Dynamic
+                active="exact",
+                style=nav_link_style()
+                if "about" in allowed_pages
+                else {"display": "none"},
+                className="nav-link-modern",
+                id="nav-about-link",
+            )
+        )
+    )
+    # if "profile" in allowed_pages:
+    nav_items.append(
+        dbc.NavItem(
+            dbc.NavLink(
+                [html.I(className="fas fa-user me-2"), "Profile"],
+                href="#",  # Dynamic
+                active="exact",
+                style=nav_link_style()
+                if "profile" in allowed_pages
+                else {"display": "none"},
+                className="nav-link-modern",
+                id="nav-profile-link",
+            )
+        )
+    )
+    # if "upload" in allowed_pages:
+    nav_items.append(
+        dbc.NavItem(
+            dbc.NavLink(
+                [html.I(className="fas fa-upload me-2"), "Upload"],
+                href="#",  # Dynamic
+                active="exact",
+                style=nav_link_style()
+                if "upload" in allowed_pages
+                else {"display": "none"},
+                className="nav-link-modern",
+                id="nav-upload-link",
+            )
+        )
+    )
+    # if "admin" in allowed_pages:
+    nav_items.append(
+        dbc.NavItem(
+            dbc.NavLink(
+                [html.I(className="fas fa-users-cog me-2"), "Admin"],
+                href="#",  # Dynamic
+                active="exact",
+                style=nav_link_style()
+                if "admin" in allowed_pages
+                else {"display": "none"},
+                className="nav-link-modern",
+                id="nav-admin-link",
+            )
+        )
+    )
+
+    logger.info(f"Navbar items for role: {allowed_pages}, {len(nav_items)}")
+
+    return nav_items
+
+
+def serve_layout() -> html.Div:
+    """Serve the main layout of the application."""
+    role = get_user_role()
+    allowed_pages = get_allowed_pages(role)
+    logger.info(f"User role: {role}, Allowed pages: {allowed_pages}.")
+    navbar = create_navbar(allowed_pages)
+    return html.Div(
+        [
+            dcc.Location(id="url", refresh=False),
+            navbar,
+            html.Div(
+                [
+                    html.Div(
+                        dash.page_container,
+                        className="responsive-content",
+                        style={
+                            "minHeight": "calc(100vh - 160px - 200px)",
+                            "paddingTop": "160px",
+                            "paddingBottom": "2rem",
+                            # "paddingLeft": "1vw",
+                            # "paddingRight": "1vw",
+                            # "marginLeft": "auto",
+                            # "marginRight": "auto",
+                            # "maxWidth": "1200px",
+                            # "width": "100%",
+                        },
+                    ),
+                    footer,
+                ],
+                style={
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "minHeight": "100vh",
+                },
+            ),
+        ],
+        id="dash-container",
+        style={
+            "fontFamily": "Arial, sans-serif",
+            "backgroundColor": "#f8f9fa",
+        },
+    )
+
+
+def create_navbar(allowed_pages: list[str]) -> html.Div:
     """Create navbar with dynamic URLs."""
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Container(
-                        [
-                            html.A(
-                                [
-                                    html.Div(
-                                        [
-                                            html.Img(
-                                                src=encode_svg_image_hq(
-                                                    "assas_logo_mod.svg"
-                                                ),
-                                                height="80px",
-                                                width="160px",
-                                                style=logo_style(),
-                                                alt="ASSAS Logo",
-                                                className=(
-                                                    "logo-high-quality logo-assas",
-                                                ),
-                                            ),
-                                            html.H1(
-                                                "ASSAS Data Hub",
-                                                style=brand_style(),
-                                                className="brand-title brand-center",
-                                            ),
-                                            html.Img(
-                                                src=encode_svg_image_hq(
-                                                    "kit_logo.drawio.svg"
-                                                ),
-                                                height="80px",
-                                                width="160px",
-                                                style=logo_style(),
-                                                alt="KIT Logo",
-                                                className="logo-high-quality logo-kit",
-                                            ),
-                                        ],
-                                        style=brand_container_style(),
-                                    )
-                                ],
-                                href="#",  # Will be updated by callback
-                                style={"textDecoration": "none"},
-                                className="brand-link",
-                                id="navbar-brand-link",
-                            )
-                        ],
-                        fluid=True,
-                        style={"maxWidth": "1400px"},
-                    )
-                ],
-                style=top_row_style(),
-            ),
+            *create_navbar_header(),
             html.Div(
                 [
                     dbc.Container(
@@ -708,98 +879,9 @@ def create_navbar() -> html.Div:
                                         [
                                             dbc.Nav(
                                                 [
-                                                    dbc.NavItem(
-                                                        dbc.NavLink(
-                                                            [
-                                                                html.I(
-                                                                    className=(
-                                                                        "fas fa-"
-                                                                        "home me-2"
-                                                                    ),
-                                                                ),
-                                                                "Home",
-                                                            ],
-                                                            href="#",  # Dynamic
-                                                            active="exact",
-                                                            style=nav_link_style(),
-                                                            className="nav-link-modern",
-                                                            id="nav-home-link",
-                                                        )
-                                                    ),
-                                                    dbc.NavItem(
-                                                        dbc.NavLink(
-                                                            [
-                                                                html.I(
-                                                                    className=(
-                                                                        "fas fa-"
-                                                                        "database me-2"
-                                                                    ),
-                                                                ),
-                                                                "Database",
-                                                            ],
-                                                            href="#",  # Dynamic
-                                                            active="exact",
-                                                            style=nav_link_style(),
-                                                            className="nav-link-modern",
-                                                            id="nav-database-link",
-                                                        )
-                                                    ),
-                                                    dbc.NavItem(
-                                                        dbc.NavLink(
-                                                            [
-                                                                html.I(
-                                                                    className=(
-                                                                        "fas fa-info-"
-                                                                        "circle me-2"
-                                                                    ),
-                                                                ),
-                                                                "About",
-                                                            ],
-                                                            href="#",  # Dynamic
-                                                            active="exact",
-                                                            style=nav_link_style(),
-                                                            className="nav-link-modern",
-                                                            id="nav-about-link",
-                                                        )
-                                                    ),
-                                                    dbc.NavItem(
-                                                        dbc.NavLink(
-                                                            [
-                                                                html.I(
-                                                                    className=(
-                                                                        "fas fa-"
-                                                                        "user me-2"
-                                                                    )
-                                                                ),
-                                                                "Profile",
-                                                            ],
-                                                            href="#",  # Dynamic
-                                                            active="exact",
-                                                            style=nav_link_style(),
-                                                            className="nav-link-modern",
-                                                            id="nav-profile-link",
-                                                        )
-                                                    ),
-                                                    dbc.NavItem(
-                                                        dbc.NavLink(
-                                                            [
-                                                                html.I(
-                                                                    className=(
-                                                                        "fas fa-users-"
-                                                                        "cog me-2"
-                                                                    ),
-                                                                ),
-                                                                "Admin",
-                                                            ],
-                                                            href="#",  # Dynamic
-                                                            active="exact",
-                                                            style=nav_link_style(),
-                                                            className="nav-link-modern",
-                                                            id="admin-nav-link",
-                                                        ),
-                                                        id="admin-nav-item",
-                                                        style={"display": "none"},
-                                                    ),
+                                                    *create_navbar_items_role_based(
+                                                        allowed_pages
+                                                    )
                                                 ],
                                                 className="nav-items-container",
                                                 horizontal=True,
@@ -847,7 +929,6 @@ def init_dashboard(server: object) -> object:
 
     launch_uid = uuid.uuid4()
 
-    ## Diskcache
     cache = diskcache.Cache("./cache")
     long_callback_manager = DiskcacheLongCallbackManager(
         cache,
@@ -855,7 +936,6 @@ def init_dashboard(server: object) -> object:
         expire=60,
     )
 
-    # Initialize OAuth
     init_oauth(server)
 
     # Protect Dash pages
@@ -881,12 +961,12 @@ def init_dashboard(server: object) -> object:
             logger.info(f"Current user for Dash access: {current_user}")
 
             if not is_authenticated():
-                logger.info("User not authenticated, redirecting to login")
+                logger.info("User not authenticated, redirecting to login.")
                 session["next_url"] = request.url
                 return redirect(build_auth_url("/login"))
 
             logger.info(
-                f"User {current_user.get('email')} authenticated, allowing access"
+                f"User {current_user.get('email')} authenticated, allowing access."
             )
 
         return None
@@ -906,9 +986,6 @@ def init_dashboard(server: object) -> object:
         suppress_callback_exceptions=True,
     )
 
-    # Create navbar
-    navbar = create_navbar()
-
     # Add callback to update navbar and footer links dynamically
     @dash_app.callback(
         [
@@ -917,7 +994,8 @@ def init_dashboard(server: object) -> object:
             Output("nav-database-link", "href"),
             Output("nav-about-link", "href"),
             Output("nav-profile-link", "href"),
-            Output("admin-nav-link", "href"),
+            Output("nav-upload-link", "href"),
+            Output("nav-admin-link", "href"),
             Output("footer-home-link", "href"),
             Output("footer-database-link", "href"),
             Output("footer-about-link", "href"),
@@ -935,6 +1013,7 @@ def init_dashboard(server: object) -> object:
             f"{base_url}/database",  # nav database
             f"{base_url}/about",  # nav about
             f"{base_url}/profile",  # nav profile
+            f"{base_url}/upload",  # nav upload
             f"{base_url}/admin",  # nav admin
             f"{base_url}/home",  # footer home
             f"{base_url}/database",  # footer database
@@ -1045,59 +1124,8 @@ function(id) {
         prevent_initial_call=False,
     )
 
-    # Create Dash Layout with Footer
-    dash_app.layout = html.Div(
-        [
-            dcc.Location(id="url", refresh=False),
-            navbar,
-            # Main content wrapper
-            html.Div(
-                [
-                    # Page content container
-                    html.Div(
-                        dash.page_container,
-                        style={
-                            # Account for navbar and footer
-                            "minHeight": "calc(100vh - 160px - 200px)",
-                            "paddingTop": "160px",  # Space for fixed navbar
-                            "paddingLeft": "1rem",
-                            "paddingRight": "1rem",
-                            "paddingBottom": "2rem",  # Space before footer
-                        },
-                    ),
-                    # Footer
-                    footer,
-                ],
-                style={
-                    "display": "flex",
-                    "flexDirection": "column",
-                    "minHeight": "100vh",
-                },
-            ),
-        ],
-        id="dash-container",
-        style={
-            "fontFamily": "Arial, sans-serif",
-            "backgroundColor": "#f8f9fa",
-        },
-    )
+    dash_app.layout = serve_layout
 
-    # Add the callback to show/hide admin link:
-    @dash_app.callback(
-        Output("admin-nav-item", "style"),
-        Input("url", "pathname"),
-        prevent_initial_call=True,
-    )
-    def toggle_admin_nav(pathname: str) -> dict:
-        """Show admin nav link only for admin users."""
-        from ..auth_utils import has_role
+    server.dash_app = dash_app
 
-        if has_role("admin"):
-            return {"display": "block"}
-        else:
-            return {"display": "none"}
-
-    # Register pages
-
-    # return dash_app
-    return dash_app.server
+    return server

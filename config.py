@@ -117,9 +117,11 @@ class Config(object):
         "*": ["viewer"],  # Default role
     }
 
-    HELMHOLTZ_ROLE_MAPPINGS = {
-        "your-helmholtz-username-or-claim": ["admin"],
-        "*": ["viewer"],
+    HELMHOLTZ_ENTITLEMENT_ROLE_MAP = {
+        "urn:geant:helmholtz.de:group:ASSAS:admin": "admin",
+        "urn:geant:helmholtz.de:group:ASSAS:curator": "curator",
+        "urn:geant:helmholtz.de:group:ASSAS:researcher": "researcher",
+        # Add more if needed
     }
 
 

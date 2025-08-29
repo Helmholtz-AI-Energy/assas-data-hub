@@ -259,7 +259,11 @@ def register_dynamic_routes() -> None:
 
         # Get query parameters
         name = request.args.get("name")
-        status = request.args.get("status")
+        status = (
+            request.args.get("status").capitalize()
+            if request.args.get("status")
+            else None
+        )
         user = request.args.get("user")
         date_from = request.args.get("date_from")
         date_to = request.args.get("date_to")

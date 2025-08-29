@@ -416,7 +416,11 @@ def get_datasets() -> Response:
         # Parse query parameters
         filters = {
             "name": request.args.get("name"),
-            "status": request.args.get("status"),
+            "status": (
+                request.args.get("status").capitalize()
+                if request.args.get("status")
+                else None
+            ),
             "user": request.args.get("user"),
             "created_after": request.args.get("created_after"),
             "created_before": request.args.get("created_before"),

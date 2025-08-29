@@ -27,7 +27,7 @@ app = init_app()
 if __name__ == "__main__":
     app.logger.addHandler(handler)
 
-    if app.config["DEVELOPMENT"]:
+    if app.config.get("DEVELOPMENT"):
         # app.logger.setLevel(logging.DEBUG)
         app.logger.info("Running in development mode with browser debugger.")
         app.run(
@@ -36,10 +36,9 @@ if __name__ == "__main__":
             debug=True,
             # threaded=True,
             # use_reloader=True,
-            use_debugger=True,  # Enable Werkzeug's debugger
-            use_evalex=True,  # Enable interactive debugging in the browser
+            use_debugger=True,
+            use_evalex=True,
         )
-        # app.run(unix_socket="/tmp/assas_app_test.sock")
     else:
         app.logger.info("Running in production mode.")
         app.run(unix_socket="/tmp/assas_app.sock", threaded=True)
