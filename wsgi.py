@@ -2,10 +2,8 @@
 
 import logging
 import sys
-import os
 
 from logging.handlers import RotatingFileHandler
-from werkzeug.debug import DebuggedApplication
 from flask_app import init_app
 
 logger = logging.getLogger("assas_app")
@@ -13,7 +11,7 @@ logger = logging.getLogger("assas_app")
 # Set logging to DEBUG level for better debugging
 logging.basicConfig(
     format="%(asctime)s %(process)d %(module)s %(levelname)s: %(message)s",
-    level=logging.DEBUG,  # Changed to DEBUG
+    level=logging.INFO,  # Changed to DEBUG
     stream=sys.stdout,
 )
 
@@ -30,17 +28,18 @@ if __name__ == "__main__":
     app.logger.addHandler(handler)
 
     if app.config["DEVELOPMENT"]:
-        app.logger.setLevel(logging.DEBUG)
-        app.logger.info("🚀 Running in development mode with browser debugger")
+        # app.logger.setLevel(logging.DEBUG)
+        app.logger.info("Running in development mode with browser debugger.")
         app.run(
             host="0.0.0.0",
             port=5000,
             debug=True,
-            threaded=True,
-            use_reloader=True,
+            # threaded=True,
+            # use_reloader=True,
             use_debugger=True,  # Enable Werkzeug's debugger
+            use_evalex=True,  # Enable interactive debugging in the browser
         )
+        # app.run(unix_socket="/tmp/assas_app_test.sock")
     else:
-        app.logger.info("Running in production mode")
-        app.run(host="/tmp/assas_app.sock", unix_socket=True, threaded=True)
-
+        app.logger.info("Running in production mode.")
+        app.run(unix_socket="/tmp/assas_app.sock", threaded=True)

@@ -175,9 +175,91 @@ The following meta information is extracted during the upload and conversion pro
 
 The ASSAS Data Hub provides a RESTful API to query training data in an automated way.
 
-### Read data
+### v1 RESTful API Documentation
 
-## Writing data
+The test version fo the v1 API is available under the `/test/assas_app/` path. All endpoints return JSON.
+
+#### Authentication
+
+Some endpoints require authentication. Use your username and password to obtain a session or token as described in the login section of the web interface.
+
+#### Endpoints
+
+##### List all datasets
+
+```
+GET /test/assas_app/datasets
+```
+
+**Query parameters:**
+- `status` (optional): Filter datasets by status (e.g., `valid`)
+- `limit` (optional): Limit the number of results
+
+**Example:**
+```bash
+curl https://assas.scc.kit.edu/test/assas_app/datasets?status=valid
+```
+
+##### Get dataset metadata
+
+```
+GET /test/assas_app/datasets/<uuid>
+```
+
+**Example:**
+```bash
+curl https://assas.scc.kit.edu/test/assas_app/datasets/123e4567-e89b-12d3-a456-426614174000
+```
+
+##### Get variable data from a dataset
+
+```
+GET /test/assas_app/datasets/<uuid>/data/<variable_name>
+```
+
+**Query parameters:**
+- `include_stats` (optional): If `true`, include statistics about the variable
+
+**Example:**
+```bash
+curl "https://assas.scc.kit.edu/test/assas_app/datasets/123e4567-e89b-12d3-a456-426614174000/data/vessel_rupture?include_stats=true"
+```
+
+##### Download dataset archive
+
+```
+GET /test/assas_app/files/archive/<uuid>
+```
+
+**Example:**
+```bash
+curl -O https://assas.scc.kit.edu/test/assas_app/files/archive/123e4567-e89b-12d3-a456-426614174000
+```
+
+#### Response Format
+
+All API responses are JSON objects with at least the following fields:
+- `success`: `true` or `false`
+- `data`: The requested data (if successful)
+- `message` or `error`: Error message (if not successful)
+
+#### Example Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "Test Dataset",
+    "status": "valid",
+    "variables": ["vessel_rupture", "pressure", "temperature"]
+  }
+}
+```
+
+#### Error Handling
+
+If a request fails, the API returns a JSON object with `success: false` and an `error` or `message` field describing the problem.
 
 ---
 

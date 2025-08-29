@@ -1,0 +1,3531 @@
+{
+  "total_datasets": 503,
+  "has_opensrv": 503,
+  "has_valid_data": 503,
+  "has_nan_only": 0,
+  "variable_not_found": 0,
+  "error_accessing": 0,
+  "details": [
+    {
+      "id": "9cf84cfd-2dd0-456c-9593-b7c9ff337fed",
+      "name": "SBO_KIT_init_sim_s124",
+      "status": "has_valid_data",
+      "valid_count": 54293,
+      "total_count": 54293
+    },
+    {
+      "id": "144f6875-b09e-45d5-9656-0cfbac61c7ab",
+      "name": "SBO_KIT_init_sim_s46",
+      "status": "has_valid_data",
+      "valid_count": 49888,
+      "total_count": 49888
+    },
+    {
+      "id": "d0dd92a3-504a-4623-b2c1-4b42cad516a9",
+      "name": "SBO_KIT_init_sim_s4",
+      "status": "has_valid_data",
+      "valid_count": 51467,
+      "total_count": 51467
+    },
+    {
+      "id": "f79e1133-a025-4c43-9040-72b85d83eb0c",
+      "name": "SBO_KIT_init_sim_s56",
+      "status": "has_valid_data",
+      "valid_count": 47672,
+      "total_count": 47672
+    },
+    {
+      "id": "729820d2-5583-4d62-b032-90698510b281",
+      "name": "SBO_KIT_init_sim_s121",
+      "status": "has_valid_data",
+      "valid_count": 79905,
+      "total_count": 79905
+    },
+    {
+      "id": "d7ad6306-2494-499c-ba15-d90b948511cf",
+      "name": "SBO_KIT_init_sim_s49",
+      "status": "has_valid_data",
+      "valid_count": 16232,
+      "total_count": 16232
+    },
+    {
+      "id": "bd93d3db-56c8-4ca9-b409-90e14d10816b",
+      "name": "SBO_KIT_init_sim_s95",
+      "status": "has_valid_data",
+      "valid_count": 51022,
+      "total_count": 51022
+    },
+    {
+      "id": "c7e38ea9-fd99-44b8-86d5-41acdbb68d4b",
+      "name": "SBO_KIT_init_sim_s83",
+      "status": "has_valid_data",
+      "valid_count": 66586,
+      "total_count": 66586
+    },
+    {
+      "id": "75357cfc-8855-4134-b03c-680d567a1f4e",
+      "name": "SBO_KIT_init_sim_s12",
+      "status": "has_valid_data",
+      "valid_count": 71867,
+      "total_count": 71867
+    },
+    {
+      "id": "f5aea931-6da2-4128-aae6-c820b7540db9",
+      "name": "SBO_KIT_init_sim_s113",
+      "status": "has_valid_data",
+      "valid_count": 47863,
+      "total_count": 47863
+    },
+    {
+      "id": "b5cd2869-db00-4a4d-90cc-fe25a62b6982",
+      "name": "SBO_KIT_init_sim_s119",
+      "status": "has_valid_data",
+      "valid_count": 49549,
+      "total_count": 49549
+    },
+    {
+      "id": "1f4051aa-0051-47df-8ed4-e10a55762cf1",
+      "name": "SBO_KIT_init_sim_s99",
+      "status": "has_valid_data",
+      "valid_count": 68864,
+      "total_count": 68864
+    },
+    {
+      "id": "a039fe6e-eea2-4738-91e3-636dcc783d5a",
+      "name": "SBO_KIT_init_sim_s74",
+      "status": "has_valid_data",
+      "valid_count": 47031,
+      "total_count": 47031
+    },
+    {
+      "id": "1ef77a64-e1ea-4c9c-b78e-ad796ea14bee",
+      "name": "SBO_KIT_init_sim_s58",
+      "status": "has_valid_data",
+      "valid_count": 54766,
+      "total_count": 54766
+    },
+    {
+      "id": "7662a4ad-76a9-46f7-ad52-52c611ad54c4",
+      "name": "SBO_KIT_init_sim_s126",
+      "status": "has_valid_data",
+      "valid_count": 48391,
+      "total_count": 48391
+    },
+    {
+      "id": "0627899b-00f1-4e20-960c-6d8e20f08484",
+      "name": "SBO_KIT_init_sim_s13",
+      "status": "has_valid_data",
+      "valid_count": 48172,
+      "total_count": 48172
+    },
+    {
+      "id": "180467e2-d1e9-4ccb-a113-99985d52602c",
+      "name": "SBO_KIT_init_sim_s127",
+      "status": "has_valid_data",
+      "valid_count": 49193,
+      "total_count": 49193
+    },
+    {
+      "id": "a0000eaf-cb6d-45ad-91e0-406a4aaffcf5",
+      "name": "SBO_KIT_init_sim_s131",
+      "status": "has_valid_data",
+      "valid_count": 48800,
+      "total_count": 48800
+    },
+    {
+      "id": "1d11777a-0ae0-4209-9d67-fb6706b44810",
+      "name": "SBO_KIT_init_sim_s39",
+      "status": "has_valid_data",
+      "valid_count": 48290,
+      "total_count": 48290
+    },
+    {
+      "id": "6a510133-1f16-4c12-9a92-20ef08f9b312",
+      "name": "SBO_KIT_init_sim_s70",
+      "status": "has_valid_data",
+      "valid_count": 48867,
+      "total_count": 48867
+    },
+    {
+      "id": "db22976b-ab89-4670-81a1-7908a8983cef",
+      "name": "SBO_KIT_init_sim_s15",
+      "status": "has_valid_data",
+      "valid_count": 49901,
+      "total_count": 49901
+    },
+    {
+      "id": "d9c4f374-594b-4df6-8bfc-b5dd06baf742",
+      "name": "SBO_KIT_init_sim_s17",
+      "status": "has_valid_data",
+      "valid_count": 49298,
+      "total_count": 49298
+    },
+    {
+      "id": "25434822-fa9f-48a7-82fc-bb82452c78dc",
+      "name": "SBO_KIT_init_sim_s84",
+      "status": "has_valid_data",
+      "valid_count": 48232,
+      "total_count": 48232
+    },
+    {
+      "id": "990cb14a-d04a-473a-92ad-e4ee53fe56cf",
+      "name": "SBO_KIT_init_sim_s69",
+      "status": "has_valid_data",
+      "valid_count": 44779,
+      "total_count": 44779
+    },
+    {
+      "id": "50de3d09-fb7a-4495-94d9-b99293c43f06",
+      "name": "SBO_KIT_init_sim_s64",
+      "status": "has_valid_data",
+      "valid_count": 57123,
+      "total_count": 57123
+    },
+    {
+      "id": "28cd5fbe-8883-4bed-8595-c25141e7484d",
+      "name": "SBO_KIT_init_sim_s3",
+      "status": "has_valid_data",
+      "valid_count": 75672,
+      "total_count": 75672
+    },
+    {
+      "id": "a38cdbf2-58cc-468a-ae41-8150424ddc01",
+      "name": "SBO_KIT_init_sim_s92",
+      "status": "has_valid_data",
+      "valid_count": 47766,
+      "total_count": 47766
+    },
+    {
+      "id": "49a6cc98-f232-4423-9d82-a315e89ab256",
+      "name": "SBO_KIT_init_sim_s103",
+      "status": "has_valid_data",
+      "valid_count": 50608,
+      "total_count": 50608
+    },
+    {
+      "id": "abbed92e-2be4-4e13-8303-d6b009981302",
+      "name": "SBO_KIT_init_sim_s100",
+      "status": "has_valid_data",
+      "valid_count": 63042,
+      "total_count": 63042
+    },
+    {
+      "id": "d407ef28-74e8-40b9-b31f-12865ba8254b",
+      "name": "SBO_KIT_init_sim_s80",
+      "status": "has_valid_data",
+      "valid_count": 50237,
+      "total_count": 50237
+    },
+    {
+      "id": "0936cb31-8ef2-459b-ba8e-58fbaa2bc124",
+      "name": "SBO_KIT_init_sim_s68",
+      "status": "has_valid_data",
+      "valid_count": 50919,
+      "total_count": 50919
+    },
+    {
+      "id": "31487048-2fa5-4a1d-ad78-016451938028",
+      "name": "SBO_KIT_init_sim_s106",
+      "status": "has_valid_data",
+      "valid_count": 50496,
+      "total_count": 50496
+    },
+    {
+      "id": "c63754b9-b6dc-49cb-a8e1-cc41f6237f5a",
+      "name": "SBO_KIT_init_sim_s33",
+      "status": "has_valid_data",
+      "valid_count": 49562,
+      "total_count": 49562
+    },
+    {
+      "id": "f4e99fc6-49f3-4010-a3f6-95a50faf53ed",
+      "name": "SBO_KIT_init_sim_s123",
+      "status": "has_valid_data",
+      "valid_count": 46138,
+      "total_count": 46138
+    },
+    {
+      "id": "1c6ee88f-def1-4464-b1c7-91482fd84cf1",
+      "name": "SBO_KIT_init_sim_s128",
+      "status": "has_valid_data",
+      "valid_count": 42905,
+      "total_count": 42905
+    },
+    {
+      "id": "79764266-79a9-4d89-8db1-0d6aef8a2c7d",
+      "name": "SBO_KIT_init_sim_s71",
+      "status": "has_valid_data",
+      "valid_count": 16709,
+      "total_count": 16709
+    },
+    {
+      "id": "5381abc5-416f-408b-b3c6-805601a3d22b",
+      "name": "SBO_KIT_init_sim_s77",
+      "status": "has_valid_data",
+      "valid_count": 16810,
+      "total_count": 16810
+    },
+    {
+      "id": "4a1bbfde-066a-42e9-9d9d-74e61f54022b",
+      "name": "SBO_KIT_init_sim_s110",
+      "status": "has_valid_data",
+      "valid_count": 32635,
+      "total_count": 32635
+    },
+    {
+      "id": "a31f4e29-d171-480d-a497-7fb399246da8",
+      "name": "SBO_KIT_init_sim_s125",
+      "status": "has_valid_data",
+      "valid_count": 48486,
+      "total_count": 48486
+    },
+    {
+      "id": "8693d6a4-0dfa-4b19-a07e-4899ddd0c6ca",
+      "name": "SBO_KIT_init_sim_s96",
+      "status": "has_valid_data",
+      "valid_count": 50384,
+      "total_count": 50384
+    },
+    {
+      "id": "cbd99717-3a25-454f-81d2-c5af1e3b88f9",
+      "name": "SBO_KIT_init_sim_s48",
+      "status": "has_valid_data",
+      "valid_count": 48745,
+      "total_count": 48745
+    },
+    {
+      "id": "0f94c412-e946-426c-a61e-927960c8d64a",
+      "name": "SBO_KIT_init_sim_s75",
+      "status": "has_valid_data",
+      "valid_count": 73376,
+      "total_count": 73376
+    },
+    {
+      "id": "636da17c-106f-4f0a-94ab-e48d2b12c2e5",
+      "name": "SBO_KIT_init_sim_s88",
+      "status": "has_valid_data",
+      "valid_count": 51956,
+      "total_count": 51956
+    },
+    {
+      "id": "08007d93-80f0-4436-8a99-607383aeb999",
+      "name": "SBO_KIT_init_sim_s130",
+      "status": "has_valid_data",
+      "valid_count": 52053,
+      "total_count": 52053
+    },
+    {
+      "id": "f0869b62-ed1b-4bc9-9ee7-f2ef2b3faf67",
+      "name": "SBO_KIT_init_sim_s21",
+      "status": "has_valid_data",
+      "valid_count": 48078,
+      "total_count": 48078
+    },
+    {
+      "id": "dde84aaa-5408-4211-b809-4b12d04f3041",
+      "name": "SBO_KIT_init_sim_s90",
+      "status": "has_valid_data",
+      "valid_count": 46506,
+      "total_count": 46506
+    },
+    {
+      "id": "19eb7b9d-35bc-46f8-8ef1-52781609392e",
+      "name": "SBO_KIT_init_sim_s132",
+      "status": "has_valid_data",
+      "valid_count": 49803,
+      "total_count": 49803
+    },
+    {
+      "id": "e44fb80e-6a82-4da9-8e08-07367e844e57",
+      "name": "SBO_KIT_init_sim_s86",
+      "status": "has_valid_data",
+      "valid_count": 56765,
+      "total_count": 56765
+    },
+    {
+      "id": "d0c48b2c-2521-449d-8de3-4fb8234e6662",
+      "name": "SBO_KIT_init_sim_s29",
+      "status": "has_valid_data",
+      "valid_count": 49869,
+      "total_count": 49869
+    },
+    {
+      "id": "5ec2e9be-2e50-4688-92a9-628ccfb99c21",
+      "name": "SBO_KIT_init_sim_s24",
+      "status": "has_valid_data",
+      "valid_count": 34536,
+      "total_count": 34536
+    },
+    {
+      "id": "a63bb073-8d2e-4493-9396-f5c984fad80a",
+      "name": "SBO_KIT_init_sim_s59",
+      "status": "has_valid_data",
+      "valid_count": 73273,
+      "total_count": 73273
+    },
+    {
+      "id": "1a89312c-088d-42e3-86d7-ce1a66eb676e",
+      "name": "SBO_KIT_init_sim_s112",
+      "status": "has_valid_data",
+      "valid_count": 47544,
+      "total_count": 47544
+    },
+    {
+      "id": "d53d42d4-9417-469a-bdc9-940a6f342ae5",
+      "name": "SBO_KIT_init_sim_s40",
+      "status": "has_valid_data",
+      "valid_count": 46572,
+      "total_count": 46572
+    },
+    {
+      "id": "bfc838e4-ea74-4f61-b821-4c252d82ebf8",
+      "name": "SBO_KIT_init_sim_s66",
+      "status": "has_valid_data",
+      "valid_count": 62603,
+      "total_count": 62603
+    },
+    {
+      "id": "ddad0577-7e8f-4be3-aa34-b7f07969449b",
+      "name": "SBO_KIT_init_sim_s102",
+      "status": "has_valid_data",
+      "valid_count": 67021,
+      "total_count": 67021
+    },
+    {
+      "id": "e794beff-3f6a-4c58-88b6-95d182e9b544",
+      "name": "SBO_KIT_init_sim_s101",
+      "status": "has_valid_data",
+      "valid_count": 45385,
+      "total_count": 45385
+    },
+    {
+      "id": "30564dd7-630c-4246-a6ee-0df1c4067dfe",
+      "name": "SBO_KIT_init_sim_s36",
+      "status": "has_valid_data",
+      "valid_count": 79355,
+      "total_count": 79355
+    },
+    {
+      "id": "f84dd80b-d474-4e25-8820-439d5cf5dab3",
+      "name": "SBO_KIT_init_sim_s136",
+      "status": "has_valid_data",
+      "valid_count": 49370,
+      "total_count": 49370
+    },
+    {
+      "id": "0f77775a-d2e5-4d1d-a1c6-3065337e7925",
+      "name": "SBO_KIT_init_sim_s31",
+      "status": "has_valid_data",
+      "valid_count": 64567,
+      "total_count": 64567
+    },
+    {
+      "id": "371f6d47-9260-4c41-bdbe-041494beb62f",
+      "name": "SBO_KIT_init_sim_s115",
+      "status": "has_valid_data",
+      "valid_count": 56735,
+      "total_count": 56735
+    },
+    {
+      "id": "b1f9aa39-ce83-4485-9979-e84c8319cb26",
+      "name": "SBO_KIT_init_sim_s76",
+      "status": "has_valid_data",
+      "valid_count": 44585,
+      "total_count": 44585
+    },
+    {
+      "id": "54cebeb4-397d-4915-b88f-43a869eec71f",
+      "name": "SBO_KIT_init_sim_s26",
+      "status": "has_valid_data",
+      "valid_count": 50663,
+      "total_count": 50663
+    },
+    {
+      "id": "742987a6-fe05-4636-a4ec-eda361111618",
+      "name": "SBO_KIT_init_sim_s85",
+      "status": "has_valid_data",
+      "valid_count": 50042,
+      "total_count": 50042
+    },
+    {
+      "id": "5f43fbd0-4c8f-4bd0-baec-e2020d256a0c",
+      "name": "SBO_KIT_init_sim_s89",
+      "status": "has_valid_data",
+      "valid_count": 49470,
+      "total_count": 49470
+    },
+    {
+      "id": "e3208344-898b-46c0-82ba-d62667d80a48",
+      "name": "SBO_KIT_init_sim_s23",
+      "status": "has_valid_data",
+      "valid_count": 62981,
+      "total_count": 62981
+    },
+    {
+      "id": "3c5bb09b-514c-4eb7-b5e4-80d737aedbc8",
+      "name": "SBO_KIT_init_sim_s134",
+      "status": "has_valid_data",
+      "valid_count": 50813,
+      "total_count": 50813
+    },
+    {
+      "id": "3de45291-5033-46f8-bb91-5ee48ceda857",
+      "name": "SBO_KIT_init_sim_s65",
+      "status": "has_valid_data",
+      "valid_count": 48623,
+      "total_count": 48623
+    },
+    {
+      "id": "d9088c9e-ef54-4f1c-b109-4544a2b67dfe",
+      "name": "SBO_KIT_init_sim_s109",
+      "status": "has_valid_data",
+      "valid_count": 49756,
+      "total_count": 49756
+    },
+    {
+      "id": "de9ebf52-25f7-4b66-b93d-ad1736ab2873",
+      "name": "SBO_KIT_init_sim_s34",
+      "status": "has_valid_data",
+      "valid_count": 22558,
+      "total_count": 22558
+    },
+    {
+      "id": "a55f75d8-8682-4fc2-a870-d852a79d1f8d",
+      "name": "SBO_KIT_init_sim_s19",
+      "status": "has_valid_data",
+      "valid_count": 50468,
+      "total_count": 50468
+    },
+    {
+      "id": "06b08d12-c1e7-41ef-80b7-e44d90d55ff2",
+      "name": "SBO_KIT_init_sim_s97",
+      "status": "has_valid_data",
+      "valid_count": 48860,
+      "total_count": 48860
+    },
+    {
+      "id": "b52b5aa9-95b2-4380-86fe-10093144b6b5",
+      "name": "SBO_KIT_init_sim_s87",
+      "status": "has_valid_data",
+      "valid_count": 50829,
+      "total_count": 50829
+    },
+    {
+      "id": "b96178cb-9f08-43fe-a4a5-2b176a682a60",
+      "name": "SBO_KIT_init_sim_s44",
+      "status": "has_valid_data",
+      "valid_count": 69028,
+      "total_count": 69028
+    },
+    {
+      "id": "f948b333-a99a-42c3-a32e-0a8ed4d29aab",
+      "name": "SBO_KIT_init_sim_s16",
+      "status": "has_valid_data",
+      "valid_count": 47897,
+      "total_count": 47897
+    },
+    {
+      "id": "74b1d326-957d-4ed2-9663-193705fac0b2",
+      "name": "SBO_KIT_init_sim_s45",
+      "status": "has_valid_data",
+      "valid_count": 46110,
+      "total_count": 46110
+    },
+    {
+      "id": "83592b9d-55c9-4648-985f-c1133ed59e53",
+      "name": "SBO_KIT_init_sim_s1",
+      "status": "has_valid_data",
+      "valid_count": 47871,
+      "total_count": 47871
+    },
+    {
+      "id": "6cbc5205-a201-4533-bcc3-365d8cf5e308",
+      "name": "SBO_KIT_init_sim_s52",
+      "status": "has_valid_data",
+      "valid_count": 73818,
+      "total_count": 73818
+    },
+    {
+      "id": "634919d1-05b0-4475-92f9-6a8aebaba9db",
+      "name": "SBO_KIT_init_sim_s25",
+      "status": "has_valid_data",
+      "valid_count": 48869,
+      "total_count": 48869
+    },
+    {
+      "id": "77ff8a48-235d-481d-84c0-3a3777f0cc0c",
+      "name": "SBO_KIT_init_sim_s133",
+      "status": "has_valid_data",
+      "valid_count": 46812,
+      "total_count": 46812
+    },
+    {
+      "id": "c470914d-8e9f-4a1e-9ee4-27ccbaf204a1",
+      "name": "SBO_KIT_init_sim_s43",
+      "status": "has_valid_data",
+      "valid_count": 46326,
+      "total_count": 46326
+    },
+    {
+      "id": "6a1e1227-9531-4a22-b0d6-48f8a5c9f428",
+      "name": "SBO_KIT_init_sim_s5",
+      "status": "has_valid_data",
+      "valid_count": 47779,
+      "total_count": 47779
+    },
+    {
+      "id": "e55f6ca1-20b5-498d-a663-455c856c8e4e",
+      "name": "SBO_KIT_init_sim_s55",
+      "status": "has_valid_data",
+      "valid_count": 50370,
+      "total_count": 50370
+    },
+    {
+      "id": "91de430e-8581-472c-8e89-266fe2fd6402",
+      "name": "SBO_KIT_init_sim_s107",
+      "status": "has_valid_data",
+      "valid_count": 47357,
+      "total_count": 47357
+    },
+    {
+      "id": "73a62d46-1f08-41b0-8c17-cee7a5282bbf",
+      "name": "SBO_KIT_init_sim_s54",
+      "status": "has_valid_data",
+      "valid_count": 48202,
+      "total_count": 48202
+    },
+    {
+      "id": "fe2a94d0-790a-4091-8977-bb424263291c",
+      "name": "SBO_KIT_init_sim_s116",
+      "status": "has_valid_data",
+      "valid_count": 49940,
+      "total_count": 49940
+    },
+    {
+      "id": "67987244-5d7a-4c33-891f-35e39e8a7da9",
+      "name": "SBO_KIT_init_sim_s22",
+      "status": "has_valid_data",
+      "valid_count": 66648,
+      "total_count": 66648
+    },
+    {
+      "id": "bea3014e-56be-4d6c-9a5e-a3f7d3784d21",
+      "name": "SBO_KIT_init_sim_s7",
+      "status": "has_valid_data",
+      "valid_count": 49095,
+      "total_count": 49095
+    },
+    {
+      "id": "2ba02f4a-1dfb-43d5-a427-4723a864b9d9",
+      "name": "SBO_KIT_init_sim_s63",
+      "status": "has_valid_data",
+      "valid_count": 50083,
+      "total_count": 50083
+    },
+    {
+      "id": "a7bb60a7-1d05-4829-bef5-a145cb8b2094",
+      "name": "SBO_KIT_init_sim_s18",
+      "status": "has_valid_data",
+      "valid_count": 54057,
+      "total_count": 54057
+    },
+    {
+      "id": "ed144d78-c7b5-46e8-9e58-9ab229cba8f6",
+      "name": "SBO_KIT_init_sim_s117",
+      "status": "has_valid_data",
+      "valid_count": 16214,
+      "total_count": 16214
+    },
+    {
+      "id": "77dc1e86-8faf-4d78-a12f-b4cd32469381",
+      "name": "SBO_KIT_init_sim_s32",
+      "status": "has_valid_data",
+      "valid_count": 50877,
+      "total_count": 50877
+    },
+    {
+      "id": "b0625297-b214-41a1-8e29-f6e6c3861e06",
+      "name": "SBO_KIT_init_sim_s41",
+      "status": "has_valid_data",
+      "valid_count": 51121,
+      "total_count": 51121
+    },
+    {
+      "id": "fa750fe3-7a85-429c-80d4-93e3fb6bee97",
+      "name": "SBO_KIT_init_sim_s37",
+      "status": "has_valid_data",
+      "valid_count": 48541,
+      "total_count": 48541
+    },
+    {
+      "id": "fdbec1e8-838e-408b-a318-2a19984c20d6",
+      "name": "SBO_KIT_init_sim_s82",
+      "status": "has_valid_data",
+      "valid_count": 50322,
+      "total_count": 50322
+    },
+    {
+      "id": "5d678908-c33c-4c9b-9af9-6db7da4e4fa5",
+      "name": "SBO_KIT_init_sim_s73",
+      "status": "has_valid_data",
+      "valid_count": 62493,
+      "total_count": 62493
+    },
+    {
+      "id": "cc068430-c2f3-4821-894f-e5d3725244f1",
+      "name": "SBO_KIT_init_sim_s108",
+      "status": "has_valid_data",
+      "valid_count": 51576,
+      "total_count": 51576
+    },
+    {
+      "id": "d5f08008-d315-4ec0-aba3-586528268a96",
+      "name": "SBO_KIT_init_sim_s78",
+      "status": "has_valid_data",
+      "valid_count": 51999,
+      "total_count": 51999
+    },
+    {
+      "id": "6a7730cd-31af-4315-89ff-7a9cb46b5ffd",
+      "name": "SBO_KIT_init_sim_s111",
+      "status": "has_valid_data",
+      "valid_count": 69234,
+      "total_count": 69234
+    },
+    {
+      "id": "4df70ebc-1179-4cfb-b922-c67e527e7aa6",
+      "name": "SBO_KIT_init_sim_s6",
+      "status": "has_valid_data",
+      "valid_count": 46291,
+      "total_count": 46291
+    },
+    {
+      "id": "e8fb8ab6-dfba-4707-83bf-628c2c2a385b",
+      "name": "SBO_KIT_init_sim_s27",
+      "status": "has_valid_data",
+      "valid_count": 54122,
+      "total_count": 54122
+    },
+    {
+      "id": "282f7652-043b-4204-8a80-02badac0c088",
+      "name": "SBO_KIT_init_sim_s93",
+      "status": "has_valid_data",
+      "valid_count": 49911,
+      "total_count": 49911
+    },
+    {
+      "id": "54b595cf-2141-4ac5-be8d-113b7e5480e2",
+      "name": "SBO_KIT_init_sim_s30",
+      "status": "has_valid_data",
+      "valid_count": 50358,
+      "total_count": 50358
+    },
+    {
+      "id": "8fcf883c-9b8f-45b3-a406-fb6c5814b475",
+      "name": "SBO_KIT_init_sim_s79",
+      "status": "has_valid_data",
+      "valid_count": 45153,
+      "total_count": 45153
+    },
+    {
+      "id": "9cff5574-371c-4375-95fc-5a83ce79c384",
+      "name": "SBO_KIT_init_sim_s118",
+      "status": "has_valid_data",
+      "valid_count": 48221,
+      "total_count": 48221
+    },
+    {
+      "id": "93816846-8fc9-43d5-bbc8-a8e056b6f48f",
+      "name": "SBO_KIT_init_sim_s72",
+      "status": "has_valid_data",
+      "valid_count": 46726,
+      "total_count": 46726
+    },
+    {
+      "id": "3b033778-26ef-4c9e-8bb5-fadb213b5e29",
+      "name": "SBO_KIT_init_sim_s150",
+      "status": "has_valid_data",
+      "valid_count": 61279,
+      "total_count": 61279
+    },
+    {
+      "id": "3fb48fee-c14b-46ee-9660-be71231705ef",
+      "name": "SBO_KIT_init_sim_s137",
+      "status": "has_valid_data",
+      "valid_count": 75484,
+      "total_count": 75484
+    },
+    {
+      "id": "2ded916a-77e6-4b32-a327-0a79f91cf1e3",
+      "name": "SBO_KIT_init_sim_s145",
+      "status": "has_valid_data",
+      "valid_count": 59238,
+      "total_count": 59238
+    },
+    {
+      "id": "c930ee3a-552c-4477-b003-29de193abe8d",
+      "name": "SBO_KIT_init_sim_s155",
+      "status": "has_valid_data",
+      "valid_count": 30657,
+      "total_count": 30657
+    },
+    {
+      "id": "ffb97af9-57d1-4bda-86cd-f62ee270f276",
+      "name": "SBO_KIT_init_sim_s141",
+      "status": "has_valid_data",
+      "valid_count": 50582,
+      "total_count": 50582
+    },
+    {
+      "id": "f7658693-d33b-4a9b-be90-f0a584e6e300",
+      "name": "SBO_KIT_init_sim_s151",
+      "status": "has_valid_data",
+      "valid_count": 59512,
+      "total_count": 59512
+    },
+    {
+      "id": "c50a5710-eee6-4fdf-ae13-822a37e12aa1",
+      "name": "SBO_KIT_init_sim_s143",
+      "status": "has_valid_data",
+      "valid_count": 69754,
+      "total_count": 69754
+    },
+    {
+      "id": "6702d18a-9c30-40a7-ba20-53eb023f0317",
+      "name": "SBO_KIT_init_sim_s146",
+      "status": "has_valid_data",
+      "valid_count": 49255,
+      "total_count": 49255
+    },
+    {
+      "id": "97d7f53b-b65d-4b2f-8429-54fe4d11ddd9",
+      "name": "SBO_KIT_init_sim_s153",
+      "status": "has_valid_data",
+      "valid_count": 46635,
+      "total_count": 46635
+    },
+    {
+      "id": "d9348264-5e88-477d-bb4a-2d0595b05584",
+      "name": "SBO_KIT_init_sim_s148",
+      "status": "has_valid_data",
+      "valid_count": 51229,
+      "total_count": 51229
+    },
+    {
+      "id": "50a14c97-4e41-4586-8873-7c5c1f111975",
+      "name": "SBO_KIT_init_sim_s159",
+      "status": "has_valid_data",
+      "valid_count": 48165,
+      "total_count": 48165
+    },
+    {
+      "id": "a0bfe6cf-b353-4bde-9af4-896bb7cfbeae",
+      "name": "SBO_KIT_init_sim_s154",
+      "status": "has_valid_data",
+      "valid_count": 70831,
+      "total_count": 70831
+    },
+    {
+      "id": "6d063723-ce1d-442e-8afc-3d46a11aba46",
+      "name": "SBO_KIT_init_sim_s138",
+      "status": "has_valid_data",
+      "valid_count": 17710,
+      "total_count": 17710
+    },
+    {
+      "id": "369a1df9-9988-4081-bf72-ff202f2607e4",
+      "name": "SBO_KIT_init_sim_s144",
+      "status": "has_valid_data",
+      "valid_count": 46110,
+      "total_count": 46110
+    },
+    {
+      "id": "f81e9a38-5b8e-4181-930b-885d7a72d9af",
+      "name": "SBO_KIT_init_sim_s142",
+      "status": "has_valid_data",
+      "valid_count": 49931,
+      "total_count": 49931
+    },
+    {
+      "id": "68b806ec-e48a-4bba-8e06-900409fb0166",
+      "name": "SBO_KIT_init_sim_s158",
+      "status": "has_valid_data",
+      "valid_count": 46335,
+      "total_count": 46335
+    },
+    {
+      "id": "9463d578-022d-4625-8268-f9aff545d914",
+      "name": "SBO_KIT_init_sim_s157",
+      "status": "has_valid_data",
+      "valid_count": 46364,
+      "total_count": 46364
+    },
+    {
+      "id": "907fd4ee-e05f-4127-b1e9-5c3f6ef4cb45",
+      "name": "SBO_KIT_init_sim_s139",
+      "status": "has_valid_data",
+      "valid_count": 48305,
+      "total_count": 48305
+    },
+    {
+      "id": "9d1f1d86-2337-4eda-b226-5df414b4d6a3",
+      "name": "SBO_KIT_init_sim_s140",
+      "status": "has_valid_data",
+      "valid_count": 47652,
+      "total_count": 47652
+    },
+    {
+      "id": "460189dc-d2c5-42d2-96b2-dde271ae2307",
+      "name": "SBO_KIT_init_sim_s147",
+      "status": "has_valid_data",
+      "valid_count": 74333,
+      "total_count": 74333
+    },
+    {
+      "id": "16aa4abf-d63b-4a8b-9b07-546cc0ec3d78",
+      "name": "SBO_KIT_init_sim_s160",
+      "status": "has_valid_data",
+      "valid_count": 57459,
+      "total_count": 57459
+    },
+    {
+      "id": "928903bd-7aa9-46ed-9bf5-ea275765ab0c",
+      "name": "SBO_KIT_init_sim_s161",
+      "status": "has_valid_data",
+      "valid_count": 66440,
+      "total_count": 66440
+    },
+    {
+      "id": "bb319876-7bfb-4867-ab2e-05a1af127137",
+      "name": "SBO_KIT_init_sim_s162",
+      "status": "has_valid_data",
+      "valid_count": 45420,
+      "total_count": 45420
+    },
+    {
+      "id": "c1217d38-3534-4495-8a1d-ab5202d1b6b5",
+      "name": "SBO_KIT_init_sim_s163",
+      "status": "has_valid_data",
+      "valid_count": 50324,
+      "total_count": 50324
+    },
+    {
+      "id": "83dbbdb0-4f59-4894-813e-c305bf6e7c9b",
+      "name": "SBO_KIT_init_sim_s164",
+      "status": "has_valid_data",
+      "valid_count": 52525,
+      "total_count": 52525
+    },
+    {
+      "id": "7392aad5-952d-4a5e-8d6e-ef6a1ce53540",
+      "name": "SBO_KIT_init_sim_s165",
+      "status": "has_valid_data",
+      "valid_count": 47656,
+      "total_count": 47656
+    },
+    {
+      "id": "a0c4a4ba-b492-4a5d-a274-23bbab6a46cf",
+      "name": "SBO_KIT_init_sim_s166",
+      "status": "has_valid_data",
+      "valid_count": 50134,
+      "total_count": 50134
+    },
+    {
+      "id": "dcaef29b-cb6c-4e98-b008-5493eeca7a5f",
+      "name": "SBO_KIT_init_sim_s167",
+      "status": "has_valid_data",
+      "valid_count": 47026,
+      "total_count": 47026
+    },
+    {
+      "id": "6ed13e4e-c737-404b-9b7d-7cb7d784d75e",
+      "name": "SBO_KIT_init_sim_s169",
+      "status": "has_valid_data",
+      "valid_count": 31060,
+      "total_count": 31060
+    },
+    {
+      "id": "2b819402-ba7a-47d7-b202-b789574f57ff",
+      "name": "SBO_KIT_init_sim_s170",
+      "status": "has_valid_data",
+      "valid_count": 57322,
+      "total_count": 57322
+    },
+    {
+      "id": "b24a9ce9-5f39-4fa3-b6ba-cb4124f9bc50",
+      "name": "SBO_KIT_init_sim_s171",
+      "status": "has_valid_data",
+      "valid_count": 48541,
+      "total_count": 48541
+    },
+    {
+      "id": "e2249b02-36a6-4be2-855e-8e0933b3be44",
+      "name": "SBO_KIT_init_sim_s172",
+      "status": "has_valid_data",
+      "valid_count": 49062,
+      "total_count": 49062
+    },
+    {
+      "id": "86ab234b-71d1-4afd-b6bf-b6802a9edcf1",
+      "name": "SBO_KIT_init_sim_s175",
+      "status": "has_valid_data",
+      "valid_count": 65415,
+      "total_count": 65415
+    },
+    {
+      "id": "00825308-9f2f-4bae-9b66-8b8cf742b354",
+      "name": "SBO_KIT_init_sim_s176",
+      "status": "has_valid_data",
+      "valid_count": 49591,
+      "total_count": 49591
+    },
+    {
+      "id": "8b03207f-7266-42c3-a02d-a02134e5b950",
+      "name": "SBO_KIT_init_sim_s177",
+      "status": "has_valid_data",
+      "valid_count": 49555,
+      "total_count": 49555
+    },
+    {
+      "id": "a0ef941c-b5d0-478e-8837-629866083aec",
+      "name": "SBO_KIT_init_sim_s178",
+      "status": "has_valid_data",
+      "valid_count": 68098,
+      "total_count": 68098
+    },
+    {
+      "id": "7dee26bc-7fc7-45b3-ade2-80046d37a010",
+      "name": "SBO_KIT_init_sim_s180",
+      "status": "has_valid_data",
+      "valid_count": 28960,
+      "total_count": 28960
+    },
+    {
+      "id": "3de4f165-c9a0-4ac2-b14a-1ad53267255d",
+      "name": "SBO_KIT_init_sim_s182",
+      "status": "has_valid_data",
+      "valid_count": 50552,
+      "total_count": 50552
+    },
+    {
+      "id": "f302f804-d3a9-4ea1-931c-84e662a26cd1",
+      "name": "SBO_KIT_init_sim_s184",
+      "status": "has_valid_data",
+      "valid_count": 63222,
+      "total_count": 63222
+    },
+    {
+      "id": "1128ad0b-90ce-45bf-8dc9-01d6060d4ac1",
+      "name": "SBO_KIT_init_sim_s185",
+      "status": "has_valid_data",
+      "valid_count": 49539,
+      "total_count": 49539
+    },
+    {
+      "id": "fa89ec39-c0e4-4e83-9e12-5b28cb790495",
+      "name": "SBO_KIT_init_sim_s186",
+      "status": "has_valid_data",
+      "valid_count": 47997,
+      "total_count": 47997
+    },
+    {
+      "id": "df9b9392-7cd3-46b8-92fd-8d9af38e4fb6",
+      "name": "SBO_KIT_init_sim_s187",
+      "status": "has_valid_data",
+      "valid_count": 56264,
+      "total_count": 56264
+    },
+    {
+      "id": "a1054dd0-cca4-42f8-a721-9eda08fe411e",
+      "name": "SBO_KIT_init_sim_s188",
+      "status": "has_valid_data",
+      "valid_count": 47048,
+      "total_count": 47048
+    },
+    {
+      "id": "6c01fb3a-c174-4922-b909-97e74368c8d3",
+      "name": "SBO_KIT_init_sim_s191",
+      "status": "has_valid_data",
+      "valid_count": 49018,
+      "total_count": 49018
+    },
+    {
+      "id": "5663ebe0-215a-4596-9b80-120f86a21b5c",
+      "name": "SBO_KIT_init_sim_s192",
+      "status": "has_valid_data",
+      "valid_count": 68717,
+      "total_count": 68717
+    },
+    {
+      "id": "eb040ce9-2c91-4c1a-9bbe-bf62ea657e85",
+      "name": "SBO_KIT_init_sim_s193",
+      "status": "has_valid_data",
+      "valid_count": 70736,
+      "total_count": 70736
+    },
+    {
+      "id": "1eb076d8-8822-43f4-b39f-8cf36a27d3eb",
+      "name": "SBO_KIT_init_sim_s194",
+      "status": "has_valid_data",
+      "valid_count": 48669,
+      "total_count": 48669
+    },
+    {
+      "id": "0b7b6e07-5d53-4e6b-970b-5c5895b5bdaf",
+      "name": "SBO_KIT_init_sim_s195",
+      "status": "has_valid_data",
+      "valid_count": 47265,
+      "total_count": 47265
+    },
+    {
+      "id": "78abbc82-1096-4076-ab48-8e5755c5634c",
+      "name": "SBO_KIT_init_sim_s196",
+      "status": "has_valid_data",
+      "valid_count": 62749,
+      "total_count": 62749
+    },
+    {
+      "id": "3e6b1746-665b-4155-bfbd-cb94569fb271",
+      "name": "SBO_KIT_init_sim_s197",
+      "status": "has_valid_data",
+      "valid_count": 52985,
+      "total_count": 52985
+    },
+    {
+      "id": "4821dc97-c0eb-476a-9bad-9644a2325f50",
+      "name": "SBO_KIT_init_sim_s198",
+      "status": "has_valid_data",
+      "valid_count": 49737,
+      "total_count": 49737
+    },
+    {
+      "id": "7483a49b-6458-4fc8-9c9e-f017519abcdc",
+      "name": "SBO_KIT_init_sim_s199",
+      "status": "has_valid_data",
+      "valid_count": 64733,
+      "total_count": 64733
+    },
+    {
+      "id": "8b7f025a-de2a-441f-a45c-1e941d0e3b8b",
+      "name": "SBO_KIT_init_sim_s200",
+      "status": "has_valid_data",
+      "valid_count": 46793,
+      "total_count": 46793
+    },
+    {
+      "id": "006052c7-5e60-4712-8b52-a08e73186d6b",
+      "name": "LOCA_KIT_init_sim_s801",
+      "status": "has_valid_data",
+      "valid_count": 54709,
+      "total_count": 54709
+    },
+    {
+      "id": "47532b6e-f2c1-40fb-a05d-dadd441be88a",
+      "name": "LOCA_KIT_init_sim_s802",
+      "status": "has_valid_data",
+      "valid_count": 56656,
+      "total_count": 56656
+    },
+    {
+      "id": "40dd633d-a8a9-44e5-a8ce-58ea152b42c2",
+      "name": "LOCA_KIT_init_sim_s803",
+      "status": "has_valid_data",
+      "valid_count": 42646,
+      "total_count": 42646
+    },
+    {
+      "id": "9063efbe-d72d-461e-ba7f-4b12bd65f095",
+      "name": "LOCA_KIT_init_sim_s804",
+      "status": "has_valid_data",
+      "valid_count": 53221,
+      "total_count": 53221
+    },
+    {
+      "id": "7c1928c1-1255-47d8-a02c-fea0beb75fc6",
+      "name": "LOCA_KIT_init_sim_s805",
+      "status": "has_valid_data",
+      "valid_count": 52455,
+      "total_count": 52455
+    },
+    {
+      "id": "7ba8455f-b884-457c-bbef-7e799153e613",
+      "name": "LOCA_KIT_init_sim_s806",
+      "status": "has_valid_data",
+      "valid_count": 48827,
+      "total_count": 48827
+    },
+    {
+      "id": "93a00916-00ea-40f1-8c21-ad1f283b74a3",
+      "name": "LOCA_KIT_init_sim_s807",
+      "status": "has_valid_data",
+      "valid_count": 52174,
+      "total_count": 52174
+    },
+    {
+      "id": "7c7f5cee-2d32-4344-8282-b9e86296c87f",
+      "name": "LOCA_KIT_init_sim_s808",
+      "status": "has_valid_data",
+      "valid_count": 47569,
+      "total_count": 47569
+    },
+    {
+      "id": "a9914133-a313-441c-83f8-f8ca6f301533",
+      "name": "LOCA_KIT_init_sim_s809",
+      "status": "has_valid_data",
+      "valid_count": 56342,
+      "total_count": 56342
+    },
+    {
+      "id": "51ed19cb-5ca7-42c3-b65a-2a5b920030e2",
+      "name": "LOCA_KIT_init_sim_s810",
+      "status": "has_valid_data",
+      "valid_count": 58280,
+      "total_count": 58280
+    },
+    {
+      "id": "58aaa0c6-044d-4fcc-bc96-3b88b78dbec9",
+      "name": "LOCA_KIT_init_sim_s811",
+      "status": "has_valid_data",
+      "valid_count": 41857,
+      "total_count": 41857
+    },
+    {
+      "id": "b3849345-765f-4b20-bfb5-fbb5ff7aab81",
+      "name": "LOCA_KIT_init_sim_s812",
+      "status": "has_valid_data",
+      "valid_count": 45974,
+      "total_count": 45974
+    },
+    {
+      "id": "959b2087-4459-4bb0-847f-30b8367e76a3",
+      "name": "LOCA_KIT_init_sim_s813",
+      "status": "has_valid_data",
+      "valid_count": 57827,
+      "total_count": 57827
+    },
+    {
+      "id": "d1f69b50-796b-4adf-8806-29d11e6c0ed2",
+      "name": "LOCA_KIT_init_sim_s814",
+      "status": "has_valid_data",
+      "valid_count": 44593,
+      "total_count": 44593
+    },
+    {
+      "id": "55244766-ce25-438a-aedf-a8cd57e030c8",
+      "name": "LOCA_KIT_init_sim_s815",
+      "status": "has_valid_data",
+      "valid_count": 49459,
+      "total_count": 49459
+    },
+    {
+      "id": "2fd4dd1e-2fdc-44f6-9f54-672733d6e4ea",
+      "name": "LOCA_KIT_init_sim_s816",
+      "status": "has_valid_data",
+      "valid_count": 56100,
+      "total_count": 56100
+    },
+    {
+      "id": "23ac2e24-97a9-46c6-a625-ef9ce55da13c",
+      "name": "LOCA_KIT_init_sim_s817",
+      "status": "has_valid_data",
+      "valid_count": 51077,
+      "total_count": 51077
+    },
+    {
+      "id": "e35dfc52-7b14-4cf8-8c5e-a35aa76be122",
+      "name": "LOCA_KIT_init_sim_s818",
+      "status": "has_valid_data",
+      "valid_count": 54262,
+      "total_count": 54262
+    },
+    {
+      "id": "d1d8deda-9c02-4e52-a442-4f69fde11aa4",
+      "name": "LOCA_KIT_init_sim_s819",
+      "status": "has_valid_data",
+      "valid_count": 46025,
+      "total_count": 46025
+    },
+    {
+      "id": "97f48af1-2409-4ac8-9047-95cf2d2d1c97",
+      "name": "LOCA_KIT_init_sim_s820",
+      "status": "has_valid_data",
+      "valid_count": 40319,
+      "total_count": 40319
+    },
+    {
+      "id": "327aad97-5e22-4806-b305-6b68d33075ef",
+      "name": "LOCA_KIT_init_sim_s821",
+      "status": "has_valid_data",
+      "valid_count": 49780,
+      "total_count": 49780
+    },
+    {
+      "id": "046019e8-5022-4673-b03c-04bd20556a02",
+      "name": "LOCA_KIT_init_sim_s822",
+      "status": "has_valid_data",
+      "valid_count": 59841,
+      "total_count": 59841
+    },
+    {
+      "id": "f583d594-cede-40ce-9fe6-1497fc8a13da",
+      "name": "LOCA_KIT_init_sim_s823",
+      "status": "has_valid_data",
+      "valid_count": 38827,
+      "total_count": 38827
+    },
+    {
+      "id": "c6d20a55-a61d-46b9-a377-b9162a57ac9b",
+      "name": "LOCA_KIT_init_sim_s824",
+      "status": "has_valid_data",
+      "valid_count": 75376,
+      "total_count": 75376
+    },
+    {
+      "id": "49507e8f-decf-4e47-96fe-4b3db4ee05c6",
+      "name": "LOCA_KIT_init_sim_s825",
+      "status": "has_valid_data",
+      "valid_count": 40929,
+      "total_count": 40929
+    },
+    {
+      "id": "61d9c0ab-b479-43dd-9f74-5007b4b77252",
+      "name": "LOCA_KIT_init_sim_s826",
+      "status": "has_valid_data",
+      "valid_count": 53404,
+      "total_count": 53404
+    },
+    {
+      "id": "93cac101-493a-44a6-9e45-2e8eca711c70",
+      "name": "LOCA_KIT_init_sim_s827",
+      "status": "has_valid_data",
+      "valid_count": 45857,
+      "total_count": 45857
+    },
+    {
+      "id": "904b545d-3ce9-41d0-b85f-81c12bc882a0",
+      "name": "LOCA_KIT_init_sim_s828",
+      "status": "has_valid_data",
+      "valid_count": 46930,
+      "total_count": 46930
+    },
+    {
+      "id": "81ba286a-d511-41bd-8e85-8f490b7e8863",
+      "name": "LOCA_KIT_init_sim_s829",
+      "status": "has_valid_data",
+      "valid_count": 51923,
+      "total_count": 51923
+    },
+    {
+      "id": "ec5bc606-7f36-4d9e-8665-fe6cd33e486c",
+      "name": "LOCA_KIT_init_sim_s830",
+      "status": "has_valid_data",
+      "valid_count": 49486,
+      "total_count": 49486
+    },
+    {
+      "id": "2a6cd3d9-6922-4952-aeea-5a1428f88452",
+      "name": "LOCA_KIT_init_sim_s831",
+      "status": "has_valid_data",
+      "valid_count": 41194,
+      "total_count": 41194
+    },
+    {
+      "id": "d7a2a78d-b9b1-44ab-a5cd-7ee292e611c2",
+      "name": "LOCA_KIT_init_sim_s832",
+      "status": "has_valid_data",
+      "valid_count": 51447,
+      "total_count": 51447
+    },
+    {
+      "id": "f026e31c-c9e6-4009-8e61-ca84c943dfa3",
+      "name": "LOCA_KIT_init_sim_s833",
+      "status": "has_valid_data",
+      "valid_count": 60423,
+      "total_count": 60423
+    },
+    {
+      "id": "5041a8d2-22a8-4eaf-a56a-8310643d29af",
+      "name": "LOCA_KIT_init_sim_s834",
+      "status": "has_valid_data",
+      "valid_count": 44071,
+      "total_count": 44071
+    },
+    {
+      "id": "c6ba640d-33a0-4206-8ca5-1c82670f39e9",
+      "name": "LOCA_KIT_init_sim_s835",
+      "status": "has_valid_data",
+      "valid_count": 39467,
+      "total_count": 39467
+    },
+    {
+      "id": "f89f890a-dc4b-4075-869e-91b730a29512",
+      "name": "LOCA_KIT_init_sim_s836",
+      "status": "has_valid_data",
+      "valid_count": 65672,
+      "total_count": 65672
+    },
+    {
+      "id": "051f5b3a-fc5e-42ce-8033-94ce8c45b8d7",
+      "name": "LOCA_KIT_init_sim_s837",
+      "status": "has_valid_data",
+      "valid_count": 49332,
+      "total_count": 49332
+    },
+    {
+      "id": "d4e85f05-11d1-4216-9c5f-e069889fb95c",
+      "name": "LOCA_KIT_init_sim_s838",
+      "status": "has_valid_data",
+      "valid_count": 49385,
+      "total_count": 49385
+    },
+    {
+      "id": "9b54c1ac-ce99-46c8-a527-9cc491d44937",
+      "name": "LOCA_KIT_init_sim_s839",
+      "status": "has_valid_data",
+      "valid_count": 53553,
+      "total_count": 53553
+    },
+    {
+      "id": "aa9314d0-d03b-479f-a3e8-219699eec7c3",
+      "name": "LOCA_KIT_init_sim_s840",
+      "status": "has_valid_data",
+      "valid_count": 47414,
+      "total_count": 47414
+    },
+    {
+      "id": "d5504c1d-8b18-48a8-b9ce-1da2fb5f9590",
+      "name": "LOCA_KIT_init_sim_s841",
+      "status": "has_valid_data",
+      "valid_count": 55338,
+      "total_count": 55338
+    },
+    {
+      "id": "e94f3b06-1263-4e50-a2bb-d5ee7789b8b9",
+      "name": "LOCA_KIT_init_sim_s842",
+      "status": "has_valid_data",
+      "valid_count": 52380,
+      "total_count": 52380
+    },
+    {
+      "id": "cedab5e1-c722-45b2-abd2-5efd684288a9",
+      "name": "LOCA_KIT_init_sim_s843",
+      "status": "has_valid_data",
+      "valid_count": 58920,
+      "total_count": 58920
+    },
+    {
+      "id": "874bd69d-e394-4ac5-9e44-8b19c3b5cb15",
+      "name": "LOCA_KIT_init_sim_s844",
+      "status": "has_valid_data",
+      "valid_count": 57261,
+      "total_count": 57261
+    },
+    {
+      "id": "15c90f66-ad7d-4f53-8890-5ac844b740eb",
+      "name": "LOCA_KIT_init_sim_s845",
+      "status": "has_valid_data",
+      "valid_count": 49288,
+      "total_count": 49288
+    },
+    {
+      "id": "6ead805d-4d99-4f2d-a595-0f157181dfe8",
+      "name": "LOCA_KIT_init_sim_s846",
+      "status": "has_valid_data",
+      "valid_count": 4354,
+      "total_count": 4354
+    },
+    {
+      "id": "2f976453-2a11-4bd2-bd49-d96703fbf111",
+      "name": "LOCA_KIT_init_sim_s847",
+      "status": "has_valid_data",
+      "valid_count": 52998,
+      "total_count": 52998
+    },
+    {
+      "id": "6c4cb5ba-7ca6-4fc5-92b6-41b4f37d2e6b",
+      "name": "LOCA_KIT_init_sim_s848",
+      "status": "has_valid_data",
+      "valid_count": 51876,
+      "total_count": 51876
+    },
+    {
+      "id": "a6b45318-0af7-495d-bb50-cd96306563be",
+      "name": "LOCA_KIT_init_sim_s849",
+      "status": "has_valid_data",
+      "valid_count": 44304,
+      "total_count": 44304
+    },
+    {
+      "id": "aeed8fb3-2571-47e4-b95e-9e0a2f6effca",
+      "name": "LOCA_KIT_init_sim_s850",
+      "status": "has_valid_data",
+      "valid_count": 69851,
+      "total_count": 69851
+    },
+    {
+      "id": "4e56efac-d61c-474d-817a-84922a6b561f",
+      "name": "LOCA_KIT_init_sim_s851",
+      "status": "has_valid_data",
+      "valid_count": 45472,
+      "total_count": 45472
+    },
+    {
+      "id": "77d88a12-44be-474b-9567-520081ddcacd",
+      "name": "LOCA_KIT_init_sim_s852",
+      "status": "has_valid_data",
+      "valid_count": 45423,
+      "total_count": 45423
+    },
+    {
+      "id": "c1a4adb2-7ddd-480b-8ff5-0129c3723593",
+      "name": "LOCA_KIT_init_sim_s853",
+      "status": "has_valid_data",
+      "valid_count": 47088,
+      "total_count": 47088
+    },
+    {
+      "id": "3b81d014-4eda-41b2-a1f8-5d024dfcb681",
+      "name": "LOCA_KIT_init_sim_s854",
+      "status": "has_valid_data",
+      "valid_count": 52923,
+      "total_count": 52923
+    },
+    {
+      "id": "6fef08ff-a6dd-4ae8-87e3-724f16e79ee2",
+      "name": "LOCA_KIT_init_sim_s855",
+      "status": "has_valid_data",
+      "valid_count": 64946,
+      "total_count": 64946
+    },
+    {
+      "id": "b3fb2e4f-4367-4e8f-bcaf-2a4d92cee620",
+      "name": "LOCA_KIT_init_sim_s856",
+      "status": "has_valid_data",
+      "valid_count": 50738,
+      "total_count": 50738
+    },
+    {
+      "id": "58ff12d6-7556-418e-ac2a-b33d9187e14b",
+      "name": "LOCA_KIT_init_sim_s857",
+      "status": "has_valid_data",
+      "valid_count": 53966,
+      "total_count": 53966
+    },
+    {
+      "id": "4a9de14a-e20b-47ba-b8df-dab8a07f0652",
+      "name": "LOCA_KIT_init_sim_s858",
+      "status": "has_valid_data",
+      "valid_count": 49165,
+      "total_count": 49165
+    },
+    {
+      "id": "635c754b-2def-46d0-a775-331b89843b2e",
+      "name": "LOCA_KIT_init_sim_s859",
+      "status": "has_valid_data",
+      "valid_count": 37837,
+      "total_count": 37837
+    },
+    {
+      "id": "fc7e0fa5-8641-4ab2-97e9-9b855efd34ad",
+      "name": "LOCA_KIT_init_sim_s860",
+      "status": "has_valid_data",
+      "valid_count": 33530,
+      "total_count": 33530
+    },
+    {
+      "id": "db990b07-7d5f-416f-8abf-a8e5f5f3ce89",
+      "name": "LOCA_KIT_init_sim_s861",
+      "status": "has_valid_data",
+      "valid_count": 56706,
+      "total_count": 56706
+    },
+    {
+      "id": "1519fd2c-47a8-4782-a1c2-5adf3759d34d",
+      "name": "LOCA_KIT_init_sim_s862",
+      "status": "has_valid_data",
+      "valid_count": 40873,
+      "total_count": 40873
+    },
+    {
+      "id": "eb3e1d84-0447-4b18-862e-42274223203a",
+      "name": "LOCA_KIT_init_sim_s863",
+      "status": "has_valid_data",
+      "valid_count": 45678,
+      "total_count": 45678
+    },
+    {
+      "id": "e365cf3d-a9a1-4246-90d8-18ac0e743911",
+      "name": "LOCA_KIT_init_sim_s864",
+      "status": "has_valid_data",
+      "valid_count": 65927,
+      "total_count": 65927
+    },
+    {
+      "id": "cf9bb022-d60b-434c-b5b7-0f823fac4b57",
+      "name": "LOCA_KIT_init_sim_s865",
+      "status": "has_valid_data",
+      "valid_count": 49522,
+      "total_count": 49522
+    },
+    {
+      "id": "9572772f-8bc9-4e9f-bd14-0ed66b2b59cf",
+      "name": "LOCA_KIT_init_sim_s866",
+      "status": "has_valid_data",
+      "valid_count": 51234,
+      "total_count": 51234
+    },
+    {
+      "id": "6e482e4e-0448-40e6-ad58-ba888c0148ce",
+      "name": "LOCA_KIT_init_sim_s867",
+      "status": "has_valid_data",
+      "valid_count": 47667,
+      "total_count": 47667
+    },
+    {
+      "id": "bd082dc8-501e-4555-9bc6-2e9192d296d0",
+      "name": "LOCA_KIT_init_sim_s868",
+      "status": "has_valid_data",
+      "valid_count": 60845,
+      "total_count": 60845
+    },
+    {
+      "id": "d8cab43f-f6cd-4881-9a95-75ed373514f0",
+      "name": "LOCA_KIT_init_sim_s869",
+      "status": "has_valid_data",
+      "valid_count": 56338,
+      "total_count": 56338
+    },
+    {
+      "id": "2413a36a-0d38-4857-b7e7-e3f54f9f649b",
+      "name": "LOCA_KIT_init_sim_s870",
+      "status": "has_valid_data",
+      "valid_count": 55404,
+      "total_count": 55404
+    },
+    {
+      "id": "901e596c-802c-4af5-850d-5bb17b99713a",
+      "name": "LOCA_KIT_init_sim_s871",
+      "status": "has_valid_data",
+      "valid_count": 53853,
+      "total_count": 53853
+    },
+    {
+      "id": "22daa134-d44f-4439-9606-3c9f665b12ec",
+      "name": "LOCA_KIT_init_sim_s872",
+      "status": "has_valid_data",
+      "valid_count": 46387,
+      "total_count": 46387
+    },
+    {
+      "id": "9ed81102-18ce-4ef2-8fe4-af2e64588a4d",
+      "name": "LOCA_KIT_init_sim_s873",
+      "status": "has_valid_data",
+      "valid_count": 46763,
+      "total_count": 46763
+    },
+    {
+      "id": "357883f5-041e-4f0c-9eab-c8e4369dc54a",
+      "name": "LOCA_KIT_init_sim_s874",
+      "status": "has_valid_data",
+      "valid_count": 45200,
+      "total_count": 45200
+    },
+    {
+      "id": "1d73b451-f244-426b-b56e-e48aeeae09d2",
+      "name": "LOCA_KIT_init_sim_s875",
+      "status": "has_valid_data",
+      "valid_count": 40617,
+      "total_count": 40617
+    },
+    {
+      "id": "09867525-b636-4752-9ebc-0c24e098f028",
+      "name": "LOCA_KIT_init_sim_s876",
+      "status": "has_valid_data",
+      "valid_count": 46161,
+      "total_count": 46161
+    },
+    {
+      "id": "f263f4a6-c674-4c4c-b6ae-cb4c53e79974",
+      "name": "LOCA_KIT_init_sim_s877",
+      "status": "has_valid_data",
+      "valid_count": 57116,
+      "total_count": 57116
+    },
+    {
+      "id": "87d24378-6449-4a80-807e-b06686d6bc9c",
+      "name": "LOCA_KIT_init_sim_s878",
+      "status": "has_valid_data",
+      "valid_count": 52526,
+      "total_count": 52526
+    },
+    {
+      "id": "c421cc6d-1bb2-4651-bacf-d7a2c7ae8792",
+      "name": "LOCA_KIT_init_sim_s879",
+      "status": "has_valid_data",
+      "valid_count": 48728,
+      "total_count": 48728
+    },
+    {
+      "id": "e09a1312-b6f0-4466-8ff9-a17608ee6228",
+      "name": "LOCA_KIT_init_sim_s880",
+      "status": "has_valid_data",
+      "valid_count": 44313,
+      "total_count": 44313
+    },
+    {
+      "id": "51ae63be-34c2-4caf-9c4e-fc1adb74855f",
+      "name": "LOCA_KIT_init_sim_s881",
+      "status": "has_valid_data",
+      "valid_count": 46168,
+      "total_count": 46168
+    },
+    {
+      "id": "aad4ab9b-5c7e-4b52-9be0-0a9e53301f49",
+      "name": "LOCA_KIT_init_sim_s882",
+      "status": "has_valid_data",
+      "valid_count": 38811,
+      "total_count": 38811
+    },
+    {
+      "id": "444a0236-2407-4149-8d5b-3f2d17dcf5bc",
+      "name": "LOCA_KIT_init_sim_s883",
+      "status": "has_valid_data",
+      "valid_count": 47909,
+      "total_count": 47909
+    },
+    {
+      "id": "d933e108-1bdc-4bb6-83cd-472439cd60f7",
+      "name": "LOCA_KIT_init_sim_s884",
+      "status": "has_valid_data",
+      "valid_count": 58138,
+      "total_count": 58138
+    },
+    {
+      "id": "67b39cf1-6914-4319-b358-f4e7a2dde27e",
+      "name": "LOCA_KIT_init_sim_s885",
+      "status": "has_valid_data",
+      "valid_count": 6433,
+      "total_count": 6433
+    },
+    {
+      "id": "0dbbbe14-cbe4-4c00-95e2-8025443b1c20",
+      "name": "LOCA_KIT_init_sim_s886",
+      "status": "has_valid_data",
+      "valid_count": 35470,
+      "total_count": 35470
+    },
+    {
+      "id": "5bf294a1-2c84-44a0-b82b-cd7c7168a27d",
+      "name": "LOCA_KIT_init_sim_s887",
+      "status": "has_valid_data",
+      "valid_count": 53355,
+      "total_count": 53355
+    },
+    {
+      "id": "0e571a7f-4404-4252-b999-5175be652ed4",
+      "name": "LOCA_KIT_init_sim_s888",
+      "status": "has_valid_data",
+      "valid_count": 54047,
+      "total_count": 54047
+    },
+    {
+      "id": "3f6b2db5-2119-4c6d-aff4-753279156564",
+      "name": "LOCA_KIT_init_sim_s889",
+      "status": "has_valid_data",
+      "valid_count": 55433,
+      "total_count": 55433
+    },
+    {
+      "id": "ed8c721e-5db7-4522-bb11-5615e81cbb7a",
+      "name": "LOCA_KIT_init_sim_s890",
+      "status": "has_valid_data",
+      "valid_count": 50466,
+      "total_count": 50466
+    },
+    {
+      "id": "1771cd8a-af9a-428d-b87b-2ab503394852",
+      "name": "LOCA_KIT_init_sim_s891",
+      "status": "has_valid_data",
+      "valid_count": 56588,
+      "total_count": 56588
+    },
+    {
+      "id": "c3a94e32-6ed9-42fd-9fef-7a0b45170518",
+      "name": "LOCA_KIT_init_sim_s892",
+      "status": "has_valid_data",
+      "valid_count": 48028,
+      "total_count": 48028
+    },
+    {
+      "id": "1b53e200-388d-4b14-8c46-3102653b03cc",
+      "name": "LOCA_KIT_init_sim_s893",
+      "status": "has_valid_data",
+      "valid_count": 45429,
+      "total_count": 45429
+    },
+    {
+      "id": "5443f5d2-bec0-4f8a-85d4-a15dde229e40",
+      "name": "LOCA_KIT_init_sim_s894",
+      "status": "has_valid_data",
+      "valid_count": 45491,
+      "total_count": 45491
+    },
+    {
+      "id": "4ee23f46-cf54-417a-b3e6-9d73f253eb44",
+      "name": "LOCA_KIT_init_sim_s895",
+      "status": "has_valid_data",
+      "valid_count": 71602,
+      "total_count": 71602
+    },
+    {
+      "id": "87fa5aac-6af5-4a53-ac86-61a8f1b6ad12",
+      "name": "LOCA_KIT_init_sim_s896",
+      "status": "has_valid_data",
+      "valid_count": 58376,
+      "total_count": 58376
+    },
+    {
+      "id": "3ec99b38-ae0d-420e-9551-52cf6cf948fd",
+      "name": "LOCA_KIT_init_sim_s897",
+      "status": "has_valid_data",
+      "valid_count": 50558,
+      "total_count": 50558
+    },
+    {
+      "id": "df8c63a6-3242-416d-b524-c72643b1186f",
+      "name": "LOCA_KIT_init_sim_s898",
+      "status": "has_valid_data",
+      "valid_count": 53817,
+      "total_count": 53817
+    },
+    {
+      "id": "3f5a277b-97ab-41d6-8713-89bfd4fe162d",
+      "name": "LOCA_KIT_init_sim_s899",
+      "status": "has_valid_data",
+      "valid_count": 52830,
+      "total_count": 52830
+    },
+    {
+      "id": "b2aef771-fc3a-46d2-a7d1-f6e4dda26d5b",
+      "name": "LOCA_KIT_init_sim_s900",
+      "status": "has_valid_data",
+      "valid_count": 48802,
+      "total_count": 48802
+    },
+    {
+      "id": "f078f242-67f8-4b1a-86ac-54ea3973c5b3",
+      "name": "LOCA_KIT_init_sim_s901",
+      "status": "has_valid_data",
+      "valid_count": 64970,
+      "total_count": 64970
+    },
+    {
+      "id": "a9919863-adcc-472a-a2c6-0b8ff0fcf9dc",
+      "name": "LOCA_KIT_init_sim_s902",
+      "status": "has_valid_data",
+      "valid_count": 48628,
+      "total_count": 48628
+    },
+    {
+      "id": "5a0df00c-3add-408c-8802-8b0a93724e65",
+      "name": "LOCA_KIT_init_sim_s903",
+      "status": "has_valid_data",
+      "valid_count": 49252,
+      "total_count": 49252
+    },
+    {
+      "id": "a124e3d3-d737-4311-8ccb-89f6a898ad24",
+      "name": "LOCA_KIT_init_sim_s904",
+      "status": "has_valid_data",
+      "valid_count": 55444,
+      "total_count": 55444
+    },
+    {
+      "id": "e3fbc44e-3f62-4c67-b324-a7f4dcf90d9f",
+      "name": "LOCA_KIT_init_sim_s905",
+      "status": "has_valid_data",
+      "valid_count": 65037,
+      "total_count": 65037
+    },
+    {
+      "id": "0a90c796-1d49-43ea-b571-6fd8907b1a6c",
+      "name": "LOCA_KIT_init_sim_s906",
+      "status": "has_valid_data",
+      "valid_count": 33365,
+      "total_count": 33365
+    },
+    {
+      "id": "5fb908d2-f1f4-44bc-bc22-c39aec02eda9",
+      "name": "LOCA_KIT_init_sim_s907",
+      "status": "has_valid_data",
+      "valid_count": 43532,
+      "total_count": 43532
+    },
+    {
+      "id": "45a0883d-4e80-45ce-8225-eb5a5221e06e",
+      "name": "LOCA_KIT_init_sim_s908",
+      "status": "has_valid_data",
+      "valid_count": 58114,
+      "total_count": 58114
+    },
+    {
+      "id": "48f022b9-66a0-4e6b-b3d7-79000e775326",
+      "name": "LOCA_KIT_init_sim_s909",
+      "status": "has_valid_data",
+      "valid_count": 52970,
+      "total_count": 52970
+    },
+    {
+      "id": "b26fe0fc-3970-4e53-9709-bfcdef6cb07a",
+      "name": "LOCA_KIT_init_sim_s910",
+      "status": "has_valid_data",
+      "valid_count": 43427,
+      "total_count": 43427
+    },
+    {
+      "id": "3b629153-5b84-4cbd-a8e2-8681e6c2b87c",
+      "name": "LOCA_KIT_init_sim_s911",
+      "status": "has_valid_data",
+      "valid_count": 56242,
+      "total_count": 56242
+    },
+    {
+      "id": "a6715344-2477-4b03-bde7-8b9ac6674dd6",
+      "name": "LOCA_KIT_init_sim_s912",
+      "status": "has_valid_data",
+      "valid_count": 60595,
+      "total_count": 60595
+    },
+    {
+      "id": "f2a83453-dbc5-4dc3-8adf-ad4dc4c30a26",
+      "name": "LOCA_KIT_init_sim_s913",
+      "status": "has_valid_data",
+      "valid_count": 48536,
+      "total_count": 48536
+    },
+    {
+      "id": "34b8185f-ab63-4bb4-a17e-b1121979718a",
+      "name": "LOCA_KIT_init_sim_s914",
+      "status": "has_valid_data",
+      "valid_count": 37348,
+      "total_count": 37348
+    },
+    {
+      "id": "9edb7616-0048-4c35-824d-07c8bfd7f215",
+      "name": "LOCA_KIT_init_sim_s915",
+      "status": "has_valid_data",
+      "valid_count": 40115,
+      "total_count": 40115
+    },
+    {
+      "id": "e0b75dba-05de-4ef5-89a5-1c623ff54ab0",
+      "name": "LOCA_KIT_init_sim_s916",
+      "status": "has_valid_data",
+      "valid_count": 45500,
+      "total_count": 45500
+    },
+    {
+      "id": "c8f9fbb6-16a5-4660-9312-2712c9f0fa4f",
+      "name": "LOCA_KIT_init_sim_s917",
+      "status": "has_valid_data",
+      "valid_count": 48932,
+      "total_count": 48932
+    },
+    {
+      "id": "d1d86bee-435e-4f3c-bc1b-448d21bc60c8",
+      "name": "LOCA_KIT_init_sim_s918",
+      "status": "has_valid_data",
+      "valid_count": 48094,
+      "total_count": 48094
+    },
+    {
+      "id": "1bf54770-3388-43f9-b0f5-384275c0d189",
+      "name": "LOCA_KIT_init_sim_s919",
+      "status": "has_valid_data",
+      "valid_count": 50965,
+      "total_count": 50965
+    },
+    {
+      "id": "29d4d6ee-cb17-48a6-97bd-ed877149e39f",
+      "name": "LOCA_KIT_init_sim_s920",
+      "status": "has_valid_data",
+      "valid_count": 47631,
+      "total_count": 47631
+    },
+    {
+      "id": "e2ee1bbb-9d4a-439b-a661-280d392bb2b2",
+      "name": "LOCA_KIT_init_sim_s921",
+      "status": "has_valid_data",
+      "valid_count": 33573,
+      "total_count": 33573
+    },
+    {
+      "id": "2fc470f1-0d6c-4725-aa5c-d091f98345bd",
+      "name": "LOCA_KIT_init_sim_s922",
+      "status": "has_valid_data",
+      "valid_count": 66946,
+      "total_count": 66946
+    },
+    {
+      "id": "64dc8db1-d505-44eb-bda8-abbb2a1b29a1",
+      "name": "LOCA_KIT_init_sim_s923",
+      "status": "has_valid_data",
+      "valid_count": 48143,
+      "total_count": 48143
+    },
+    {
+      "id": "c44e8762-75d9-4bb7-a08f-ea68866fd030",
+      "name": "LOCA_KIT_init_sim_s924",
+      "status": "has_valid_data",
+      "valid_count": 50269,
+      "total_count": 50269
+    },
+    {
+      "id": "a90e4252-4d5f-4539-8c54-994c5c927f44",
+      "name": "LOCA_KIT_init_sim_s925",
+      "status": "has_valid_data",
+      "valid_count": 56760,
+      "total_count": 56760
+    },
+    {
+      "id": "a3a4a6e0-3d7c-42fb-9c81-89e0257fc0d1",
+      "name": "LOCA_KIT_init_sim_s926",
+      "status": "has_valid_data",
+      "valid_count": 50178,
+      "total_count": 50178
+    },
+    {
+      "id": "10020155-244c-4391-a51f-b19307d8ba47",
+      "name": "LOCA_KIT_init_sim_s927",
+      "status": "has_valid_data",
+      "valid_count": 43977,
+      "total_count": 43977
+    },
+    {
+      "id": "7e54f1a8-13ec-4b51-83f4-e0f9e2025be5",
+      "name": "LOCA_KIT_init_sim_s928",
+      "status": "has_valid_data",
+      "valid_count": 52481,
+      "total_count": 52481
+    },
+    {
+      "id": "5f628d2a-449f-429e-b653-5b4a9ae2a61b",
+      "name": "LOCA_KIT_init_sim_s929",
+      "status": "has_valid_data",
+      "valid_count": 47802,
+      "total_count": 47802
+    },
+    {
+      "id": "e68e6ad7-1353-4784-8291-10e98a58ddf5",
+      "name": "LOCA_KIT_init_sim_s930",
+      "status": "has_valid_data",
+      "valid_count": 60549,
+      "total_count": 60549
+    },
+    {
+      "id": "948a21b9-d619-465e-b42e-3e4ab3a2f309",
+      "name": "LOCA_KIT_init_sim_s931",
+      "status": "has_valid_data",
+      "valid_count": 12252,
+      "total_count": 12252
+    },
+    {
+      "id": "6eed1e28-25b4-4a3b-bf86-caed0d51db27",
+      "name": "LOCA_KIT_init_sim_s932",
+      "status": "has_valid_data",
+      "valid_count": 55626,
+      "total_count": 55626
+    },
+    {
+      "id": "186aecc8-a65b-4b68-9c75-0a05d04b1d53",
+      "name": "LOCA_KIT_init_sim_s933",
+      "status": "has_valid_data",
+      "valid_count": 71048,
+      "total_count": 71048
+    },
+    {
+      "id": "ed498713-3c39-4e2e-9bb0-bf2062f785be",
+      "name": "LOCA_KIT_init_sim_s934",
+      "status": "has_valid_data",
+      "valid_count": 48711,
+      "total_count": 48711
+    },
+    {
+      "id": "554e8324-8e4e-44dd-8039-014ef2e19c0b",
+      "name": "LOCA_KIT_init_sim_s935",
+      "status": "has_valid_data",
+      "valid_count": 39221,
+      "total_count": 39221
+    },
+    {
+      "id": "f613060a-6bc8-49e0-a70f-0dc8cd48db67",
+      "name": "LOCA_KIT_init_sim_s936",
+      "status": "has_valid_data",
+      "valid_count": 46091,
+      "total_count": 46091
+    },
+    {
+      "id": "c8e87b63-f64c-4d19-a1f9-a8f9466371c2",
+      "name": "LOCA_KIT_init_sim_s937",
+      "status": "has_valid_data",
+      "valid_count": 65718,
+      "total_count": 65718
+    },
+    {
+      "id": "1f278829-81c6-40d6-84f6-67bfc1ffdb68",
+      "name": "LOCA_KIT_init_sim_s938",
+      "status": "has_valid_data",
+      "valid_count": 55133,
+      "total_count": 55133
+    },
+    {
+      "id": "c419b8d5-c55e-4adb-8f41-4b226cc55c90",
+      "name": "LOCA_KIT_init_sim_s939",
+      "status": "has_valid_data",
+      "valid_count": 46869,
+      "total_count": 46869
+    },
+    {
+      "id": "8bef74f2-6a21-44dd-8246-37584516758b",
+      "name": "LOCA_KIT_init_sim_s940",
+      "status": "has_valid_data",
+      "valid_count": 11222,
+      "total_count": 11222
+    },
+    {
+      "id": "56de907b-9288-4ccd-8eec-b76404a507ed",
+      "name": "LOCA_KIT_init_sim_s941",
+      "status": "has_valid_data",
+      "valid_count": 45704,
+      "total_count": 45704
+    },
+    {
+      "id": "0b8e5118-9a88-4cd4-b18c-e0891fd08678",
+      "name": "LOCA_KIT_init_sim_s942",
+      "status": "has_valid_data",
+      "valid_count": 41625,
+      "total_count": 41625
+    },
+    {
+      "id": "73b1b0b8-25e2-4448-bfe6-85b8b08c60d2",
+      "name": "LOCA_KIT_init_sim_s943",
+      "status": "has_valid_data",
+      "valid_count": 65932,
+      "total_count": 65932
+    },
+    {
+      "id": "9983fe85-afb7-4022-8622-15f410335c64",
+      "name": "LOCA_KIT_init_sim_s944",
+      "status": "has_valid_data",
+      "valid_count": 47303,
+      "total_count": 47303
+    },
+    {
+      "id": "119ce412-c05f-488d-ab76-24ac8f5e004b",
+      "name": "LOCA_KIT_init_sim_s945",
+      "status": "has_valid_data",
+      "valid_count": 52853,
+      "total_count": 52853
+    },
+    {
+      "id": "001c45a9-5c82-4381-be55-09fe2ea62220",
+      "name": "LOCA_KIT_init_sim_s946",
+      "status": "has_valid_data",
+      "valid_count": 55050,
+      "total_count": 55050
+    },
+    {
+      "id": "da7e9e9c-5e51-4421-ad98-6c4d3eccaaaa",
+      "name": "LOCA_KIT_init_sim_s947",
+      "status": "has_valid_data",
+      "valid_count": 54085,
+      "total_count": 54085
+    },
+    {
+      "id": "82df72ab-0882-4bc8-b0ee-32d3ced0f547",
+      "name": "CIEMAT-test_0",
+      "status": "has_valid_data",
+      "valid_count": 48851,
+      "total_count": 48851
+    },
+    {
+      "id": "5cfb7894-cc5f-40e2-b662-b30a22e24bf2",
+      "name": "LOCA_KIT_init_sim_s981",
+      "status": "has_valid_data",
+      "valid_count": 53047,
+      "total_count": 53047
+    },
+    {
+      "id": "cd9433e8-dd82-467b-bac2-d453971d6a0c",
+      "name": "LOCA_KIT_init_sim_s988",
+      "status": "has_valid_data",
+      "valid_count": 55734,
+      "total_count": 55734
+    },
+    {
+      "id": "602d4e60-9df6-449f-9592-8b53c4f02009",
+      "name": "LOCA_KIT_init_sim_s954",
+      "status": "has_valid_data",
+      "valid_count": 19556,
+      "total_count": 19556
+    },
+    {
+      "id": "e8bceb1e-bbfb-4baa-8407-f378e860b27b",
+      "name": "LOCA_KIT_init_sim_s948",
+      "status": "has_valid_data",
+      "valid_count": 52390,
+      "total_count": 52390
+    },
+    {
+      "id": "c7a5d003-4e52-4995-a0a7-cc353406589e",
+      "name": "LOCA_KIT_init_sim_s996",
+      "status": "has_valid_data",
+      "valid_count": 53774,
+      "total_count": 53774
+    },
+    {
+      "id": "6793bc08-1004-49b3-a883-ce252f54adaa",
+      "name": "LOCA_KIT_init_sim_s960",
+      "status": "has_valid_data",
+      "valid_count": 46013,
+      "total_count": 46013
+    },
+    {
+      "id": "0450a96c-b524-4c7f-9a35-b415610c158d",
+      "name": "LOCA_KIT_init_sim_s966",
+      "status": "has_valid_data",
+      "valid_count": 43859,
+      "total_count": 43859
+    },
+    {
+      "id": "ef6ff5e0-a561-4864-a172-ac5b021b1a0d",
+      "name": "LOCA_KIT_init_sim_s982",
+      "status": "has_valid_data",
+      "valid_count": 53767,
+      "total_count": 53767
+    },
+    {
+      "id": "b17da292-7456-43a0-ba25-e47da9415bd0",
+      "name": "LOCA_KIT_init_sim_s957",
+      "status": "has_valid_data",
+      "valid_count": 53146,
+      "total_count": 53146
+    },
+    {
+      "id": "db49ab84-5398-4753-a3de-068b859452ba",
+      "name": "LOCA_KIT_init_sim_s979",
+      "status": "has_valid_data",
+      "valid_count": 54938,
+      "total_count": 54938
+    },
+    {
+      "id": "95741b86-1a53-4442-8b11-8a15c77205f8",
+      "name": "LOCA_KIT_init_sim_s969",
+      "status": "has_valid_data",
+      "valid_count": 46530,
+      "total_count": 46530
+    },
+    {
+      "id": "0b49b07e-2929-4b06-9081-a7e5fb9472fc",
+      "name": "LOCA_KIT_init_sim_s995",
+      "status": "has_valid_data",
+      "valid_count": 18045,
+      "total_count": 18045
+    },
+    {
+      "id": "329adf4e-5ca8-4307-bb5c-0dbedcbd2a2e",
+      "name": "LOCA_KIT_init_sim_s983",
+      "status": "has_valid_data",
+      "valid_count": 53931,
+      "total_count": 53931
+    },
+    {
+      "id": "f1ec6270-d4d3-4f62-b6fc-322a38133a1e",
+      "name": "LOCA_KIT_init_sim_s987",
+      "status": "has_valid_data",
+      "valid_count": 44999,
+      "total_count": 44999
+    },
+    {
+      "id": "975be8d4-c26e-49f3-9791-253fcb11baf2",
+      "name": "LOCA_KIT_init_sim_s963",
+      "status": "has_valid_data",
+      "valid_count": 54637,
+      "total_count": 54637
+    },
+    {
+      "id": "1f068c94-ddac-4086-aa42-fb15f9cc131f",
+      "name": "LOCA_KIT_init_sim_s971",
+      "status": "has_valid_data",
+      "valid_count": 49972,
+      "total_count": 49972
+    },
+    {
+      "id": "086ebdd6-4f32-43d9-8745-1aec443f34ba",
+      "name": "LOCA_KIT_init_sim_s956",
+      "status": "has_valid_data",
+      "valid_count": 52762,
+      "total_count": 52762
+    },
+    {
+      "id": "63f110f9-bfe6-4bb2-af72-e22d5c1271f1",
+      "name": "LOCA_KIT_init_sim_s961",
+      "status": "has_valid_data",
+      "valid_count": 66051,
+      "total_count": 66051
+    },
+    {
+      "id": "61ca4954-61c3-4390-84dd-25df05ac7f2b",
+      "name": "LOCA_KIT_init_sim_s967",
+      "status": "has_valid_data",
+      "valid_count": 54354,
+      "total_count": 54354
+    },
+    {
+      "id": "6a98ef38-2522-4728-b332-e3a9bbfbe484",
+      "name": "LOCA_KIT_init_sim_s977",
+      "status": "has_valid_data",
+      "valid_count": 54350,
+      "total_count": 54350
+    },
+    {
+      "id": "4d4e6e42-87cd-4bac-9d8b-c2e440ebeedd",
+      "name": "LOCA_KIT_init_sim_s974",
+      "status": "has_valid_data",
+      "valid_count": 59411,
+      "total_count": 59411
+    },
+    {
+      "id": "ddeb3fb9-0e3e-4ca8-9e4c-43918213d2f6",
+      "name": "LOCA_KIT_init_sim_s968",
+      "status": "has_valid_data",
+      "valid_count": 48436,
+      "total_count": 48436
+    },
+    {
+      "id": "ab97bc1c-4711-46b9-a453-a61425f21856",
+      "name": "LOCA_KIT_init_sim_s990",
+      "status": "has_valid_data",
+      "valid_count": 49365,
+      "total_count": 49365
+    },
+    {
+      "id": "3c7547b5-e867-4bc9-9fdf-f3e8826c9850",
+      "name": "LOCA_KIT_init_sim_s994",
+      "status": "has_valid_data",
+      "valid_count": 40377,
+      "total_count": 40377
+    },
+    {
+      "id": "97f7694e-c0f9-4659-aeaa-689c25b963bf",
+      "name": "LOCA_KIT_init_sim_s964",
+      "status": "has_valid_data",
+      "valid_count": 56190,
+      "total_count": 56190
+    },
+    {
+      "id": "2dade6b9-730b-4582-97aa-d9dee95fb44f",
+      "name": "LOCA_KIT_init_sim_s949",
+      "status": "has_valid_data",
+      "valid_count": 48587,
+      "total_count": 48587
+    },
+    {
+      "id": "d7eef7e1-1f67-4ca1-8290-746e298e9c51",
+      "name": "LOCA_KIT_init_sim_s973",
+      "status": "has_valid_data",
+      "valid_count": 52873,
+      "total_count": 52873
+    },
+    {
+      "id": "4d0cc4ee-b89e-496e-a8d9-1f65dc6a1fe5",
+      "name": "LOCA_KIT_init_sim_s991",
+      "status": "has_valid_data",
+      "valid_count": 53948,
+      "total_count": 53948
+    },
+    {
+      "id": "82d0fc9b-13ad-4d34-807e-6512fe055b82",
+      "name": "LOCA_KIT_init_sim_s951",
+      "status": "has_valid_data",
+      "valid_count": 48090,
+      "total_count": 48090
+    },
+    {
+      "id": "fa738b48-904d-47c5-9cbc-579901d1513a",
+      "name": "LOCA_KIT_init_sim_s958",
+      "status": "has_valid_data",
+      "valid_count": 4430,
+      "total_count": 4430
+    },
+    {
+      "id": "4178ff0b-0feb-44c1-badd-87ba1eb4cad0",
+      "name": "LOCA_KIT_init_sim_s972",
+      "status": "has_valid_data",
+      "valid_count": 57467,
+      "total_count": 57467
+    },
+    {
+      "id": "99784d93-3408-4193-847a-10785272a1e0",
+      "name": "LOCA_KIT_init_sim_s953",
+      "status": "has_valid_data",
+      "valid_count": 56023,
+      "total_count": 56023
+    },
+    {
+      "id": "901a8adb-1eb6-45bd-b389-ff8d050387a1",
+      "name": "LOCA_KIT_init_sim_s959",
+      "status": "has_valid_data",
+      "valid_count": 53864,
+      "total_count": 53864
+    },
+    {
+      "id": "9a671d4a-8bed-42d5-a698-14706ec7703d",
+      "name": "LOCA_KIT_init_sim_s962",
+      "status": "has_valid_data",
+      "valid_count": 9673,
+      "total_count": 9673
+    },
+    {
+      "id": "e414e867-a302-4851-90ad-9bc1074763ce",
+      "name": "LOCA_KIT_init_sim_s993",
+      "status": "has_valid_data",
+      "valid_count": 69166,
+      "total_count": 69166
+    },
+    {
+      "id": "377be850-0c7d-49a4-b5ff-7c81e314a814",
+      "name": "LOCA_KIT_init_sim_s980",
+      "status": "has_valid_data",
+      "valid_count": 40810,
+      "total_count": 40810
+    },
+    {
+      "id": "0eeaad9d-f380-4ceb-8d76-983a950ee123",
+      "name": "LOCA_KIT_init_sim_s978",
+      "status": "has_valid_data",
+      "valid_count": 46713,
+      "total_count": 46713
+    },
+    {
+      "id": "4c6b0038-a258-4dfd-b6b6-83199084359c",
+      "name": "LOCA_KIT_init_sim_s986",
+      "status": "has_valid_data",
+      "valid_count": 47032,
+      "total_count": 47032
+    },
+    {
+      "id": "75e838ef-a261-44c4-83f3-957449abc9c4",
+      "name": "LOCA_KIT_init_sim_s952",
+      "status": "has_valid_data",
+      "valid_count": 45785,
+      "total_count": 45785
+    },
+    {
+      "id": "d391eba2-e68b-4daf-a71a-6145d1008b0d",
+      "name": "LOCA_KIT_init_sim_s984",
+      "status": "has_valid_data",
+      "valid_count": 53202,
+      "total_count": 53202
+    },
+    {
+      "id": "16c59a3d-0d05-4001-ab67-ebdb9dde094c",
+      "name": "LOCA_KIT_init_sim_s950",
+      "status": "has_valid_data",
+      "valid_count": 48540,
+      "total_count": 48540
+    },
+    {
+      "id": "589959d9-7203-456f-b033-3b4cfa2c94d4",
+      "name": "LOCA_KIT_init_sim_s989",
+      "status": "has_valid_data",
+      "valid_count": 52891,
+      "total_count": 52891
+    },
+    {
+      "id": "a7c9ea44-52be-415a-b363-e44ffc5fca97",
+      "name": "LOCA_KIT_init_sim_s975",
+      "status": "has_valid_data",
+      "valid_count": 41030,
+      "total_count": 41030
+    },
+    {
+      "id": "13a5acc9-9bf1-4fb3-b8ef-336c05800afa",
+      "name": "LOCA_KIT_init_sim_s976",
+      "status": "has_valid_data",
+      "valid_count": 45812,
+      "total_count": 45812
+    },
+    {
+      "id": "f8cfa038-4d3c-4be2-bd16-d079402ad4c1",
+      "name": "LOCA_KIT_init_sim_s970",
+      "status": "has_valid_data",
+      "valid_count": 51108,
+      "total_count": 51108
+    },
+    {
+      "id": "628a10e1-0ba8-485c-a315-13251fe0d12d",
+      "name": "LOCA_KIT_init_sim_s992",
+      "status": "has_valid_data",
+      "valid_count": 48321,
+      "total_count": 48321
+    },
+    {
+      "id": "6e793aa3-ac6a-4af6-a5eb-89208929f240",
+      "name": "LOCA_KIT_init_sim_s985",
+      "status": "has_valid_data",
+      "valid_count": 54119,
+      "total_count": 54119
+    },
+    {
+      "id": "5701813e-6d41-4233-92c1-b1726b17ff84",
+      "name": "LOCA_KIT_init_sim_s955",
+      "status": "has_valid_data",
+      "valid_count": 41465,
+      "total_count": 41465
+    },
+    {
+      "id": "007ceff2-938d-4a78-bac7-76a376ed6556",
+      "name": "LOCA_KIT_init_sim_s965",
+      "status": "has_valid_data",
+      "valid_count": 51981,
+      "total_count": 51981
+    },
+    {
+      "id": "78434642-b188-4878-933e-daf5873255d4",
+      "name": "CIEMAT-test_1",
+      "status": "has_valid_data",
+      "valid_count": 51661,
+      "total_count": 51661
+    },
+    {
+      "id": "0213b80a-2739-4fb4-9251-7910a54e80fe",
+      "name": "LOCA_KIT_init_sim_s997",
+      "status": "has_valid_data",
+      "valid_count": 53492,
+      "total_count": 53492
+    },
+    {
+      "id": "1540b8c7-324e-4df2-9de5-661e0faf3de4",
+      "name": "LOCA_KIT_init_sim_s998",
+      "status": "has_valid_data",
+      "valid_count": 56905,
+      "total_count": 56905
+    },
+    {
+      "id": "ec359657-7007-4099-b036-b49be2bd95a8",
+      "name": "LOCA_KIT_init_sim_s999",
+      "status": "has_valid_data",
+      "valid_count": 53881,
+      "total_count": 53881
+    },
+    {
+      "id": "6e7eb500-125b-4171-869a-087010c34ca5",
+      "name": "CIEMAT-test_2",
+      "status": "has_valid_data",
+      "valid_count": 57206,
+      "total_count": 57206
+    },
+    {
+      "id": "6a38c2e0-3ba6-44ee-a954-302e844a4a7b",
+      "name": "CIEMAT-test_3",
+      "status": "has_valid_data",
+      "valid_count": 47060,
+      "total_count": 47060
+    },
+    {
+      "id": "7e1caa1e-2f21-4534-a9fd-32d708a718cb",
+      "name": "CIEMAT-test_4",
+      "status": "has_valid_data",
+      "valid_count": 42865,
+      "total_count": 42865
+    },
+    {
+      "id": "766c17b0-8703-4234-86ac-5381a7ca6cf6",
+      "name": "CIEMAT-test_5",
+      "status": "has_valid_data",
+      "valid_count": 54724,
+      "total_count": 54724
+    },
+    {
+      "id": "49ab6dec-8109-4c9e-9e9b-0ea291b015f3",
+      "name": "CIEMAT-test_6",
+      "status": "has_valid_data",
+      "valid_count": 41162,
+      "total_count": 41162
+    },
+    {
+      "id": "8273652d-0922-4d12-a938-3a8e878acad4",
+      "name": "CIEMAT-test_8",
+      "status": "has_valid_data",
+      "valid_count": 70228,
+      "total_count": 70228
+    },
+    {
+      "id": "82de4fcd-059e-420a-82a1-830d714f0ba0",
+      "name": "CIEMAT-test_9",
+      "status": "has_valid_data",
+      "valid_count": 38606,
+      "total_count": 38606
+    },
+    {
+      "id": "f17e20d5-4d89-4c39-89a3-e44025ea64b4",
+      "name": "CIEMAT-test_10",
+      "status": "has_valid_data",
+      "valid_count": 45813,
+      "total_count": 45813
+    },
+    {
+      "id": "a11117d6-1165-40ef-9d21-67517b9e77bb",
+      "name": "CIEMAT-test_11",
+      "status": "has_valid_data",
+      "valid_count": 53811,
+      "total_count": 53811
+    },
+    {
+      "id": "788beeee-1f33-4de4-b8d2-f4224ffb130f",
+      "name": "CIEMAT-test_12",
+      "status": "has_valid_data",
+      "valid_count": 72703,
+      "total_count": 72703
+    },
+    {
+      "id": "b5c08c83-f8e2-4f38-aa70-5d4f9947fab0",
+      "name": "CIEMAT-test_13",
+      "status": "has_valid_data",
+      "valid_count": 48304,
+      "total_count": 48304
+    },
+    {
+      "id": "a8dfe4d9-d048-4b80-9f8b-2dff6033bd8d",
+      "name": "CIEMAT-test_14",
+      "status": "has_valid_data",
+      "valid_count": 38776,
+      "total_count": 38776
+    },
+    {
+      "id": "4fa41a8f-881d-4ffb-a774-c6342baa837d",
+      "name": "CIEMAT-test_15",
+      "status": "has_valid_data",
+      "valid_count": 38840,
+      "total_count": 38840
+    },
+    {
+      "id": "e883213d-5aad-4b46-87bc-41f440c42fb6",
+      "name": "CIEMAT-test_16",
+      "status": "has_valid_data",
+      "valid_count": 66287,
+      "total_count": 66287
+    },
+    {
+      "id": "f652ca22-0c94-45f4-8186-b330306d0fc8",
+      "name": "CIEMAT-test_17",
+      "status": "has_valid_data",
+      "valid_count": 55881,
+      "total_count": 55881
+    },
+    {
+      "id": "71f18c46-972e-41a1-baf5-4ecae76c56ce",
+      "name": "CIEMAT-test_18",
+      "status": "has_valid_data",
+      "valid_count": 48803,
+      "total_count": 48803
+    },
+    {
+      "id": "34a902d1-84b0-443a-bc5a-912065c3ef1b",
+      "name": "CIEMAT-test_19",
+      "status": "has_valid_data",
+      "valid_count": 49250,
+      "total_count": 49250
+    },
+    {
+      "id": "30a50bec-a668-4a73-b789-810d50f1f083",
+      "name": "CIEMAT-test_20",
+      "status": "has_valid_data",
+      "valid_count": 49252,
+      "total_count": 49252
+    },
+    {
+      "id": "72c6b938-bbe9-42ea-bdbb-67d437a7fcef",
+      "name": "CIEMAT-test_21",
+      "status": "has_valid_data",
+      "valid_count": 72711,
+      "total_count": 72711
+    },
+    {
+      "id": "efbaf3ab-63bc-4739-8cfa-b6bacdd48e9c",
+      "name": "CIEMAT-test_22",
+      "status": "has_valid_data",
+      "valid_count": 48612,
+      "total_count": 48612
+    },
+    {
+      "id": "3105fa47-2813-48f7-bdee-4fb98a0a0744",
+      "name": "CIEMAT-test_23",
+      "status": "has_valid_data",
+      "valid_count": 68348,
+      "total_count": 68348
+    },
+    {
+      "id": "c16ac99d-ef4e-4360-87e2-ce32a5c92c1d",
+      "name": "CIEMAT-test_24",
+      "status": "has_valid_data",
+      "valid_count": 48482,
+      "total_count": 48482
+    },
+    {
+      "id": "0413449c-88ce-4af9-80eb-ca0f54abaaa7",
+      "name": "CIEMAT-test_25",
+      "status": "has_valid_data",
+      "valid_count": 58088,
+      "total_count": 58088
+    },
+    {
+      "id": "7be56541-ef47-4e29-848a-7af5401b52cd",
+      "name": "CIEMAT-test_26",
+      "status": "has_valid_data",
+      "valid_count": 50283,
+      "total_count": 50283
+    },
+    {
+      "id": "b6c6143d-c75a-4b8a-8557-7f2f334801e8",
+      "name": "CIEMAT-test_27",
+      "status": "has_valid_data",
+      "valid_count": 48849,
+      "total_count": 48849
+    },
+    {
+      "id": "5070ff48-614e-4e33-92b5-427ae1b99905",
+      "name": "CIEMAT-test_28",
+      "status": "has_valid_data",
+      "valid_count": 54488,
+      "total_count": 54488
+    },
+    {
+      "id": "ed534199-20dd-4f19-80cc-e6157f88d67b",
+      "name": "CIEMAT-test_29",
+      "status": "has_valid_data",
+      "valid_count": 46288,
+      "total_count": 46288
+    },
+    {
+      "id": "57e2bdfd-a8b4-49d0-b306-9b5ccd1661e9",
+      "name": "CIEMAT-test_30",
+      "status": "has_valid_data",
+      "valid_count": 35216,
+      "total_count": 35216
+    },
+    {
+      "id": "ffcedd60-ea22-4323-95c8-468be270c403",
+      "name": "CIEMAT-test_31",
+      "status": "has_valid_data",
+      "valid_count": 53845,
+      "total_count": 53845
+    },
+    {
+      "id": "d0b878c6-ab8a-4b14-bc87-26973570ba94",
+      "name": "CIEMAT-test_50",
+      "status": "has_valid_data",
+      "valid_count": 44907,
+      "total_count": 44907
+    },
+    {
+      "id": "83aa074f-0fe3-4405-986e-91a3af193b40",
+      "name": "CIEMAT-test_51",
+      "status": "has_valid_data",
+      "valid_count": 34300,
+      "total_count": 34300
+    },
+    {
+      "id": "8e4ad542-3a42-4027-a569-059cf78310a2",
+      "name": "CIEMAT-test_52",
+      "status": "has_valid_data",
+      "valid_count": 47627,
+      "total_count": 47627
+    },
+    {
+      "id": "40d548bb-4b44-4e2e-b16a-5e896df6a39e",
+      "name": "CIEMAT-test_53",
+      "status": "has_valid_data",
+      "valid_count": 38225,
+      "total_count": 38225
+    },
+    {
+      "id": "d9946e4b-9307-41fb-84e5-7b94c7f64c06",
+      "name": "CIEMAT-test_54",
+      "status": "has_valid_data",
+      "valid_count": 45077,
+      "total_count": 45077
+    },
+    {
+      "id": "f320930d-8aee-4cd7-8ac5-85d2c0c94455",
+      "name": "CIEMAT-test_55",
+      "status": "has_valid_data",
+      "valid_count": 65725,
+      "total_count": 65725
+    },
+    {
+      "id": "9eace9c2-a6d3-4ff8-a1e6-862cdef0e9cb",
+      "name": "CIEMAT-test_57",
+      "status": "has_valid_data",
+      "valid_count": 43832,
+      "total_count": 43832
+    },
+    {
+      "id": "e3dc7c7f-dae5-480a-a76a-86ed9e99048d",
+      "name": "CIEMAT-test_59",
+      "status": "has_valid_data",
+      "valid_count": 41440,
+      "total_count": 41440
+    },
+    {
+      "id": "4d58abc4-e114-4639-9f7b-7aeb0f484995",
+      "name": "CIEMAT-test_60",
+      "status": "has_valid_data",
+      "valid_count": 47147,
+      "total_count": 47147
+    },
+    {
+      "id": "80fe8730-7a04-4aab-9842-82e9096c19b4",
+      "name": "CIEMAT-test_61",
+      "status": "has_valid_data",
+      "valid_count": 53122,
+      "total_count": 53122
+    },
+    {
+      "id": "41667ada-8824-4ee4-8fb3-626de9f35156",
+      "name": "CIEMAT-test_63",
+      "status": "has_valid_data",
+      "valid_count": 39168,
+      "total_count": 39168
+    },
+    {
+      "id": "2d192eff-e8af-4fcc-99fc-f7205ffc110f",
+      "name": "CIEMAT-test_64",
+      "status": "has_valid_data",
+      "valid_count": 6474,
+      "total_count": 6474
+    },
+    {
+      "id": "52d66179-a18f-4f3f-97aa-8b01a76ac4a7",
+      "name": "CIEMAT-test_65",
+      "status": "has_valid_data",
+      "valid_count": 50039,
+      "total_count": 50039
+    },
+    {
+      "id": "9cef83d5-1dc2-431e-b51d-4fe5ed486d24",
+      "name": "CIEMAT-test_66",
+      "status": "has_valid_data",
+      "valid_count": 48859,
+      "total_count": 48859
+    },
+    {
+      "id": "10eb786f-786b-4d20-8bae-80bbc504a270",
+      "name": "CIEMAT-test_67",
+      "status": "has_valid_data",
+      "valid_count": 53213,
+      "total_count": 53213
+    },
+    {
+      "id": "a731775a-c4ad-43b7-8a92-dacac4d41f3f",
+      "name": "CIEMAT-test_68",
+      "status": "has_valid_data",
+      "valid_count": 51526,
+      "total_count": 51526
+    },
+    {
+      "id": "2ccb6129-c01e-4a71-9a9d-4aa3a977f82e",
+      "name": "CIEMAT-test_69",
+      "status": "has_valid_data",
+      "valid_count": 49883,
+      "total_count": 49883
+    },
+    {
+      "id": "769a994b-1f7e-4716-b2cd-dc4790c67b61",
+      "name": "CIEMAT-test_70",
+      "status": "has_valid_data",
+      "valid_count": 12197,
+      "total_count": 12197
+    },
+    {
+      "id": "1d1bb3f7-0148-4220-826f-39904f4a14f2",
+      "name": "CIEMAT-test_71",
+      "status": "has_valid_data",
+      "valid_count": 61306,
+      "total_count": 61306
+    },
+    {
+      "id": "af25b59b-6bb6-4c98-b520-d0a04302ee0b",
+      "name": "CIEMAT-test_72",
+      "status": "has_valid_data",
+      "valid_count": 44801,
+      "total_count": 44801
+    },
+    {
+      "id": "efe7a7e7-6aca-4c03-9912-331743cf5fcc",
+      "name": "CIEMAT-test_73",
+      "status": "has_valid_data",
+      "valid_count": 48783,
+      "total_count": 48783
+    },
+    {
+      "id": "0b9cb7e6-4920-47c2-8b72-4024dace9c61",
+      "name": "CIEMAT-test_74",
+      "status": "has_valid_data",
+      "valid_count": 49106,
+      "total_count": 49106
+    },
+    {
+      "id": "ed1800f5-53ad-4730-bace-5466cd5d9899",
+      "name": "CIEMAT-test_75",
+      "status": "has_valid_data",
+      "valid_count": 52240,
+      "total_count": 52240
+    },
+    {
+      "id": "ff050494-6355-4322-8e2c-afac9bd88bfc",
+      "name": "CIEMAT-test_76",
+      "status": "has_valid_data",
+      "valid_count": 50627,
+      "total_count": 50627
+    },
+    {
+      "id": "5679f887-a9e6-4930-b353-904c58f90497",
+      "name": "CIEMAT-test_77",
+      "status": "has_valid_data",
+      "valid_count": 48849,
+      "total_count": 48849
+    },
+    {
+      "id": "cc2aa220-bea5-4246-b02c-33046a7563da",
+      "name": "CIEMAT-test_78",
+      "status": "has_valid_data",
+      "valid_count": 47094,
+      "total_count": 47094
+    },
+    {
+      "id": "83b15b4b-5a52-42d2-b661-92eb19eefc51",
+      "name": "CIEMAT-test_79",
+      "status": "has_valid_data",
+      "valid_count": 49868,
+      "total_count": 49868
+    },
+    {
+      "id": "4a5d32de-0940-4007-9fa7-5087d0f07fb9",
+      "name": "CIEMAT-test_80",
+      "status": "has_valid_data",
+      "valid_count": 52007,
+      "total_count": 52007
+    },
+    {
+      "id": "d9f3ab3a-5e41-4bfc-ae81-5faab152771c",
+      "name": "CIEMAT-test_81",
+      "status": "has_valid_data",
+      "valid_count": 49382,
+      "total_count": 49382
+    },
+    {
+      "id": "51ef2f2b-4b5b-498f-8d0f-c366d0674b48",
+      "name": "CIEMAT-test_82",
+      "status": "has_valid_data",
+      "valid_count": 43878,
+      "total_count": 43878
+    },
+    {
+      "id": "19024aad-46c2-4e2b-a647-f600eff1726e",
+      "name": "CIEMAT-test_83",
+      "status": "has_valid_data",
+      "valid_count": 51083,
+      "total_count": 51083
+    },
+    {
+      "id": "d845331c-00a4-45c5-bef0-779b5a02535e",
+      "name": "CIEMAT-test_84",
+      "status": "has_valid_data",
+      "valid_count": 52541,
+      "total_count": 52541
+    },
+    {
+      "id": "0b92716e-cdcb-463e-8fc4-9debe680b2cc",
+      "name": "CIEMAT-test_85",
+      "status": "has_valid_data",
+      "valid_count": 46561,
+      "total_count": 46561
+    },
+    {
+      "id": "086af119-653f-4038-af7e-ca25bab09292",
+      "name": "CIEMAT-test_86",
+      "status": "has_valid_data",
+      "valid_count": 58603,
+      "total_count": 58603
+    },
+    {
+      "id": "5cce3251-d71c-4881-953b-104afef49bd1",
+      "name": "CIEMAT-test_87",
+      "status": "has_valid_data",
+      "valid_count": 34602,
+      "total_count": 34602
+    },
+    {
+      "id": "d2e29dd0-9ad0-4422-9ff5-2add249ca12b",
+      "name": "CIEMAT-test_88",
+      "status": "has_valid_data",
+      "valid_count": 49319,
+      "total_count": 49319
+    },
+    {
+      "id": "ba8716a6-a07a-46d4-a360-fec674cef495",
+      "name": "CIEMAT-test_89",
+      "status": "has_valid_data",
+      "valid_count": 45101,
+      "total_count": 45101
+    },
+    {
+      "id": "2eda0feb-83e3-467f-862a-f37406ba20be",
+      "name": "CIEMAT-test_90",
+      "status": "has_valid_data",
+      "valid_count": 6800,
+      "total_count": 6800
+    },
+    {
+      "id": "7b05ec3c-9239-4b57-95ec-34bf36a9bc5b",
+      "name": "CIEMAT-test_91",
+      "status": "has_valid_data",
+      "valid_count": 45686,
+      "total_count": 45686
+    },
+    {
+      "id": "6b5c2df9-d856-470e-96ce-7cd0375fa734",
+      "name": "CIEMAT-test_93",
+      "status": "has_valid_data",
+      "valid_count": 40137,
+      "total_count": 40137
+    },
+    {
+      "id": "b0e47c4a-3f59-4db8-bc1c-8ae246c421ed",
+      "name": "CIEMAT-test_95",
+      "status": "has_valid_data",
+      "valid_count": 53606,
+      "total_count": 53606
+    },
+    {
+      "id": "a347885a-af9d-483a-92a0-f2cd10ab1b1b",
+      "name": "CIEMAT-test_96",
+      "status": "has_valid_data",
+      "valid_count": 49957,
+      "total_count": 49957
+    },
+    {
+      "id": "b74b73d9-24c5-4d56-86ba-8ddb4bed53c5",
+      "name": "CIEMAT-test_97",
+      "status": "has_valid_data",
+      "valid_count": 43976,
+      "total_count": 43976
+    },
+    {
+      "id": "a0ef4f33-5b02-48d9-92d7-1e7071d8e5d5",
+      "name": "CIEMAT-test_98",
+      "status": "has_valid_data",
+      "valid_count": 51202,
+      "total_count": 51202
+    },
+    {
+      "id": "ae9bca7f-a1d7-4533-9915-65dee85e3739",
+      "name": "CIEMAT-test_99",
+      "status": "has_valid_data",
+      "valid_count": 53344,
+      "total_count": 53344
+    },
+    {
+      "id": "c6cf50dc-6524-4662-8d91-9c7e37401a9a",
+      "name": "CIEMAT-test_102",
+      "status": "has_valid_data",
+      "valid_count": 49363,
+      "total_count": 49363
+    },
+    {
+      "id": "4887e344-799a-4a1e-84da-ded08a185f4d",
+      "name": "CIEMAT-test_103",
+      "status": "has_valid_data",
+      "valid_count": 38063,
+      "total_count": 38063
+    },
+    {
+      "id": "c2d8a52f-7426-4dfc-94ad-c8ce52740443",
+      "name": "CIEMAT-test_100",
+      "status": "has_valid_data",
+      "valid_count": 49124,
+      "total_count": 49124
+    },
+    {
+      "id": "21269c63-8d07-45a6-bb69-b7e0c3e96392",
+      "name": "CIEMAT-test_104",
+      "status": "has_valid_data",
+      "valid_count": 53964,
+      "total_count": 53964
+    },
+    {
+      "id": "b4ce82ab-4f3a-4714-88a4-806dfbdc1715",
+      "name": "CIEMAT-test_106",
+      "status": "has_valid_data",
+      "valid_count": 45154,
+      "total_count": 45154
+    },
+    {
+      "id": "e7aa267d-d5fe-4954-978b-c8214bc8df7c",
+      "name": "CIEMAT-test_107",
+      "status": "has_valid_data",
+      "valid_count": 51164,
+      "total_count": 51164
+    },
+    {
+      "id": "f0636bb0-66c5-40a0-957c-dd66da355c60",
+      "name": "CIEMAT-test_114",
+      "status": "has_valid_data",
+      "valid_count": 34053,
+      "total_count": 34053
+    },
+    {
+      "id": "5bffae2a-820b-4d24-872d-b25b3641ffd2",
+      "name": "CIEMAT-test_117",
+      "status": "has_valid_data",
+      "valid_count": 39559,
+      "total_count": 39559
+    },
+    {
+      "id": "86d6deaf-66ca-4198-9be2-c37b1d9a4e8d",
+      "name": "CIEMAT-test_119",
+      "status": "has_valid_data",
+      "valid_count": 39474,
+      "total_count": 39474
+    },
+    {
+      "id": "939bfb54-da62-42e4-9dcc-45512aeaceeb",
+      "name": "CIEMAT-test_121",
+      "status": "has_valid_data",
+      "valid_count": 38533,
+      "total_count": 38533
+    },
+    {
+      "id": "2ed26233-0f94-4251-ae76-3dbc4dd6074b",
+      "name": "CIEMAT-test_135",
+      "status": "has_valid_data",
+      "valid_count": 34618,
+      "total_count": 34618
+    },
+    {
+      "id": "182f665e-9d5a-457f-a1cd-ebe0eb1d2b56",
+      "name": "CIEMAT-test_136",
+      "status": "has_valid_data",
+      "valid_count": 34466,
+      "total_count": 34466
+    },
+    {
+      "id": "9ee15590-0f61-47b8-bf50-5299d010aa87",
+      "name": "CIEMAT-test_371",
+      "status": "has_valid_data",
+      "valid_count": 52740,
+      "total_count": 52740
+    },
+    {
+      "id": "1099f3a3-040e-4daa-9e41-eda39ca59f4c",
+      "name": "CIEMAT-test_179_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 50725,
+      "total_count": 50725
+    },
+    {
+      "id": "de77a3aa-46f6-4b7f-86df-b9571e244353",
+      "name": "CIEMAT-test_180_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 44873,
+      "total_count": 44873
+    },
+    {
+      "id": "67ad3ea0-4e86-497f-89e7-769b54f3d2a0",
+      "name": "CIEMAT-test_181_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 56181,
+      "total_count": 56181
+    },
+    {
+      "id": "49636aa1-d006-4a0b-9291-a0641d769120",
+      "name": "LOCA_KIT_CESAR_in_ou_s996",
+      "status": "has_valid_data",
+      "valid_count": 53774,
+      "total_count": 53774
+    },
+    {
+      "id": "03bce556-f5b4-47c0-aca8-7380ad9e643c",
+      "name": "SBO_KIT_CESAR_in_ou_s182",
+      "status": "has_valid_data",
+      "valid_count": 50552,
+      "total_count": 50552
+    },
+    {
+      "id": "c225e348-41e5-4294-aa15-55c09553d950",
+      "name": "CIEMAT-test_196_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 50812,
+      "total_count": 50812
+    },
+    {
+      "id": "53290548-95b4-4bb6-8257-136c8cb6da36",
+      "name": "LOCA_KIT_CESAR_in_ou_s988",
+      "status": "has_valid_data",
+      "valid_count": 55734,
+      "total_count": 55734
+    },
+    {
+      "id": "ca42c362-dc68-4b65-8ebf-1c492ac088a8",
+      "name": "LOCA_KIT_CESAR_in_ou_s981",
+      "status": "has_valid_data",
+      "valid_count": 53047,
+      "total_count": 53047
+    },
+    {
+      "id": "b437933c-895a-4074-8717-cafd4b5c0e1c",
+      "name": "LOCA_KIT_CESAR_in_ou_s989",
+      "status": "has_valid_data",
+      "valid_count": 52891,
+      "total_count": 52891
+    },
+    {
+      "id": "95cb335a-121a-4773-8be0-3fef7d32ed6a",
+      "name": "CIEMAT-test_190_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 66009,
+      "total_count": 66009
+    },
+    {
+      "id": "c511f7be-5128-4074-85b2-99f4c9101c42",
+      "name": "CIEMAT-test_188_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 39439,
+      "total_count": 39439
+    },
+    {
+      "id": "2567410c-8a23-40ed-b4e2-be8ea6bb00d3",
+      "name": "CIEMAT-test_199_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 46378,
+      "total_count": 46378
+    },
+    {
+      "id": "ceb822b6-3a94-4013-8d5e-db6bd960ddd8",
+      "name": "SBO_KIT_CESAR_in_ou_s195",
+      "status": "has_valid_data",
+      "valid_count": 47265,
+      "total_count": 47265
+    },
+    {
+      "id": "5010cde2-66a3-470e-ad15-42accd306a85",
+      "name": "SBO_KIT_CESAR_in_ou_s194",
+      "status": "has_valid_data",
+      "valid_count": 48668,
+      "total_count": 48668
+    },
+    {
+      "id": "bccd555e-4dd2-4272-92d8-0eda28e3be0e",
+      "name": "CIEMAT-test_189_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 48433,
+      "total_count": 48433
+    },
+    {
+      "id": "003230cc-7e1d-40c6-bae0-c8e33af3d358",
+      "name": "SBO_KIT_CESAR_in_ou_s199",
+      "status": "has_valid_data",
+      "valid_count": 64733,
+      "total_count": 64733
+    },
+    {
+      "id": "8d9402d7-a747-4e35-9c3c-1074cbf1c2b1",
+      "name": "LOCA_KIT_CESAR_in_ou_s986",
+      "status": "has_valid_data",
+      "valid_count": 47032,
+      "total_count": 47032
+    },
+    {
+      "id": "50860ab2-382a-428c-bc33-c0cd1248df4b",
+      "name": "SBO_KIT_CESAR_in_ou_s196",
+      "status": "has_valid_data",
+      "valid_count": 62749,
+      "total_count": 62749
+    },
+    {
+      "id": "a75b6e0d-18c1-4341-91ae-c23aea7d74eb",
+      "name": "SBO_KIT_CESAR_in_ou_s187",
+      "status": "has_valid_data",
+      "valid_count": 56264,
+      "total_count": 56264
+    },
+    {
+      "id": "03ae6e2c-85b5-4d92-90e1-2ac381aface1",
+      "name": "LOCA_KIT_CESAR_in_ou_s997",
+      "status": "has_valid_data",
+      "valid_count": 53492,
+      "total_count": 53492
+    },
+    {
+      "id": "8a63cb1c-e2a9-412d-80a6-f6e9a014982d",
+      "name": "SBO_KIT_CESAR_in_ou_s190",
+      "status": "has_valid_data",
+      "valid_count": 68624,
+      "total_count": 68624
+    },
+    {
+      "id": "399a7dfd-ca09-41da-81a1-d80a6836f37e",
+      "name": "LOCA_KIT_CESAR_in_ou_s993",
+      "status": "has_valid_data",
+      "valid_count": 69166,
+      "total_count": 69166
+    },
+    {
+      "id": "6778ea1b-a5a0-4a3b-805d-4f7fa175eb1e",
+      "name": "CIEMAT-test_197_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 57039,
+      "total_count": 57039
+    },
+    {
+      "id": "9e75bb56-97f9-40ec-b8b1-2741283dcd50",
+      "name": "LOCA_KIT_CESAR_in_ou_s999",
+      "status": "has_valid_data",
+      "valid_count": 53881,
+      "total_count": 53881
+    },
+    {
+      "id": "e6bb503a-11cd-47f7-8ca7-0206519c4e59",
+      "name": "CIEMAT-test_194_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 73685,
+      "total_count": 73685
+    },
+    {
+      "id": "b2635507-9b0a-485b-997b-75b28c8f6761",
+      "name": "SBO_KIT_CESAR_in_ou_s188",
+      "status": "has_valid_data",
+      "valid_count": 47048,
+      "total_count": 47048
+    },
+    {
+      "id": "e6fc20e0-123b-4e81-8ceb-73c999728db2",
+      "name": "SBO_KIT_CESAR_in_ou_s180",
+      "status": "has_valid_data",
+      "valid_count": 28960,
+      "total_count": 28960
+    },
+    {
+      "id": "72f033f7-50fd-4c47-a903-9ed40b4a1228",
+      "name": "CIEMAT-test_195_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 42679,
+      "total_count": 42679
+    },
+    {
+      "id": "5e66ae33-8950-441f-bfde-e2214ea1e886",
+      "name": "LOCA_KIT_CESAR_in_ou_s991",
+      "status": "has_valid_data",
+      "valid_count": 53948,
+      "total_count": 53948
+    },
+    {
+      "id": "f5020755-2e5c-4139-86d4-b17d3a9843d7",
+      "name": "LOCA_KIT_CESAR_in_ou_s994",
+      "status": "has_valid_data",
+      "valid_count": 1,
+      "total_count": 1
+    },
+    {
+      "id": "1fb00973-2fef-46c9-8c87-aabdd4ab6caf",
+      "name": "CIEMAT-test_187_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 50258,
+      "total_count": 50258
+    },
+    {
+      "id": "5cf865e9-1a4f-4a4a-a889-b123feb67d73",
+      "name": "SBO_KIT_CESAR_in_ou_s192",
+      "status": "has_valid_data",
+      "valid_count": 68716,
+      "total_count": 68716
+    },
+    {
+      "id": "64a07f4b-2ff1-44b8-8edc-6b0248208ea3",
+      "name": "LOCA_KIT_CESAR_in_ou_s990",
+      "status": "has_valid_data",
+      "valid_count": 49365,
+      "total_count": 49365
+    },
+    {
+      "id": "0fe2d59c-d275-4602-a9d2-be5c2ce560e9",
+      "name": "CIEMAT-test_192_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 54085,
+      "total_count": 54085
+    },
+    {
+      "id": "c293a2a0-b252-4d60-b8a0-c1aac0c111f1",
+      "name": "LOCA_KIT_CESAR_in_ou_s982",
+      "status": "has_valid_data",
+      "valid_count": 14167,
+      "total_count": 14167
+    },
+    {
+      "id": "42018d5e-d168-4eaa-a669-0ec96124b0dd",
+      "name": "CIEMAT-test_198_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 50298,
+      "total_count": 50298
+    },
+    {
+      "id": "91e8db29-3316-42d7-a1b9-935a629e9975",
+      "name": "LOCA_KIT_CESAR_in_ou_s995",
+      "status": "has_valid_data",
+      "valid_count": 18045,
+      "total_count": 18045
+    },
+    {
+      "id": "1501a566-c04f-4e6b-80dd-0d1e8d94ea47",
+      "name": "LOCA_KIT_CESAR_in_ou_s985",
+      "status": "has_valid_data",
+      "valid_count": 54119,
+      "total_count": 54119
+    },
+    {
+      "id": "8457b91f-9baf-44dc-b0db-648f23a879d6",
+      "name": "LOCA_KIT_CESAR_in_ou_s992",
+      "status": "has_valid_data",
+      "valid_count": 19866,
+      "total_count": 19866
+    },
+    {
+      "id": "31a95726-5fe0-422f-9596-97d71b6cde5c",
+      "name": "LOCA_KIT_CESAR_in_ou_s987",
+      "status": "has_valid_data",
+      "valid_count": 44999,
+      "total_count": 44999
+    },
+    {
+      "id": "ba5d7f92-655e-4173-90d5-eb469fd0473c",
+      "name": "CIEMAT-test_191_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 59505,
+      "total_count": 59505
+    },
+    {
+      "id": "f6481cb3-eb00-437d-a4db-2a1b5fc972cf",
+      "name": "SBO_KIT_CESAR_in_ou_s193",
+      "status": "has_valid_data",
+      "valid_count": 70736,
+      "total_count": 70736
+    },
+    {
+      "id": "2740abe2-1962-4905-b7cf-ccb0ee4f4788",
+      "name": "CIEMAT-test_193_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 55609,
+      "total_count": 55609
+    },
+    {
+      "id": "bbdb8bd5-76b5-462f-8862-e7215fffb2ba",
+      "name": "SBO_KIT_CESAR_in_ou_s191",
+      "status": "has_valid_data",
+      "valid_count": 49018,
+      "total_count": 49018
+    },
+    {
+      "id": "f7071a88-d5f5-4ad8-a09f-09fd6af0346f",
+      "name": "CIEMAT-test_185_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 6012,
+      "total_count": 6012
+    },
+    {
+      "id": "e6e71c1e-7650-4a1f-a34b-668439dd4134",
+      "name": "SBO_KIT_CESAR_in_ou_s197",
+      "status": "has_valid_data",
+      "valid_count": 52984,
+      "total_count": 52984
+    },
+    {
+      "id": "1ddefe1a-7042-4c62-ab52-7430651dfee1",
+      "name": "LOCA_KIT_CESAR_in_ou_s980",
+      "status": "has_valid_data",
+      "valid_count": 40810,
+      "total_count": 40810
+    },
+    {
+      "id": "4911ffeb-1e50-4f56-855c-bc4737235ddc",
+      "name": "SBO_KIT_CESAR_in_ou_s186",
+      "status": "has_valid_data",
+      "valid_count": 47997,
+      "total_count": 47997
+    },
+    {
+      "id": "8c6b568b-e320-4c5c-8050-728dbc098e91",
+      "name": "SBO_KIT_CESAR_in_ou_s198",
+      "status": "has_valid_data",
+      "valid_count": 49737,
+      "total_count": 49737
+    },
+    {
+      "id": "a6bf82bb-46cb-4fdd-ae6f-66c4123a7c10",
+      "name": "CIEMAT-test_184_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 51760,
+      "total_count": 51760
+    },
+    {
+      "id": "cd70e697-0e3f-42aa-ab1f-cae1837548d4",
+      "name": "CIEMAT-test_183_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 65647,
+      "total_count": 65647
+    },
+    {
+      "id": "7de4e171-158a-48ba-b4c3-d7f33e61e88d",
+      "name": "LOCA_KIT_CESAR_in_ou_s998",
+      "status": "has_valid_data",
+      "valid_count": 56905,
+      "total_count": 56905
+    },
+    {
+      "id": "25a6b066-e2c6-4522-b080-6476e11837fb",
+      "name": "LOCA_KIT_CESAR_in_ou_s983",
+      "status": "has_valid_data",
+      "valid_count": 10,
+      "total_count": 10
+    },
+    {
+      "id": "c2d42ede-18be-4a4f-82b3-d0e77e81aee9",
+      "name": "CIEMAT-test_186_CESAR-IO",
+      "status": "has_valid_data",
+      "valid_count": 48264,
+      "total_count": 48264
+    },
+    {
+      "id": "e9de5a4b-a643-463f-af01-e9b77eb9f187",
+      "name": "SBO_KIT_CESAR_in_ou_s184",
+      "status": "has_valid_data",
+      "valid_count": 63222,
+      "total_count": 63222
+    },
+    {
+      "id": "ea89d253-fdd8-4c2e-934c-9a77141d5358",
+      "name": "SBO_KIT_CESAR_in_ou_s185",
+      "status": "has_valid_data",
+      "valid_count": 49539,
+      "total_count": 49539
+    },
+    {
+      "id": "2277fc01-db6e-4f77-9b10-0b1a38e45d9e",
+      "name": "LOCA_KIT_CESAR_in_ou_s984",
+      "status": "has_valid_data",
+      "valid_count": 53202,
+      "total_count": 53202
+    }
+  ]
+}
