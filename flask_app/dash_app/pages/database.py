@@ -32,7 +32,7 @@ from zipfile import ZipFile
 from uuid import uuid4
 from pathlib import Path
 from typing import List, Tuple
-
+from ...utils.url_utils import get_base_url
 from assasdb import AssasDatabaseManager, AssasDatabaseHandler
 
 # Define a common style dictionary
@@ -107,15 +107,16 @@ def update_table_data() -> pd.DataFrame:
 
     # Clean the data first
     table_data_local = clean_column_data(table_data_local)
-
+    download_url = f"{get_base_url()}/files/download/"
     table_data_local["system_download"] = [
-        f'<a href="/assas_app/hdf5_file?uuid={entry.system_uuid}">hdf5 file</a>'
+        f'<a href="{download_url}{entry.system_uuid}">hdf5 file</a>'
         if entry.system_status == "Valid"
         else '<span class="no-download">no hdf5 file</span>'
         for entry in table_data_local.itertuples()
     ]
+    details_url = f"{get_base_url()}/details/"
     table_data_local["meta_name"] = [
-        f'<a href="/assas_app/details/{entry.system_uuid}">{entry.meta_name}</a>'
+        f'<a href="{details_url}{entry.system_uuid}">{entry.meta_name}</a>'
         for entry in table_data_local.itertuples()
     ]
 

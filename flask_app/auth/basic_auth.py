@@ -241,12 +241,18 @@ def basic_login():
         return redirect(build_url("/"))
 
     if request.method == "POST":
+        logger.info("Processing basic auth login form submission.")
+        
+        
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
 
         if not username or not password:
+            logger.error(f"Missing username or password.")
             flash("Please provide both username and password", "error")
             return render_template("auth/basic_login.html")
+        else:
+            logger.info(f"Attempting login for user: {username}")
 
         # Try authentication
         if BasicAuthUserManager.verify_password(username, password):
