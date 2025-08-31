@@ -950,6 +950,11 @@ def init_dashboard(server: object) -> object:
             logger.info("Allowing auth route")
             return None
 
+        # for development
+        if request.path.startswith(f"{get_base_url()}/companion/"):
+            logger.info("Allowing development route")
+            return None
+
         # Allow static assets
         if request.path.startswith("/static/") or request.path.startswith("/_dash"):
             return None

@@ -5,7 +5,7 @@ import uuid
 import shutil
 import pandas as pd
 
-from flask import session, redirect, send_file, request, jsonify, Response
+from flask import session, request, redirect, send_file, jsonify, Response
 from flask import current_app as app
 from pathlib import Path
 

@@ -1,0 +1,425 @@
+<!-- templates/upload.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload to MinIO (LSDF)</title>
+  <link href="https://releases.transloadit.com/uppy/v3.13.0/uppy.min.css" rel="stylesheet">
+  <script src="https://releases.transloadit.com/uppy/v3.13.0/uppy.min.js"></script>
+  <style>
+    html, body { height: 100%; margin: 0; padding: 0; }
+    #drag-drop-area {
+      min-height: 400px;
+      height: auto;
+      margin-bottom: 1em;
+    }
+    #custom-progress-bar {
+      width: 100%; background: #eee; height: 24px; border-radius: 12px; margin: 1em 0;
+      overflow: hidden; display: block; border: 1px solid #ccc;
+      position: relative;
+    }
+    #custom-progress-bar-inner {
+      height: 100%; width: 0%; background: #007bff; transition: width 0.2s;
+    }
+    #input-section {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 1em 1.5em 1em 1.5em;
+      margin: 1em 0 1.5em 0;
+      border: 1px solid #ddd;
+      max-width: 600px;
+    }
+    #input-section label {
+      font-weight: bold;
+      display: block;
+      margin-top: 0.7em;
+      margin-bottom: 0.2em;
+    }
+    #input-section input, #input-section textarea {
+      width: 100%;
+      padding: 0.4em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+    #input-section textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    /* Animated stripes for loading */
+    #custom-progress-bar-inner.loading {
+      background: repeating-linear-gradient(
+        45deg,
+        #ffc107,
+        #ffc107 10px,
+        #ffe066 10px,
+        #ffe066 20px
+      );
+      animation: progress-bar-stripes 1s linear infinite;
+    }
+    .uppy-Dashboard-uploadButton {
+      display: none !important;
+    }
+    @keyframes progress-bar-stripes {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 0; }
+    }
+  </style>
+</head>
+<body>
+  <h2>Upload Folder or Files to LSDF (MinIO)</h2>
+  <div id="input-section">
+    <label for="astec-archive-path">ASTEC Archive Path (relative to uploaded folder)</label>
+    <input type="text" id="astec-archive-path" name="astec-archive-path" placeholder="e.g. myfolder/archive.zip" required>
+
+    <label for="archive-name">Name</label>
+    <input type="text" id="archive-name" name="archive-name" placeholder="Archive name" required>
+
+    <label for="archive-description">Description</label>
+    <textarea id="archive-description" name="archive-description" placeholder="Short description"></textarea>
+
+    <label for="creation-date">Creation Date</label>
+    <input type="date" id="creation-date" name="creation-date" value="">
+  </div>
+  <div id="uuid-section" style="margin-bottom:1em;">
+    <label for="upload-uuid"><b>Upload UUID:</b></label>
+    <select id="upload-uuid"></select>
+    <button id="new-uuid-btn" type="button">New Upload</button>
+  </div>
+  <div id="loading-label" style="font-weight:bold; color:#ffc107; margin-bottom:0.2em; display:block;">Loading progress</div>
+  <div id="custom-progress-bar"><div id="custom-progress-bar-inner"></div></div>
+  <div id="drag-drop-area"></div>
+  <button id="start-batch-upload" style="margin:1em 0; padding:0.7em 1.5em; font-size:1.1em; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer;">Upload Files in Batches</button>
+  <div id="upload-log"></div>
+  <div id="upload-status"></div>
+  <script>
+    // Start
+    console.log("Uppy version:", Uppy.version);
+    const BASE_URL = "{{ base_url }}";
+
+    function generateUUID() {
+      // Simple UUID v4 generator
+      return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      );
+    }
+
+    async function loadUUIDs() {
+      const resp = await fetch(BASE_URL + '/list-uploads');
+      const { uuids } = await resp.json();
+      const select = document.getElementById('upload-uuid');
+      select.innerHTML = '';
+      uuids.forEach(uuid => {
+        const opt = document.createElement('option');
+        opt.value = uuid;
+        opt.textContent = uuid;
+        select.appendChild(opt);
+      });
+    }
+
+    async function createUploadFolder(uuid) {
+      const resp = await fetch(BASE_URL + '/create-upload-folder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uuid })
+      });
+      const data = await resp.json();
+      if (data.created) {
+        logMessage(`Created folder for upload UUID: ${uuid}`);
+      } else {
+        logMessage(`Failed to create folder for UUID: ${uuid}`);
+      }
+    }
+
+    document.getElementById('new-uuid-btn').addEventListener('click', async () => {
+      const uuid = generateUUID();
+      const select = document.getElementById('upload-uuid');
+      const opt = document.createElement('option');
+      opt.value = uuid;
+      opt.textContent = uuid;
+      select.appendChild(opt);
+      select.value = uuid;
+      logMessage(`Generated new upload UUID: ${uuid}`);
+      await createUploadFolder(uuid); // <-- Ensure folder is created in MinIO
+    });
+
+    // Load UUIDs on page load
+    loadUUIDs();
+
+    // Log function
+    function logMessage(msg) {
+      let logDiv = document.getElementById('upload-log');
+      if (!logDiv) {
+        logDiv = document.createElement('div');
+        logDiv.id = 'upload-log';
+        logDiv.style = "background:#222;color:#eee;font-family:monospace;font-size:0.95em;padding:0.5em;margin-top:1em;max-height:200px;overflow:auto;border-radius:4px;clear:both;";
+        document.body.appendChild(logDiv);
+      }
+      const now = new Date().toLocaleTimeString();
+      logDiv.innerHTML += `[${now}] ${msg}<br>`;
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    // Initial state
+    document.getElementById('custom-progress-bar').style.display = 'block';
+    document.getElementById('custom-progress-bar-inner').style.width = '0%';
+    document.getElementById('upload-status').textContent = 'Ready. Drag files or folders here.';
+    document.getElementById('loading-label').style.display = 'block';
+
+    // Native drag events for instant feedback
+    const dragDropArea = document.getElementById('drag-drop-area');
+    let dragTimeout = null;
+
+    dragDropArea.addEventListener('dragenter', (e) => {
+      document.getElementById('custom-progress-bar').style.display = 'block';
+      document.getElementById('custom-progress-bar-inner').style.width = '100%';
+      document.getElementById('custom-progress-bar-inner').classList.add('loading');
+      document.getElementById('upload-status').textContent = 'Loading files...';
+      document.getElementById('loading-label').style.display = 'block';
+      if (dragTimeout) clearTimeout(dragTimeout);
+    });
+
+    dragDropArea.addEventListener('dragleave', (e) => {
+      dragTimeout = setTimeout(() => {
+        document.getElementById('custom-progress-bar-inner').style.width = '0%';
+        document.getElementById('custom-progress-bar-inner').classList.remove('loading');
+        document.getElementById('upload-status').textContent = 'Ready. Drag files or folders here.';
+        document.getElementById('loading-label').style.display = 'none';
+      }, 200);
+    });
+
+    dragDropArea.addEventListener('drop', (e) => {
+      document.getElementById('custom-progress-bar').style.display = 'block';
+      document.getElementById('custom-progress-bar-inner').style.width = '100%';
+      document.getElementById('custom-progress-bar-inner').classList.add('loading');
+      document.getElementById('upload-status').textContent = 'Processing files...';
+      document.getElementById('loading-label').style.display = 'block';
+    });
+
+    const MULTIPART_THRESHOLD = 5 * 1024 * 1024; // 5MB
+
+    // Uppy logic
+    console.log("Initializing Uppy, threshold:", MULTIPART_THRESHOLD);
+    const uppy = new Uppy.Uppy({ debug: true, autoProceed: false })
+      .use(Uppy.Dashboard, {
+        inline: true,
+        target: '#drag-drop-area',
+        showProgressDetails: true,
+        note: 'You can select a folder or multiple files!',
+        proudlyDisplayPoweredByUppy: false,
+      })
+      uppy.use(Uppy.AwsS3, {
+        companionUrl: BASE_URL + '/companion',
+        limit: 5,
+        getUploadParameters: (file) => {
+          const uuid = document.getElementById('upload-uuid').value;
+          return fetch(
+            `${BASE_URL}/companion/s3/params?filename=${encodeURIComponent(file.name)}&type=${encodeURIComponent(file.type)}&uuid=${encodeURIComponent(uuid)}`
+          )
+            .then((response) => response.json());
+        }
+        //getUploadParameters(file) {
+        //  const uuid = document.getElementById('upload-uuid').value;
+        //  return {
+        //    method: 'PUT',
+        //    key: `${uuid}/${file.name}`,
+        //    // ...other params as needed
+        //  };
+        //}
+      })
+      .use(Uppy.AwsS3Multipart, {
+        companionUrl: BASE_URL + '/companion',
+        limit: 5,
+        getUploadPartUrl(file, { key, uploadId, partNumber }) {
+          // Always use the UUID as prefix for the key
+          const uuid = document.getElementById('upload-uuid').value;
+          const keyWithUuid = `${uuid}/${file.name}`;
+          return `${BASE_URL}/companion/s3/multipart/${uploadId}/${partNumber}?key=${encodeURIComponent(keyWithUuid)}&type=${encodeURIComponent(file.type)}`;
+        },
+        headers: {
+          'X-Custom-Header': 'bar'
+        },
+        shouldUseMultipart: (file) => {
+          console.log('shouldUseMultipart called for file:', file.name, 'size:', file.size);
+          return file.size >= MULTIPART_THRESHOLD;
+        }        
+      });
+
+    function getMetadataFile() {
+      const metadata = {
+        astec_archive_path: document.getElementById('astec-archive-path').value,
+        name: document.getElementById('archive-name').value,
+        description: document.getElementById('archive-description').value,
+        creation_date: document.getElementById('creation-date').value,
+      };
+      const blob = new Blob([JSON.stringify(metadata, null, 2)], {type: "application/json"});
+      return new File([blob], "metadata.json", {type: "application/json"});
+    }
+
+    async function checkFilesInBatches(files, batchSize = 200) {
+      let existingFiles = [];
+      const uuid = document.getElementById('upload-uuid').value;
+      for (let i = 0; i < files.length; i += batchSize) {
+        const batch = files.slice(i, i + batchSize);
+        logMessage(`Checking batch: ${batch.map(f => f.name).join(', ')}`);
+        try {
+          const response = await fetch(BASE_URL + '/check-files', {
+            method: 'POST',
+            body: JSON.stringify({ files: batch.map(f => f.name), uuid }),
+            headers: { 'Content-Type': 'application/json' }
+          });
+          const { existingFiles: batchExisting } = await response.json();
+          logMessage(`Batch found ${batchExisting.length} existing files.`);
+          existingFiles = existingFiles.concat(batchExisting);
+        } catch (err) {
+          logMessage(`Error checking batch: ${err.message}`);
+        }
+      }
+      return existingFiles;
+    }
+
+    uppy.on('files-added', async (files) => {
+      logMessage(`Checking for existing files in batches...`);
+      try {
+        const existingFiles = await checkFilesInBatches(files, 200); // batch size 200
+        logMessage(`Found ${existingFiles.length} existing files in all batches.`);
+        existingFiles.forEach(name => {
+          const file = uppy.getFiles().find(f => f.name === name);
+          if (file) {
+            uppy.removeFile(file.id);
+            logMessage(`Removed already existing file from upload: ${name}`);
+          }
+        });
+      } catch (err) {
+        logMessage(`Error checking existing files: ${err.message}`);
+      }
+    });
+
+    // When files are added, stop loading animation and show ready state
+    uppy.on('files-added', (files) => {
+      document.getElementById('custom-progress-bar').style.display = 'block';
+      document.getElementById('custom-progress-bar-inner').style.width = '0%';
+      document.getElementById('custom-progress-bar-inner').classList.remove('loading');
+      document.getElementById('custom-progress-bar-inner').style.background = '#ffc107'; // yellow for ready
+      document.getElementById('upload-status').textContent =
+        `Loaded ${uppy.getFiles().length} file(s) ready to upload.`;
+      document.getElementById('loading-label').style.display = 'none';
+    });
+
+    uppy.on('file-removed', (file) => {
+      if (uppy.getFiles().length === 0) {
+        document.getElementById('upload-status').textContent = 'Ready. Drag files or folders here.';
+        document.getElementById('custom-progress-bar-inner').style.width = '0%';
+        document.getElementById('custom-progress-bar-inner').style.background = '#007bff';
+      } else {
+        document.getElementById('upload-status').textContent =
+          `${uppy.getFiles().length} file(s) ready to upload.`;
+      }
+    });
+
+    async function uploadFilesInBatches(allFiles, batchSize = 5) {
+      const uuid = document.getElementById('upload-uuid').value;
+      for (let i = 0; i < allFiles.length; i += batchSize) {
+        const batch = allFiles.slice(i, i + batchSize);
+
+        uppy.getFiles().forEach(f => uppy.removeFile(f.id));
+
+        for (const file of batch) {
+          uppy.addFile({
+            name: file.name,
+            type: file.type,
+            data: file.data,
+            meta: { ...file.meta, uuid: uuid }
+          });
+        }
+
+        logMessage(`Uploading batch ${Math.floor(i / batchSize) + 1} (${batch.length} files) to folder ${uuid}...`);
+        await uppy.upload();
+        logMessage(`Batch ${Math.floor(i / batchSize) + 1} complete.`);
+      }
+      logMessage("All batches uploaded.");
+    }
+
+    // Progress during upload
+    uppy.on('upload-progress', (file, progress) => {
+      const total = uppy.getFiles().reduce((acc, f) => acc + f.size, 0);
+      const uploaded = uppy.getFiles().reduce((acc, f) => acc + (f.progress.uploadComplete ? f.size : (f.progress.bytesUploaded || 0)), 0);
+      const percent = total ? Math.round((uploaded / total) * 100) : 0;
+      document.getElementById('custom-progress-bar').style.display = 'block';
+      document.getElementById('custom-progress-bar-inner').style.width = percent + '%';
+      document.getElementById('custom-progress-bar-inner').classList.remove('loading');
+      document.getElementById('custom-progress-bar-inner').style.background = '#007bff'; // blue for uploading
+      document.getElementById('upload-status').textContent = `Uploading... ${percent}% (${uppy.getFiles().filter(f => f.progress.uploadComplete).length}/${uppy.getFiles().length} files finished)`;
+      document.getElementById('loading-label').style.display = 'none';
+    });
+
+    uppy.on('complete', (result) => {
+      document.getElementById('custom-progress-bar-inner').style.width = '100%';
+      document.getElementById('custom-progress-bar-inner').classList.remove('loading');
+      document.getElementById('custom-progress-bar-inner').style.background = '#28a745'; // green for complete
+      document.getElementById('upload-status').textContent =
+        '✅ Upload complete! ' + result.successful.length + ' files uploaded.';
+      document.getElementById('loading-label').style.display = 'none';
+    });
+
+    uppy.on('error', (err) => {
+      document.getElementById('custom-progress-bar-inner').classList.remove('loading');
+      document.getElementById('custom-progress-bar-inner').style.background = '#dc3545'; // red for error
+      document.getElementById('upload-status').textContent =
+        '❌ Upload error: ' + err.message;
+      document.getElementById('loading-label').style.display = 'none';
+    });
+
+    uppy.on('upload', () => {
+      document.getElementById('custom-progress-bar').style.display = 'block';
+      document.getElementById('custom-progress-bar-inner').classList.remove('loading');
+      document.getElementById('custom-progress-bar-inner').style.background = '#007bff';
+      document.getElementById('loading-label').style.display = 'none';
+      const alreadyAdded = uppy.getFiles().some(f => f.name === 'metadata.json');
+      if (!alreadyAdded) {
+        uppy.addFile({
+          name: 'metadata.json',
+          type: 'application/json',
+          data: getMetadataFile(),
+          meta: { isMetadata: true }
+        });
+        logMessage('Added metadata.json to upload.');
+      }
+    });
+
+    uppy.on('upload-success', (file, response) => {
+      // Optionally, update status per file here
+    });
+
+    uppy.on('cancel-all', () => {
+      document.getElementById('custom-progress-bar').style.display = 'block';
+      document.getElementById('custom-progress-bar-inner').style.width = '0%';
+      document.getElementById('custom-progress-bar-inner').classList.remove('loading');
+      document.getElementById('custom-progress-bar-inner').style.background = '#007bff';
+      document.getElementById('upload-status').textContent = 'Ready. Drag files or folders here.';
+      document.getElementById('loading-label').style.display = 'none';
+    });
+
+    document.getElementById('start-batch-upload').addEventListener('click', async () => {
+      // Dynamically update params before upload
+      uppy.getPlugin('AwsS3').opts.params = {
+        uuid: document.getElementById('upload-uuid').value
+      };
+      
+      // Get all files currently in Uppy
+      const allFiles = uppy.getFiles().map(f => ({
+        name: f.name,
+        type: f.type,
+        data: f.data,
+        meta: f.meta
+      }));
+      if (allFiles.length === 0) {
+        logMessage('No files to upload.');
+        return;
+      }
+      logMessage(`Starting batch upload for ${allFiles.length} files...`);
+      await uploadFilesInBatches(allFiles, 500); // You can adjust batch size here
+    });
+  </script>
+</body>
+</html>

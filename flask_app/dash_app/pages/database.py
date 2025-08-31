@@ -87,7 +87,7 @@ def update_table_data() -> pd.DataFrame:
 
     table_data_local = database_manager.get_all_database_entries()
 
-    # 🔧 FIX: Clean complex data types that DataTable can't handle
+    # Clean complex data types that DataTable can't handle
     def clean_column_data(df):
         """Clean DataFrame columns to ensure DataTable compatibility."""
         df_clean = df.copy()

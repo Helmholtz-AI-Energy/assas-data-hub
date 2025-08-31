@@ -111,6 +111,14 @@ def init_app() -> CustomFlask:
         from .auth.oauth_auth import oauth_bp, init_oauth
         from .auth.routes import auth_bp
 
+        from .api.v1.companion import companion_bp
+
+        app.register_blueprint(companion_bp)
+
+        from .api.v1.upload_html import upload_html_bp
+
+        app.register_blueprint(upload_html_bp)
+
         init_oauth(app)
 
         register_basic_auth_blueprint(app)

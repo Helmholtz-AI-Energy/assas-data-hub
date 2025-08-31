@@ -1,0 +1,17 @@
+[Unit]
+Description=MinIO
+After=network.target
+
+[Service]
+User=root
+Group=root
+Environment="MINIO_ROOT_USER=assas2025"
+Environment="MINIO_ROOT_PASSWORD=assas2025"
+Environment="MINIO_LOG_LEVEL=debug"
+Environment="MINIO_HTTP_TRACE=/root/minio-trace.log"
+ExecStart=/usr/local/bin/minio server --address :9000 --console-address :9001 --certs-dir /etc/minio/certs /mnt/ASSAS/minio_data
+Restart=always
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
