@@ -229,22 +229,13 @@ class UserManager:
                 "email": email,
                 "name": user_data.get("name"),
                 "provider": user_data.get("provider"),
-                "roles": user_data.get("roles", ["viewer"]),
+                "roles": user_data.get("roles", ["visitor"]),
                 "is_active": user_data.get("is_active", True),
                 "last_login": datetime.utcnow(),
                 "updated_at": datetime.utcnow(),
             }
 
-            # Add provider-specific data
-            if user_data.get("provider") == "github":
-                user_doc.update(
-                    {
-                        "github_id": user_data.get("github_id"),
-                        "avatar_url": user_data.get("avatar_url"),
-                        "github_profile": user_data.get("github_profile"),
-                    }
-                )
-            elif user_data.get("provider") == "helmholtz":
+            if user_data.get("provider") == "helmholtz":
                 user_doc.update(
                     {
                         "helmholtz_sub": user_data.get("helmholtz_sub"),

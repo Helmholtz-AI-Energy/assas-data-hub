@@ -6,6 +6,7 @@ import uuid
 import diskcache
 import dash_bootstrap_components as dbc
 import flask
+import dash as ds
 
 from dash import dash, html, Input, Output, State, dcc
 from dash.long_callback import DiskcacheLongCallbackManager
@@ -19,6 +20,7 @@ from ..utils.url_utils import (
     get_auth_base_url,
     get_dash_base_url,
     build_auth_url,
+    build_url,
 )
 
 logger = logging.getLogger("assas_app")
@@ -28,7 +30,7 @@ def get_user_role() -> str:
     """Get the current user's role from the session."""
     user = flask.session.get("user", {})
     roles = user.get("roles", [])
-    return roles[0] if roles else "viewer"
+    return roles[0] if roles else "visitor"
 
 
 def get_allowed_pages(role: str) -> list[str]:
@@ -39,8 +41,10 @@ def get_allowed_pages(role: str) -> list[str]:
         return ["home", "database", "about", "profile"]
     elif role == "researcher":
         return ["home", "database", "about", "profile"]
+    elif role == "visitor":
+        return ["visitor", "profile"]
     else:
-        return ["home"]
+        raise ValueError(f"Unknown role: {role}")
 
 
 def modern_navbar_style() -> dict:
@@ -725,7 +729,7 @@ def create_navbar_items_role_based(allowed_pages: str) -> list[dbc.NavItem]:
                 href="#",  # Dynamic
                 active="exact",
                 style=nav_link_style()
-                if "home" in allowed_pages
+                if "home" in allowed_pages or "visitor" in allowed_pages
                 else {"display": "none"},
                 className="nav-link-modern",
                 id="nav-home-link",
@@ -942,33 +946,69 @@ def init_dashboard(server: object) -> object:
     @server.before_request
     def restrict_access() -> Response:
         """Restrict access to Dash pages for unauthenticated users."""
-        logger.info(f"Checking authentication for path: {request.path}")
+        path = request.path
+        logger.info(f"Checking authentication for path: {path}")
+
+        # Allow static and Dash internal routes
+        if (
+            path.startswith("/static/")
+            or path.startswith("/assets/")
+            or path.startswith("/_dash-")
+            or path.startswith("/_dash/")
+            or path.startswith("/_dash-component-suites/")
+            or path.endswith(".js")
+            or path.endswith(".css")
+            or path.endswith(".map")
+            or path.endswith(".ico")
+            or path.endswith(".png")
+            or path.endswith(".svg")
+            or path.endswith(".jpg")
+            or path.endswith(".woff2")
+            or path.endswith(".ttf")
+            or path.endswith("favicon.ico")
+            or path.endswith("robots.txt")
+            or path.endswith("/_dash-layout")
+            or path.endswith("/_dash-dependencies")
+            or path.endswith("/_dash-update-component")
+            or path.endswith("/terms")
+            or path.endswith("/privacy")
+        ):
+            logger.info(f"Allowing static, Dash internal, or public route: {path}.")
+            return None
 
         # Allow auth routes
         auth_base = get_auth_base_url()
-        if request.path.startswith(f"{auth_base}/"):
+        if path.startswith(f"{auth_base}/"):
             logger.info("Allowing auth route")
             return None
 
         # for development
-        if request.path.startswith(f"{get_base_url()}/companion/"):
+        if path.startswith(f"{get_base_url()}/companion/"):
             logger.info("Allowing development route")
-            return None
-
-        # Allow static assets
-        if request.path.startswith("/static/") or request.path.startswith("/_dash"):
             return None
 
         # Check authentication for Dash app routes
         dash_base = get_base_url()
-        if request.path.startswith(f"{dash_base}/"):
+        if path.startswith(f"{dash_base}/"):
             current_user = get_current_user()
-            logger.info(f"Current user for Dash access: {current_user}")
+            user_role = get_user_role()
+            logger.info(
+                f"Current user for Dash access: {current_user} with role: {user_role}"
+            )
 
             if not is_authenticated():
                 logger.info("User not authenticated, redirecting to login.")
                 session["next_url"] = request.url
                 return redirect(build_auth_url("/login"))
+
+            if user_role == "visitor":
+                if not (
+                    request.path.endswith("/visitor")
+                    or request.path.endswith("/profile")
+                ):
+                    visitor_url = build_url("/visitor", get_base_url())
+                    logger.info(f"Redirecting from {path} to: {visitor_url}")
+                    return redirect(visitor_url)
 
             logger.info(
                 f"User {current_user.get('email')} authenticated, allowing access."
@@ -991,6 +1031,8 @@ def init_dashboard(server: object) -> object:
         suppress_callback_exceptions=True,
     )
 
+    logger.info(f"Dash app initialized with pages: {ds.page_registry.keys()}.")
+
     # Add callback to update navbar and footer links dynamically
     @dash_app.callback(
         [
@@ -1011,16 +1053,21 @@ def init_dashboard(server: object) -> object:
     def update_navigation_links(pathname: str) -> tuple[str, ...]:
         """Update all navigation links to use current base URL."""
         base_url = get_base_url()
+        role = get_user_role()
+        if role == "visitor":
+            home_url = f"{base_url}/visitor"
+        else:
+            home_url = f"{base_url}/home"
 
         return (
-            f"{base_url}/home",  # navbar brand
-            f"{base_url}/home",  # nav home
+            home_url,  # navbar brand
+            home_url,  # nav home
             f"{base_url}/database",  # nav database
             f"{base_url}/about",  # nav about
             f"{base_url}/profile",  # nav profile
             f"{base_url}/upload",  # nav upload
             f"{base_url}/admin",  # nav admin
-            f"{base_url}/home",  # footer home
+            home_url,  # footer home
             f"{base_url}/database",  # footer database
             f"{base_url}/about",  # footer about
         )

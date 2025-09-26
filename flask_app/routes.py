@@ -5,10 +5,17 @@ import uuid
 import shutil
 import pandas as pd
 
-from flask import session, request, redirect, send_file, jsonify, Response
 from flask import current_app as app
 from pathlib import Path
-
+from flask import (
+    session,
+    request,
+    redirect,
+    send_file,
+    jsonify,
+    Response,
+    render_template,
+)
 from .auth_utils import (
     auth,
     users,
@@ -24,6 +31,21 @@ def from_root_to_home() -> Response:
     """Redirect from the root URL to the home page."""
     logger.info("Redirecting from root to home page.")
     return redirect(build_url("/home"))
+
+
+base_url = get_base_url()
+
+
+@app.route(f"{base_url}/terms")
+def terms() -> Response:
+    """Render the terms of service page."""
+    return render_template("terms.html")
+
+
+@app.route(f"{base_url}/privacy")
+def privacy() -> Response:
+    """Render the privacy policy page."""
+    return render_template("privacy.html")
 
 
 # Legacy auth routes (consider moving to API)

@@ -28,15 +28,9 @@ class Config(object):
     MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", r"assas")
     USER_COLLECTION_NAME = os.getenv("USER_COLLECTION_NAME", r"users")
 
-    # URL Configuration
+    # URL and Server Configuration
     SERVER_NAME = os.environ.get("SERVER_NAME")
     PREFERRED_URL_SCHEME = os.environ.get("PREFERRED_URL_SCHEME", "http")
-
-    GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID", "")
-    GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET", "")
-
-    BWIDM_CLIENT_ID = os.getenv("BWIDM_CLIENT_ID", "")
-    BWIDM_CLIENT_SECRET = os.getenv("BWIDM_CLIENT_SECRET", "")
 
     HELMHOLTZ_CLIENT_ID = os.getenv("HELMHOLTZ_CLIENT_ID", "")
     HELMHOLTZ_CLIENT_SECRET = os.getenv("HELMHOLTZ_CLIENT_SECRET", "")
@@ -46,6 +40,7 @@ class Config(object):
     PERMANENT_SESSION_LIFETIME = timedelta(
         hours=int(os.getenv("SESSION_LIFETIME_HOURS", 8))
     )
+
     SESSION_PERMANENT = True
     SESSION_USE_SIGNER = True
     SESSION_COOKIE_SECURE = False
@@ -56,19 +51,8 @@ class Config(object):
     SESSION_COOKIE_DOMAIN = None
     SESSION_COOKIE_PATH = "/"
 
-    # AARC Entitlements Configuration
-    AARC_GROUP_CLAIM = "eduperson_entitlement"
-    ASSAS_GROUP_PREFIX = "urn:geant:helmholtz.de:group:HIFIS:"
+    ASSAS_GROUP_PREFIX = "urn:geant:helmholtz.de:group:ASSAS"
 
-    # Role Mapping (exactly like your assas_add_user.py)
-    ROLE_MAPPING = {
-        "Administrator": ["admin"],
-        "Researcher": ["researcher"],
-        "User": ["viewer"],
-        "Curator": ["curator"],
-    }
-
-    # Available roles for the system (4 roles only)
     AVAILABLE_ROLES = [
         {
             "value": "admin",
@@ -86,42 +70,16 @@ class Config(object):
             "description": "Data curation and quality control",
         },
         {
-            "value": "viewer",
-            "label": "Viewer",
-            "description": "Basic view access to content",
+            "value": "visitor",
+            "label": "Visitor",
+            "description": "Basic landing page access",
         },
     ]
 
-    # AARC Entitlement to Role Mapping
-    AARC_ROLE_MAPPINGS = {
-        "urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:admins": ["admin"],
-        "urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:researchers": ["researcher"],
-        "urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:curators": ["curator"],
-        "urn:geant:helmholtz.de:group:HIFIS:PROJECT-X:viewers": ["viewer"],
-    }
-
-    # GitHub Role Mappings
-    GITHUB_ROLE_MAPPINGS = {
-        "ke4920": ["admin"],
-        "jonas-dressner": ["admin"],
-        "markus-goetz": ["admin"],
-        "*": ["viewer"],  # Default role
-    }
-
-    # bwIDM Role Mappings
-    BWIDM_ROLE_MAPPINGS = {
-        "jonas.dressner@kit.edu": ["admin"],
-        "markus.goetz@kit.edu": ["admin"],
-        "charlotte.debus@kit.edu": ["researcher"],
-        "anastasia.stakhanova@kit.edu": ["researcher"],
-        "*": ["viewer"],  # Default role
-    }
-
     HELMHOLTZ_ENTITLEMENT_ROLE_MAP = {
-        "urn:geant:helmholtz.de:group:ASSAS:admin": "admin",
-        "urn:geant:helmholtz.de:group:ASSAS:curator": "curator",
-        "urn:geant:helmholtz.de:group:ASSAS:researcher": "researcher",
-        # Add more if needed
+        f"{ASSAS_GROUP_PREFIX}:admin": "admin",
+        f"{ASSAS_GROUP_PREFIX}:curator": "curator",
+        f"{ASSAS_GROUP_PREFIX}:researcher": "researcher",
     }
 
 
@@ -129,7 +87,7 @@ class DevelopmentConfig(Config):
     """Development configuration class for the ASSAS Data Hub application."""
 
     DEBUG = True
-    SERVER_NAME = None  # "assas.scc.kit.edu:5000"
+    SERVER_NAME = None
     PREFERRED_URL_SCHEME = "https"
 
     # Development basic auth users
@@ -143,7 +101,7 @@ class DevelopmentConfig(Config):
         },
         "user": {
             "password_hash": generate_password_hash("user123"),  # Change this!
-            "roles": ["viewer"],
+            "roles": ["visitor"],
             "email": "user@dev.local",
             "name": "Development User",
             "is_active": True,

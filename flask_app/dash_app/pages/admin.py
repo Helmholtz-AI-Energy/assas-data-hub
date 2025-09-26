@@ -53,8 +53,7 @@ def get_user_stats() -> Dict[str, Any]:
             "total_users": len(all_users),
             "active_users": 0,
             "inactive_users": 0,
-            "github_users": 0,
-            "bwidm_users": 0,
+            "helmholtz_users": 0,
             "basic_auth_users": 0,
             "oauth_with_basic_users": 0,
             "admin_users": 0,
@@ -83,15 +82,13 @@ def get_user_stats() -> Dict[str, Any]:
                 stats["users_by_provider"].get(provider, 0) + 1
             )
 
-            if provider == "github":
-                stats["github_users"] += 1
-            elif provider == "bwidm":
-                stats["bwidm_users"] += 1
+            if provider == "helmholtz":
+                stats["helmholtz_users"] += 1
             elif provider == "basic_auth":
                 stats["basic_auth_users"] += 1
 
             # Check for OAuth users with basic auth
-            if provider in ["github", "bwidm"] and (
+            if provider in ["helmholtz"] and (
                 user.get("basic_auth_password_hash")
                 or user.get("temp_basic_auth_password_hash")
             ):
@@ -106,8 +103,8 @@ def get_user_stats() -> Dict[str, Any]:
                     stats["researcher_users"] += 1
                 if "curator" in roles:
                     stats["curator_users"] += 1
-                if "viewer" in roles:
-                    stats["viewer_users"] += 1
+                if "visitor" in roles:
+                    stats["visitor_users"] += 1
             elif isinstance(roles, str):
                 if roles == "admin":
                     stats["admin_users"] += 1
@@ -115,8 +112,8 @@ def get_user_stats() -> Dict[str, Any]:
                     stats["researcher_users"] += 1
                 elif roles == "curator":
                     stats["curator_users"] += 1
-                elif roles == "viewer":
-                    stats["viewer_users"] += 1
+                elif roles == "visitor":
+                    stats["visitor_users"] += 1
 
             # Institute statistics
             institute = user.get("institute", "Unknown")
@@ -178,14 +175,13 @@ def get_user_stats() -> Dict[str, Any]:
             "total_users": 0,
             "active_users": 0,
             "inactive_users": 0,
-            "github_users": 0,
-            "bwidm_users": 0,
+            "helmholtz_users": 0,
             "basic_auth_users": 0,
             "oauth_with_basic_users": 0,
             "admin_users": 0,
             "researcher_users": 0,
             "curator_users": 0,
-            "viewer_users": 0,
+            "visitor_users": 0,
             "recent_logins_24h": 0,
             "recent_logins_7d": 0,
             "recent_logins_30d": 0,
@@ -283,7 +279,7 @@ def get_users_data() -> List[Dict]:
                 auth_methods = []
                 if provider == "basic_auth" or has_basic_auth:
                     auth_methods.append("Basic")
-                if provider in ["github", "bwidm"]:
+                if provider in ["helmholtz"]:
                     auth_methods.append(provider.upper())
 
                 auth_methods_str = (
@@ -347,7 +343,7 @@ def create_charts(stats: Dict[str, Any]) -> html.Div:
             "Admin": stats.get("admin_users", 0),
             "Researcher": stats.get("researcher_users", 0),
             "Curator": stats.get("curator_users", 0),
-            "Viewer": stats.get("viewer_users", 0),
+            "Visitor": stats.get("visitor_users", 0),
         }
 
         # Only create chart if we have data
@@ -579,33 +575,11 @@ def create_statistics_cards(stats: Dict[str, Any]) -> html.Div:
                                     dbc.CardBody(
                                         [
                                             html.H3(
-                                                stats.get("github_users", 0),
+                                                stats.get("helmholtz_users", 0),
                                                 className="text-center mb-0",
                                             ),
                                             html.P(
-                                                "GitHub Users",
-                                                className="text-center mb-0 small",
-                                            ),
-                                        ]
-                                    )
-                                ],
-                                style=STAT_CARD_STYLE,
-                            )
-                        ],
-                        md=3,
-                    ),
-                    dbc.Col(
-                        [
-                            dbc.Card(
-                                [
-                                    dbc.CardBody(
-                                        [
-                                            html.H3(
-                                                stats.get("bwidm_users", 0),
-                                                className="text-center mb-0",
-                                            ),
-                                            html.P(
-                                                "bwIDM Users",
+                                                "Helmholtz Users",
                                                 className="text-center mb-0 small",
                                             ),
                                         ]
@@ -762,7 +736,7 @@ def generate_excel_download(users_data: List[Dict]) -> str:
                     "Inactive Users",
                     "Admin Users",
                     "Researcher Users",
-                    "GitHub Users",
+                    "Helmholtz Users",
                     "Basic Auth Users",
                     "Recent Logins (7 days)",
                     "Never Logged In",
@@ -773,7 +747,7 @@ def generate_excel_download(users_data: List[Dict]) -> str:
                     stats.get("inactive_users", 0),
                     stats.get("admin_users", 0),
                     stats.get("researcher_users", 0),
-                    stats.get("github_users", 0),
+                    stats.get("helmholtz_users", 0),
                     stats.get("basic_auth_users", 0),
                     stats.get("recent_logins_7d", 0),
                     stats.get("never_logged_in", 0),
@@ -948,12 +922,10 @@ def create_add_user_modal() -> dbc.Modal:
                                                         "value": "basic_auth",
                                                     },
                                                     {
-                                                        "label": "GitHub OAuth",
-                                                        "value": "github",
-                                                    },
-                                                    {
-                                                        "label": "bwIDM OAuth",
-                                                        "value": "bwidm",
+                                                        "label": (
+                                                            "Helmholtz Authentication",
+                                                        ),
+                                                        "value": "helmholtz",
                                                     },
                                                 ],
                                                 value="basic_auth",
@@ -1013,12 +985,12 @@ def create_add_user_modal() -> dbc.Modal:
                                                         "value": "curator",
                                                     },
                                                     {
-                                                        "label": "User - "
-                                                        "Basic view access",
-                                                        "value": "viewer",
+                                                        "label": "Visitor - "
+                                                        "Basic visitor access",
+                                                        "value": "visitor",
                                                     },
                                                 ],
-                                                value=["viewer"],  # Default role
+                                                value=["visitor"],  # Default role
                                                 inline=False,
                                             )
                                         ],
@@ -1117,11 +1089,11 @@ def create_new_user(
             return False, "Email already exists"
 
         # Validate roles (only allow the 4 defined roles)
-        valid_roles = ["admin", "researcher", "curator", "viewer"]
+        valid_roles = ["admin", "researcher", "curator", "visitor"]
         final_roles = [role for role in roles if role in valid_roles]
 
         if not final_roles:
-            final_roles = ["viewer"]  # Default to viewer if no valid roles
+            final_roles = ["visitor"]  # Default to visitor if no valid roles
 
         # Prepare user data (same structure as your assas_add_user.py)
         user_data = {
@@ -1139,9 +1111,8 @@ def create_new_user(
             "login_count": 0,
             # Optional fields
             "avatar_url": None,
-            "github_id": None,
-            "github_profile": None,
-            "bwidm_sub": None,
+            "profile_url": None,
+            "auth_method": provider,
             "entitlements": [],
             "affiliations": [],
         }
@@ -1510,7 +1481,7 @@ def layout() -> html.Div:
                                             html.P(
                                                 [
                                                     html.Strong("Authentication: "),
-                                                    "OAuth (GitHub, bwIDM), Basic Auth",
+                                                    "Helmholtz AAI, Basic Auth",
                                                 ],
                                                 className="mb-1",
                                             ),
@@ -1722,7 +1693,7 @@ def handle_add_user(
 ) -> Tuple[html.Div, List[Dict], str, str, str, str, str, List[str], bool]:
     """Handle adding a new user."""
     if not n_clicks:
-        return "", dash.no_update, "", "", "", "", "", ["viewer"], True
+        return "", dash.no_update, "", "", "", "", "", ["visitor"], True
 
     # Validate input
     validation_errors = validate_new_user_data(
@@ -1763,7 +1734,7 @@ def handle_add_user(
             color="success",
             dismissable=True,
         )
-        return alert, updated_users_data, "", "", "", "", "", ["viewer"], True
+        return alert, updated_users_data, "", "", "", "", "", ["visitor"], True
     else:
         # Error - keep form data
         alert = dbc.Alert(
