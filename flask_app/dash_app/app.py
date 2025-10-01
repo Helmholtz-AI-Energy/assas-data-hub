@@ -36,11 +36,11 @@ def get_user_role() -> str:
 def get_allowed_pages(role: str) -> list[str]:
     """Get the list of allowed pages for a specific user role."""
     if role == "admin":
-        return ["home", "database", "about", "profile", "admin"]
+        return ["home", "database", "profile", "admin", "documentation", "about"]
     elif role == "curator":
-        return ["home", "database", "about", "profile"]
+        return ["home", "database", "profile", "documentation", "about"]
     elif role == "researcher":
-        return ["home", "database", "about", "profile"]
+        return ["home", "database", "profile", "documentation", "about"]
     elif role == "visitor":
         return ["visitor", "profile"]
     else:
@@ -397,76 +397,122 @@ footer = html.Footer(
                         dbc.Col(
                             [
                                 html.H5("ASSAS Project", style=footer_title_style()),
+                                html.A(
+                                    html.Img(
+                                        src=encode_svg_image_hq("assas_logo_mod.svg"),
+                                        height="48px",
+                                        style={
+                                            "backgroundColor": "#fff",
+                                            "padding": "4px",
+                                            "borderRadius": "4px",
+                                            "margin": "0.5rem 0 1rem 0",
+                                            "boxShadow": "0 2px 4px rgba(0,0,0,0.06)",
+                                            "display": "block",
+                                            "marginLeft": "auto",  # <-- add this
+                                            "marginRight": "auto",  # <-- add this
+                                        },
+                                        alt="ASSAS Logo",
+                                    ),
+                                    href="https://assas-horizon-euratom.eu/",
+                                    target="_blank",
+                                    style={"display": "inline-block"},
+                                ),
                                 html.P(
                                     [
-                                        "Artificial Intelligence for "
-                                        "Simulation of Severe AccidentS.",
+                                        html.B(
+                                            "Artificial Intelligence for "
+                                            "Simulation of Severe AccidentS (ASSAS)"
+                                        ),
+                                        html.Br(),
+                                        "A European research initiative advancing "
+                                        "nuclear safety through data-driven "
+                                        "simulation and machine learning.",
+                                        html.Br(),
                                     ],
                                     style={"lineHeight": "1.6", "marginBottom": "1rem"},
                                 ),
                                 html.Div(
                                     [
-                                        html.I(className="fas fa-map-marker-alt me-2"),
-                                        "Karlsruhe Institute of Technology (KIT)",
-                                    ],
-                                    style={"marginBottom": "0.5rem"},
+                                        html.A(
+                                            [
+                                                html.I(
+                                                    className=("fas fa-globe me-2"),
+                                                ),
+                                                "ASSAS Project Website",
+                                            ],
+                                            href="https://assas-horizon-euratom.eu/",
+                                            style=footer_link_style(),
+                                            target="_blank",
+                                        ),
+                                    ]
                                 ),
                                 html.Div(
                                     [
-                                        html.I(className="fas fa-envelope me-2"),
                                         html.A(
-                                            "jonas.dressner@kit.edu",
+                                            [
+                                                html.I(
+                                                    className="fas fa-envelope",
+                                                    style={"marginRight": "0.4em"},
+                                                ),
+                                                "Contact",
+                                            ],
                                             href="mailto:jonas.dressner@kit.edu",
                                             style=footer_link_style(),
                                         ),
                                     ],
-                                    style={"display": "inline-block"},
+                                    style={
+                                        "display": "flex",
+                                        "alignItems": "center",
+                                        "justifyContent": "center",
+                                    },
                                 ),
                             ],
                             md=4,
                             sm=12,
-                            style=footer_section_style(),
+                            style={**footer_section_style(), "textAlign": "center"},
                         ),
                         # Quick Links - Updated to use dynamic URLs
                         dbc.Col(
                             [
                                 html.H5("Quick Links", style=footer_title_style()),
                                 html.Div(
-                                    id="footer-links",  # Make this dynamic
+                                    id="footer-links",
                                     children=[
                                         html.A(
                                             "Home",
-                                            href="#",  # Will be updated by callback
+                                            href="#",
                                             style=footer_link_style(),
                                             id="footer-home-link",
                                         ),
                                         html.A(
                                             "Database",
-                                            href="#",  # Will be updated by callback
+                                            href="#",
                                             style=footer_link_style(),
                                             id="footer-database-link",
                                         ),
                                         html.A(
-                                            "About",
-                                            href="#",  # Will be updated by callback
+                                            "Profile",
+                                            href="#",
                                             style=footer_link_style(),
-                                            id="footer-about-link",
+                                            id="footer-profile-link",
                                         ),
                                         html.A(
                                             "Documentation",
                                             href="#",
                                             style=footer_link_style(),
+                                            id="footer-documentation-link",
                                         ),
                                         html.A(
-                                            "API Reference",
+                                            "About",
                                             href="#",
                                             style=footer_link_style(),
+                                            id="footer-about-link",
                                         ),
                                     ],
                                 ),
                             ],
                             md=2,
-                            sm=6,
+                            sm=5,
                             style=footer_section_style(),
                         ),
                         # Resources
@@ -476,25 +522,37 @@ footer = html.Footer(
                                 html.Div(
                                     [
                                         html.A(
+                                            [
+                                                html.I(
+                                                    className=("fab fa-github me-2"),
+                                                ),
+                                                "GitHub ASSAS Database",
+                                            ],
+                                            href=(
+                                                "https://github.com/"
+                                                "Helmholtz-AI-Energy/"
+                                                "assas_database"
+                                            ),
+                                            style=footer_link_style(),
+                                            target="_blank",
+                                        ),
+                                        html.A(
+                                            [
+                                                html.I(
+                                                    className=("fab fa-github me-2"),
+                                                ),
+                                                "GitHub ASSAS Data Hub",
+                                            ],
+                                            href=(
+                                                "https://github.com/"
+                                                "Helmholtz-AI-Energy/"
+                                                "assas-data-hub"
+                                            ),
+                                            style=footer_link_style(),
+                                            target="_blank",
+                                        ),
+                                        html.A(
                                             "Research Papers",
-                                            href="#",
-                                            style=footer_link_style(),
-                                        ),
-                                        html.A(
-                                            "Data Sets",
-                                            href="#",
-                                            style=footer_link_style(),
-                                        ),
-                                        html.A(
-                                            "Tutorials",
-                                            href="#",
-                                            style=footer_link_style(),
-                                        ),
-                                        html.A(
-                                            "FAQ", href="#", style=footer_link_style()
-                                        ),
-                                        html.A(
-                                            "Support",
                                             href="#",
                                             style=footer_link_style(),
                                         ),
@@ -502,7 +560,7 @@ footer = html.Footer(
                                 ),
                             ],
                             md=2,
-                            sm=6,
+                            sm=3,
                             style=footer_section_style(),
                         ),
                         # Partners & Social
@@ -514,22 +572,32 @@ footer = html.Footer(
                                         # Partner logos
                                         html.Div(
                                             [
-                                                html.Img(
-                                                    src=encode_svg_image_hq(
-                                                        "kit_logo.drawio.svg"
+                                                html.A(
+                                                    html.Img(
+                                                        src=encode_svg_image_hq(
+                                                            "kit_logo.drawio.svg"
+                                                        ),
+                                                        height="40px",
+                                                        width="80px",
+                                                        style={
+                                                            "backgroundColor": (
+                                                                "#ffffff"
+                                                            ),
+                                                            "padding": "4px",
+                                                            "borderRadius": "4px",
+                                                            "marginBottom": "1rem",
+                                                            "filter": "contrast(1.05)"
+                                                            "brightness(1.02)",
+                                                        },
+                                                        alt="KIT Logo",
                                                     ),
-                                                    height="40px",
-                                                    width="80px",
+                                                    href="https://www.kit.edu/",
+                                                    target="_blank",
                                                     style={
-                                                        "backgroundColor": "#ffffff",
-                                                        "padding": "4px",
-                                                        "borderRadius": "4px",
-                                                        "marginBottom": "1rem",
-                                                        "filter": "contrast(1.05)"
-                                                        "brightness(1.02)",
+                                                        "display": "inline-block",
+                                                        "marginRight": "1rem",
                                                     },
-                                                    alt="KIT Logo",
-                                                )
+                                                ),
                                             ],
                                             style={"marginBottom": "1rem"},
                                         ),
@@ -540,16 +608,13 @@ footer = html.Footer(
                                                     [
                                                         html.I(
                                                             className=(
-                                                                "fab fa-github me-2"
+                                                                "fas fa-globe me-2"
                                                             ),
                                                         ),
-                                                        "GitHub",
+                                                        "ASNR Website",
                                                     ],
-                                                    href=(
-                                                        "https://github.com/"
-                                                        "Helmholtz-AI-Energy/"
-                                                        "assas-data-hub"
-                                                    ),
+                                                    href="https://research-assessment"
+                                                    ".asnr.fr/about-us/",
                                                     style=footer_link_style(),
                                                     target="_blank",
                                                 ),
@@ -560,9 +625,9 @@ footer = html.Footer(
                                                                 "fas fa-globe me-2"
                                                             ),
                                                         ),
-                                                        "Website",
+                                                        "CIEMAT Website",
                                                     ],
-                                                    href="#",
+                                                    href="https://www.ciemat.es/",
                                                     style=footer_link_style(),
                                                     target="_blank",
                                                 ),
@@ -575,7 +640,9 @@ footer = html.Footer(
                             sm=12,
                             style=footer_section_style(),
                         ),
-                    ]
+                    ],
+                    justify="center",
+                    align="start",
                 ),
                 # Copyright section
                 html.Hr(style={"borderColor": "#34495e", "margin": "2rem 0 1.5rem 0"}),
@@ -595,18 +662,21 @@ footer = html.Footer(
                                                     "Privacy Policy",
                                                     href="#",
                                                     style=footer_link_style(),
+                                                    id="footer-privacy-link",
                                                 ),
                                                 " | ",
                                                 html.A(
                                                     "Terms of Service",
                                                     href="#",
                                                     style=footer_link_style(),
+                                                    id="footer-terms-link",
                                                 ),
                                                 " | ",
                                                 html.A(
                                                     "Imprint",
                                                     href="#",
                                                     style=footer_link_style(),
+                                                    id="footer-imprint-link",
                                                 ),
                                             ],
                                             style={
@@ -616,32 +686,6 @@ footer = html.Footer(
                                                 "justifyContent": "center",
                                                 "flexWrap": "wrap",
                                                 "gap": "0.5rem",
-                                            },
-                                        ),
-                                        html.P(
-                                            [
-                                                "Powered by ",
-                                                html.A(
-                                                    "Dash",
-                                                    href="https://plotly.com/dash/",
-                                                    style=footer_link_style(),
-                                                    target="_blank",
-                                                ),
-                                                " & ",
-                                                html.A(
-                                                    "Flask",
-                                                    href=(
-                                                        "https://"
-                                                        "flask.palletsprojects.com/"
-                                                    ),
-                                                    style=footer_link_style(),
-                                                    target="_blank",
-                                                ),
-                                            ],
-                                            style={
-                                                "margin": "0.5rem 0 0 0",
-                                                "fontSize": "0.8rem",
-                                                "color": "#7f8c8d",
                                             },
                                         ),
                                     ],
@@ -654,6 +698,7 @@ footer = html.Footer(
                 ),
             ],
             fluid=True,
+            style={"textAlign": "center"},
         )
     ],
     style=footer_style(),
@@ -667,10 +712,11 @@ def create_navbar_header() -> html.Div:
             [
                 dbc.Container(
                     [
-                        html.A(
+                        html.Div(
                             [
+                                # Left logo
                                 html.Div(
-                                    [
+                                    html.A(
                                         html.Img(
                                             src=encode_svg_image_hq(
                                                 "assas_logo_mod.svg"
@@ -681,11 +727,30 @@ def create_navbar_header() -> html.Div:
                                             alt="ASSAS Logo",
                                             className="logo-high-quality logo-assas",
                                         ),
+                                        href="https://assas-horizon-euratom.eu/",
+                                        target="_blank",
+                                        style={"display": "inline-block"},
+                                    ),
+                                    style={"flex": "0 0 180px", "textAlign": "center"},
+                                ),
+                                # Title
+                                html.Div(
+                                    html.A(
                                         html.H1(
                                             "ASSAS Data Hub",
                                             style=brand_style(),
                                             className="brand-title brand-center",
                                         ),
+                                        href="#",
+                                        style={"textDecoration": "none"},
+                                        className="brand-link",
+                                        id="navbar-title-link",
+                                    ),
+                                    style={"flex": "1 1 auto", "textAlign": "center"},
+                                ),
+                                # Right logo
+                                html.Div(
+                                    html.A(
                                         html.Img(
                                             src=encode_svg_image_hq(
                                                 "kit_logo.drawio.svg"
@@ -696,14 +761,14 @@ def create_navbar_header() -> html.Div:
                                             alt="KIT Logo",
                                             className="logo-high-quality logo-kit",
                                         ),
-                                    ],
-                                    style=brand_container_style(),
-                                )
+                                        href="https://www.kit.edu/",
+                                        target="_blank",
+                                        style={"display": "inline-block"},
+                                    ),
+                                    style={"flex": "0 0 180px", "textAlign": "center"},
+                                ),
                             ],
-                            href="#",
-                            style={"textDecoration": "none"},
-                            className="brand-link",
-                            id="navbar-brand-link",
+                            style=brand_container_style(),
                         )
                     ],
                     fluid=True,
@@ -717,103 +782,96 @@ def create_navbar_header() -> html.Div:
     return header
 
 
-def create_navbar_items_role_based(allowed_pages: str) -> list[dbc.NavItem]:
-    """Create navbar with dynamic URLs and role-based visibility."""
+def navitem(show: bool, *args: object, **kwargs: object) -> dbc.NavItem:
+    """Create a navbar item conditionally."""
+    return dbc.NavItem(
+        dbc.NavLink(*args, **kwargs), style={} if show else {"display": "none"}
+    )
+
+
+def create_navbar_items_role_based(allowed_pages: list[str]) -> list[dbc.NavItem]:
+    """Create navbar items based on user role."""
     nav_items = []
 
-    # if "home" in allowed_pages:
     nav_items.append(
-        dbc.NavItem(
-            dbc.NavLink(
-                [html.I(className="fas fa-home me-2"), "Home"],
-                href="#",  # Dynamic
-                active="exact",
-                style=nav_link_style()
-                if "home" in allowed_pages or "visitor" in allowed_pages
-                else {"display": "none"},
-                className="nav-link-modern",
-                id="nav-home-link",
-            )
+        navitem(
+            "home" in allowed_pages or "visitor" in allowed_pages,
+            [html.I(className="fas fa-home me-2"), "Home"],
+            href="#",
+            active="exact",
+            style=nav_link_style(),
+            className="nav-link-modern",
+            id="nav-home-link",
         )
     )
-    # if "database" in allowed_pages:
     nav_items.append(
-        dbc.NavItem(
-            dbc.NavLink(
-                [html.I(className="fas fa-database me-2"), "Database"],
-                href="#",  # Dynamic
-                active="exact",
-                style=nav_link_style()
-                if "database" in allowed_pages
-                else {"display": "none"},
-                className="nav-link-modern",
-                id="nav-database-link",
-            )
+        navitem(
+            "database" in allowed_pages,
+            [html.I(className="fas fa-database me-2"), "Database"],
+            href="#",
+            active="exact",
+            style=nav_link_style(),
+            className="nav-link-modern",
+            id="nav-database-link",
         )
     )
-    # if "about" in allowed_pages:
     nav_items.append(
-        dbc.NavItem(
-            dbc.NavLink(
-                [html.I(className="fas fa-info-circle me-2"), "About"],
-                href="#",  # Dynamic
-                active="exact",
-                style=nav_link_style()
-                if "about" in allowed_pages
-                else {"display": "none"},
-                className="nav-link-modern",
-                id="nav-about-link",
-            )
+        navitem(
+            "profile" in allowed_pages,
+            [html.I(className="fas fa-user me-2"), "Profile"],
+            href="#",
+            active="exact",
+            style=nav_link_style(),
+            className="nav-link-modern",
+            id="nav-profile-link",
         )
     )
-    # if "profile" in allowed_pages:
     nav_items.append(
-        dbc.NavItem(
-            dbc.NavLink(
-                [html.I(className="fas fa-user me-2"), "Profile"],
-                href="#",  # Dynamic
-                active="exact",
-                style=nav_link_style()
-                if "profile" in allowed_pages
-                else {"display": "none"},
-                className="nav-link-modern",
-                id="nav-profile-link",
-            )
+        navitem(
+            "upload" in allowed_pages,
+            [html.I(className="fas fa-upload me-2"), "Upload"],
+            href="#",
+            active="exact",
+            style=nav_link_style(),
+            className="nav-link-modern",
+            id="nav-upload-link",
         )
     )
-    # if "upload" in allowed_pages:
     nav_items.append(
-        dbc.NavItem(
-            dbc.NavLink(
-                [html.I(className="fas fa-upload me-2"), "Upload"],
-                href="#",  # Dynamic
-                active="exact",
-                style=nav_link_style()
-                if "upload" in allowed_pages
-                else {"display": "none"},
-                className="nav-link-modern",
-                id="nav-upload-link",
-            )
+        navitem(
+            "admin" in allowed_pages,
+            [html.I(className="fas fa-users-cog me-2"), "Admin"],
+            href="#",
+            active="exact",
+            style=nav_link_style(),
+            className="nav-link-modern",
+            id="nav-admin-link",
         )
     )
-    # if "admin" in allowed_pages:
     nav_items.append(
-        dbc.NavItem(
-            dbc.NavLink(
-                [html.I(className="fas fa-users-cog me-2"), "Admin"],
-                href="#",  # Dynamic
-                active="exact",
-                style=nav_link_style()
-                if "admin" in allowed_pages
-                else {"display": "none"},
-                className="nav-link-modern",
-                id="nav-admin-link",
-            )
+        navitem(
+            "about" in allowed_pages,
+            [html.I(className="fas fa-info-circle me-2"), "About"],
+            href="#",
+            active="exact",
+            style=nav_link_style(),
+            className="nav-link-modern",
+            id="nav-about-link",
+        )
+    )
+    nav_items.append(
+        navitem(
+            "documentation" in allowed_pages,
+            [html.I(className="fas fa-book me-2"), "Documentation"],
+            href="#",
+            active="exact",
+            style=nav_link_style(),
+            className="nav-link-modern",
+            id="nav-documentation-link",
         )
     )
 
     logger.info(f"Navbar items for role: {allowed_pages}, {len(nav_items)}")
-
     return nav_items
 
 
@@ -1036,16 +1094,22 @@ def init_dashboard(server: object) -> object:
     # Add callback to update navbar and footer links dynamically
     @dash_app.callback(
         [
-            Output("navbar-brand-link", "href"),
+            Output("navbar-title-link", "href"),
             Output("nav-home-link", "href"),
             Output("nav-database-link", "href"),
-            Output("nav-about-link", "href"),
             Output("nav-profile-link", "href"),
             Output("nav-upload-link", "href"),
             Output("nav-admin-link", "href"),
+            Output("nav-documentation-link", "href"),
+            Output("nav-about-link", "href"),
             Output("footer-home-link", "href"),
             Output("footer-database-link", "href"),
+            Output("footer-profile-link", "href"),
+            Output("footer-documentation-link", "href"),
             Output("footer-about-link", "href"),
+            Output("footer-privacy-link", "href"),
+            Output("footer-terms-link", "href"),
+            Output("footer-imprint-link", "href"),
         ],
         Input("url", "pathname"),
         prevent_initial_call=False,
@@ -1054,22 +1118,26 @@ def init_dashboard(server: object) -> object:
         """Update all navigation links to use current base URL."""
         base_url = get_base_url()
         role = get_user_role()
-        if role == "visitor":
-            home_url = f"{base_url}/visitor"
-        else:
-            home_url = f"{base_url}/home"
+        logger.info(f"Updating navigation links for role: {role}, base_url: {base_url}")
+        as_visitor = role == "visitor"
 
         return (
-            home_url,  # navbar brand
-            home_url,  # nav home
-            f"{base_url}/database",  # nav database
-            f"{base_url}/about",  # nav about
-            f"{base_url}/profile",  # nav profile
-            f"{base_url}/upload",  # nav upload
-            f"{base_url}/admin",  # nav admin
-            home_url,  # footer home
-            f"{base_url}/database",  # footer database
-            f"{base_url}/about",  # footer about
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/home",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/home",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/database",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/profile",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/upload",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/admin",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/documentation",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/about",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/home",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/database",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/profile",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/documentation",
+            f"{base_url}/visitor" if as_visitor else f"{base_url}/about",
+            f"{base_url}/privacy",
+            f"{base_url}/terms",
+            f"{base_url}/imprint",
         )
 
     # Navbar toggle callback - WORKING BURGER MENU
