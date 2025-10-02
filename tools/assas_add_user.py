@@ -69,6 +69,13 @@ users = [
         "role": "Researcher",
     },
     {
+        "username": "joan",
+        "password": generate_password_hash("assas2025"),
+        "email": "joan.fontanet@ciemat.es",
+        "institute": "Ciemat (Spain)",
+        "role": "Researcher",
+    },
+    {
         "username": "gaetan",
         "password": generate_password_hash("assas2025"),
         "email": "blondet@phimeca.com",
