@@ -1,15 +1,8 @@
 # Use a base image
-#FROM ubuntu:22.04
 FROM python:3.11-slim
-# Set environment variables
-# ENV DEBIAN_FRONTEND=noninteractive
-ENV REPO_PATH=/app
 
-#RUN apt-get update && \
-#    apt-get install -y software-properties-common && \
-#    add-apt-repository ppa:deadsnakes/ppa && \
-#    apt-get update && \
-#    apt-get install -y python3.11 python3.11-distutils wget
+# Set environment variables
+ENV REPO_PATH=/app
 
 # Add SSH key from build argument
 ARG SSH_PRIVATE_KEY
@@ -17,12 +10,11 @@ ARG GIT_BRANCH
 
 RUN apt-get update && \
     apt-get install -y openssh-client && \
+    apt-get install -y git && \
     mkdir -p /root/.ssh && \
     echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa && \
     chmod 600 /root/.ssh/id_rsa && \
     ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
-
-RUN apt-get update && apt-get install -y git
 
 RUN git clone git@github.com:Helmholtz-AI-Energy/assas-data-hub.git /app
 WORKDIR /app
