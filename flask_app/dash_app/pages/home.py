@@ -34,11 +34,6 @@ def hero_section_style() -> dict:
         "borderRadius": "0 0 12px 12px",
         "boxShadow": "0 4px 6px rgba(0, 0, 0, 0.1)",
         "fontFamily": "Arial, sans-serif",
-        # Mobile styles
-        "@media (max-width: 768px)": {
-            "padding": "3rem 1rem",
-            "margin": "-2rem -0.125rem 1.5rem -0.125rem",
-        },
     }
 
 
@@ -112,14 +107,6 @@ def stat_card_style(color: str) -> dict:
         ":hover": {
             "transform": "translateY(-3px)",
         },
-        # Mobile responsive
-        "@media (max-width: 992px)": {
-            "width": "calc(50% - 2rem)",
-        },
-        "@media (max-width: 576px)": {
-            "width": "calc(100% - 2rem)",
-            "margin": "0.5rem",
-        },
     }
 
 
@@ -149,12 +136,6 @@ def button_style() -> dict:
             "backgroundColor": "#0056b3",
             "transform": "translateY(-2px)",
             "boxShadow": "0 4px 12px rgba(0, 123, 255, 0.4)",
-        },
-        # Mobile styles
-        "@media (max-width: 576px)": {
-            "padding": "10px 20px",
-            "fontSize": "14px",
-            "margin": "0.25rem",
         },
     }
 
@@ -306,6 +287,7 @@ def layout() -> html.Div:
                                     "Explore Datasets",
                                 ],
                                 href=f"{base_url}/database",
+                                className="btn-action",
                                 style=button_style(),
                             ),
                             dcc.Link(
@@ -317,6 +299,7 @@ def layout() -> html.Div:
                                     "About",
                                 ],
                                 href=f"{base_url}/about",
+                                className="btn-action",
                                 style={
                                     **button_style(),
                                     "backgroundColor": "#28a745",
@@ -339,6 +322,7 @@ def layout() -> html.Div:
                                     "Documentation",
                                 ],
                                 href=f"{base_url}/documentation",
+                                className="btn-action",
                                 style={
                                     **button_style(),
                                     "backgroundColor": "#6c757d",
@@ -356,6 +340,7 @@ def layout() -> html.Div:
                         style={"marginTop": "1.5rem"},
                     ),
                 ],
+                className="hero-section",
                 style=hero_section_style(),
             ),
             # Comprehensive Platform Statistics
@@ -397,6 +382,7 @@ def layout() -> html.Div:
                                         style={"color": "#6c757d"},
                                     ),
                                 ],
+                                className="stat-card",
                                 style=stat_card_style("#007bff"),
                             ),
                             html.Div(
@@ -423,6 +409,7 @@ def layout() -> html.Div:
                                         style={"color": "#6c757d"},
                                     ),
                                 ],
+                                className="stat-card",
                                 style=stat_card_style("#28a745"),
                             ),
                             html.Div(
@@ -449,6 +436,7 @@ def layout() -> html.Div:
                                         style={"color": "#6c757d"},
                                     ),
                                 ],
+                                className="stat-card",
                                 style=stat_card_style("#fd7e14"),
                             ),
                             html.Div(
@@ -475,6 +463,7 @@ def layout() -> html.Div:
                                         style={"color": "#6c757d"},
                                     ),
                                 ],
+                                className="stat-card",
                                 style=stat_card_style("#6f42c1"),
                             ),
                             html.Div(
@@ -501,6 +490,7 @@ def layout() -> html.Div:
                                         style={"color": "#6c757d"},
                                     ),
                                 ],
+                                className="stat-card",
                                 style=stat_card_style("#20c997"),
                             ),
                         ],
@@ -896,9 +886,10 @@ def layout() -> html.Div:
                                                     "Secure single sign-on via ",
                                                     html.A(
                                                         "Helmholtz AAI",
-                                                        href=(
-                                                            "https://www.helmholtz.de/"
-                                                            "en/about-us/",
+                                                        href=str(
+                                                            "https://"
+                                                            + "www.helmholtz.de/"
+                                                            + "en/about-us/",
                                                         ),
                                                         target="_blank",
                                                         style={
@@ -1321,6 +1312,7 @@ def layout() -> html.Div:
                                     "Explore Datasets",
                                 ],
                                 href=f"{base_url}/database",
+                                className="btn-action",
                                 style=button_style(),
                             ),
                             dcc.Link(
@@ -1332,6 +1324,7 @@ def layout() -> html.Div:
                                     "About",
                                 ],
                                 href=f"{base_url}/about",
+                                className="btn-action",
                                 style={
                                     **button_style(),
                                     "backgroundColor": "#28a745",
@@ -1354,6 +1347,7 @@ def layout() -> html.Div:
                                     "Documentation",
                                 ],
                                 href=f"{base_url}/documentation",
+                                className="btn-action",
                                 style={
                                     **button_style(),
                                     "backgroundColor": "#6c757d",

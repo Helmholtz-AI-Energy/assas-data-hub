@@ -1,0 +1,65 @@
+/* assets/home.css */
+
+/* Hero section responsive */
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-family: Arial, sans-serif;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+.hero-section h3 {
+  font-size: 1.8rem;
+  font-weight: 300;
+  margin-bottom: 2rem;
+  font-family: Arial, sans-serif;
+  opacity: 0.95;
+}
+.hero-section p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  max-width: 900px;
+  margin: 0 auto 2.5rem auto;
+  font-family: Arial, sans-serif;
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 3rem 1rem;
+    margin: -2rem -0.125rem 1.5rem -0.125rem;
+  }
+  .hero-section h1 { font-size: 2.5rem; }
+  .hero-section h3 { font-size: 1.4rem; }
+}
+@media (max-width: 576px) {
+  .hero-section h1 { font-size: 2rem; }
+  .hero-section h3 { font-size: 1.2rem; }
+  .hero-section p { font-size: 1rem; }
+}
+
+/* Card hover effect */
+.card-feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Stat card responsive */
+.stat-card {
+  width: calc(25% - 2rem);
+  display: inline-block;
+  vertical-align: top;
+}
+@media (max-width: 992px) {
+  .stat-card { width: calc(50% - 2rem); }
+}
+@media (max-width: 576px) {
+  .stat-card { width: calc(100% - 2rem); margin: 0.5rem; }
+}
+
+/* Button hover effect */
+.btn-action:hover {
+  background-color: #0056b3 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
