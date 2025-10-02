@@ -1118,27 +1118,35 @@ def init_dashboard(server: object) -> object:
         """Update all navigation links to use current base URL."""
         base_url = get_base_url()
         role = get_user_role()
-        logger.info(f"Updating navigation links for role: {role}, base_url: {base_url}")
+        logger.info(f"Current pathname: {pathname}.")
+        logger.info(
+            f"Updating navigation links for role: {role}, base_url: {base_url}."
+        )
         as_visitor = role == "visitor"
 
-        return (
-            f"{base_url}/visitor" if as_visitor else f"{base_url}/home",
-            f"{base_url}/visitor" if as_visitor else f"{base_url}/home",
-            f"{base_url}/visitor" if as_visitor else f"{base_url}/database",
-            f"{base_url}/profile",
-            f"{base_url}/visitor" if as_visitor else f"{base_url}/upload",
-            f"{base_url}/visitor" if as_visitor else f"{base_url}/admin",
-            f"{base_url}/visitor" if as_visitor else f"{base_url}/documentation",
-            f"{base_url}/visitor" if as_visitor else f"{base_url}/about",
-            f"{base_url}/visitor" if as_visitor else f"{base_url}/home",
-            f"{base_url}/visitor" if as_visitor else f"{base_url}/database",
-            f"{base_url}/profile",
-            f"{base_url}/visitor" if as_visitor else f"{base_url}/documentation",
-            f"{base_url}/visitor" if as_visitor else f"{base_url}/about",
-            f"{base_url}/privacy",
-            f"{base_url}/terms",
-            f"{base_url}/imprint",
+        result = tuple(
+            str(x)
+            for x in [
+                f"{base_url}/visitor" if as_visitor else f"{base_url}/home",
+                f"{base_url}/visitor" if as_visitor else f"{base_url}/home",
+                f"{base_url}/visitor" if as_visitor else f"{base_url}/database",
+                f"{base_url}/profile",
+                f"{base_url}/visitor" if as_visitor else f"{base_url}/upload",
+                f"{base_url}/visitor" if as_visitor else f"{base_url}/admin",
+                f"{base_url}/visitor" if as_visitor else f"{base_url}/documentation",
+                f"{base_url}/visitor" if as_visitor else f"{base_url}/about",
+                f"{base_url}/visitor" if as_visitor else f"{base_url}/home",
+                f"{base_url}/visitor" if as_visitor else f"{base_url}/database",
+                f"{base_url}/profile",
+                f"{base_url}/visitor" if as_visitor else f"{base_url}/documentation",
+                f"{base_url}/visitor" if as_visitor else f"{base_url}/about",
+                f"{base_url}/privacy",
+                f"{base_url}/terms",
+                f"{base_url}/imprint",
+            ]
         )
+        logger.info(f"Navigation links: {result}")
+        return result
 
     # Navbar toggle callback - WORKING BURGER MENU
     @dash_app.callback(
