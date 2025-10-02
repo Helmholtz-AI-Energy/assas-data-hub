@@ -16,7 +16,9 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install pip for Python 3.11
-RUN wget https://bootstrap.pypa.io/get-pip.py && \
+RUN apt-get update && \
+    apt-get install -y python3.11 python3.11-distutils wget && \
+    wget https://bootstrap.pypa.io/get-pip.py && \
     python3.11 get-pip.py && \
     rm get-pip.py
 
