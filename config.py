@@ -16,6 +16,7 @@ class Config(object):
     DEVELOPMENT = os.getenv("DEVELOPMENT", "True").lower() == "true"
 
     BASE_URL = os.getenv("BASE_URL", "/assas_app")
+    AUTH_BASE_URL = os.getenv("AUTH_BASE_URL", "/auth")
 
     ASTEC_ROOT = os.getenv("ASTEC_ROOT", r"/root/astecV3.1.1_linux64/astecV3.1.1")
     ASTEC_TYPE = os.getenv("ASTEC_TYPE", r"linux_64")

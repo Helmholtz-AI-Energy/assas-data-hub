@@ -9,7 +9,7 @@ from ..utils.url_utils import get_base_url
 
 def register_api_blueprints(app: Flask) -> None:
     """Register all API blueprints with dynamic base URL."""
-    base_url = get_base_url()  # This will be "/test/assas_app" from your .env
+    base_url = get_base_url()
 
     # Register datasets API
     app.register_blueprint(datasets_bp, url_prefix=f"{base_url}/datasets")

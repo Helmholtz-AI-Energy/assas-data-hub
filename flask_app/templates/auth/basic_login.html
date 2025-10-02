@@ -97,7 +97,7 @@
 
                     <div class="text-center">
                         <p class="mb-2">Or continue with:</p>
-                        <a href="/test/auth/login" class="btn btn-outline-primary me-2">
+                        <a href="{{ config.get('AUTH_BASE_URL') }}/login" class="btn btn-outline-primary me-2">
                             <i class="fab fa-github me-2"></i>OAuth Login
                         </a>
                     </div>
@@ -105,9 +105,9 @@
                     <div class="mt-4 text-center">
                         <small class="text-muted">
                             By signing in, you agree to our
-                            <a href="/test/assas_app/terms" class="text-primary" target="_blank" rel="noopener">Terms of
+                            <a href="{{ config.get('BASE_URL') }}/terms" class="text-primary" target="_blank" rel="noopener">Terms of
                                 Service</a> and
-                            <a href="/test/assas_app/privacy" class="text-primary" target="_blank"
+                            <a href="{{ config.get('BASE_URL') }}/privacy" class="text-primary" target="_blank"
                                 rel="noopener">Privacy Policy</a>
                         </small>
                     </div>

@@ -1245,7 +1245,6 @@ function(id) {
     )
 
     dash_app.layout = serve_layout
-
     server.dash_app = dash_app
 
     return server

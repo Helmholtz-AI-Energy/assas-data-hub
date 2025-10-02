@@ -6,16 +6,13 @@ from typing import Optional, List
 from flask import session, request, redirect, url_for, flash
 from werkzeug.security import check_password_hash
 from pymongo import MongoClient
+from flask import current_app
 
 logger = logging.getLogger("assas_app")
 
-# MongoDB connection setup
-client = MongoClient(
-    "mongodb://localhost:27017/"
-)  # Replace with your MongoDB connection string
-db = client["assas"]  # Database name
-users_collection = db["users"]  # Collection name
-
+client = MongoClient(current_app.config["CONNECTIONSTRING"])
+db = client[current_app.config["MONGO_DB_NAME"]]
+users_collection = db[current_app.config["USER_COLLECTION_NAME"]]
 users = users_collection.find()
 
 
