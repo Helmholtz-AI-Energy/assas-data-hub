@@ -40,7 +40,7 @@ layout = dbc.Container(
                         "border": "1px solid #e1e1e1",
                         "borderRadius": "8px",
                         "padding": "2rem",
-                        "maxWidth": "600px",
+                        "maxWidth": "800px",
                         "margin": "2rem auto",
                         "boxShadow": "0 2px 8px rgba(0,0,0,0.05)",
                     },
