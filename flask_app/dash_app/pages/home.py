@@ -7,7 +7,13 @@ description of its purpose, features, and navigation to key sections.
 import dash
 
 from dash import html, dcc
+from pymongo import MongoClient
+from flask import current_app as app
+
 from ..components import content_style, encode_svg_image
+from ...utils.url_utils import get_base_url
+from ...database.user_manager import UserManager
+from assasdb import AssasDatabaseManager, AssasDatabaseHandler
 
 dash.register_page(__name__, path="/home")
 
@@ -153,8 +159,96 @@ def button_style() -> dict:
     }
 
 
+def get_user_count() -> int:
+    """Fetch the total number of registered users.
+
+    Returns:
+        int: Total user count.
+
+    """
+    # Placeholder for actual database query
+    user_manager = UserManager()
+    all_users = user_manager.get_all_users()
+    return len(all_users)
+
+
+def get_dataset_count(database_manager: AssasDatabaseManager) -> int:
+    """Fetch the total number of datasets available.
+
+    Returns:
+        int: Total dataset count.
+
+    """
+    table_data_local = database_manager.get_all_database_entries()
+    return len(table_data_local)
+
+
+def get_storage_size_binary(database_manager: AssasDatabaseManager) -> str:
+    """Fetch the total storage size for binary datasets.
+
+    Returns:
+        str: Storage size in human-readable format.
+
+    """
+    size = database_manager.get_overall_database_size()
+
+    if size is None or len(size) == 0:
+        size = "0 B"
+
+    return size
+
+
+def get_storage_size_hdf5(database_manager: AssasDatabaseManager) -> str:
+    """Fetch the total storage size for HDF5 datasets.
+
+    Returns:
+        str: Storage size in human-readable format.
+
+    """
+    dataframes = database_manager.get_all_database_entries()
+    dataframes = dataframes.copy()
+    dataframes["system_size_hdf5_bytes"] = dataframes["system_size_hdf5"].apply(
+        AssasDatabaseManager.convert_to_bytes
+    )
+
+    total_size_bytes = dataframes["system_size_hdf5_bytes"].sum()
+    total_size = AssasDatabaseManager.convert_from_bytes(total_size_bytes)
+
+    return total_size
+
+
+def get_avg_astec_vars_per_dataset(database_manager: AssasDatabaseManager) -> int:
+    """Fetch the average number of ASTEC variables per dataset.
+
+    Returns:
+        int: Average number of variables.
+
+    """
+    dataframes = database_manager.get_all_database_entries()
+    dataframes = dataframes.copy()
+    dataframes["num_astec_variables"] = dataframes["meta_data_variables"].apply(
+        lambda x: len(x) if isinstance(x, list) else 0
+    )
+    return int(dataframes["num_astec_variables"].mean())
+
+
 def layout() -> html.Div:
     """Layout for the Home page."""
+    database_manager = AssasDatabaseManager(
+        database_handler=AssasDatabaseHandler(
+            client=MongoClient(app.config["CONNECTIONSTRING"]),
+            backup_directory=app.config["BACKUP_DIRECTORY"],
+            database_name=app.config["MONGO_DB_NAME"],
+        )
+    )
+    base_url = get_base_url()
+    # Query actual statistics
+    user_count = get_user_count()
+    dataset_count = get_dataset_count(database_manager)
+    storage_binary = get_storage_size_binary(database_manager)
+    storage_hdf5 = get_storage_size_hdf5(database_manager)
+    avg_astec_vars = get_avg_astec_vars_per_dataset(database_manager)
+
     return html.Div(
         [
             # Enhanced Hero Section
@@ -207,13 +301,22 @@ def layout() -> html.Div:
                     html.Div(
                         [
                             dcc.Link(
-                                "🔍 Explore Datasets",
-                                href="/assas_app/database",
+                                [
+                                    html.I(className="fas fa-database me-2"),
+                                    "Explore Datasets",
+                                ],
+                                href=f"{base_url}/database",
                                 style=button_style(),
                             ),
                             dcc.Link(
-                                "📖 Learn More",
-                                href="/assas_app/about",
+                                [
+                                    html.I(
+                                        className="fas fa-info-circle",
+                                        style={"marginRight": "0.5em"},
+                                    ),
+                                    "About",
+                                ],
+                                href=f"{base_url}/about",
                                 style={
                                     **button_style(),
                                     "backgroundColor": "#28a745",
@@ -228,17 +331,23 @@ def layout() -> html.Div:
                                 },
                             ),
                             dcc.Link(
-                                "📊 API Documentation",
-                                href="/assas_app/api",
+                                [
+                                    html.I(
+                                        className="fas fa-book",
+                                        style={"marginRight": "0.5em"},
+                                    ),
+                                    "Documentation",
+                                ],
+                                href=f"{base_url}/documentation",
                                 style={
                                     **button_style(),
-                                    "backgroundColor": "#6f42c1",
-                                    "boxShadow": "0 2px 8px rgba(111, 66, 193, 0.3)",
+                                    "backgroundColor": "#6c757d",
+                                    "boxShadow": "0 2px 8px rgba(108, 117, 125, 0.3)",
                                     ":hover": {
-                                        "backgroundColor": "#5a2d91",
+                                        "backgroundColor": "#545b62",
                                         "transform": "translateY(-2px)",
                                         "boxShadow": (
-                                            "0 4px 12px rgba(111, 66, 193, 0.4)",
+                                            "0 4px 12px rgba(108, 117, 125, 0.4)"
                                         ),
                                     },
                                 },
@@ -262,13 +371,12 @@ def layout() -> html.Div:
                             "fontSize": "2.5rem",
                         },
                     ),
-                    # First Row of Stats
                     html.Div(
                         [
                             html.Div(
                                 [
                                     html.H2(
-                                        "1,247",
+                                        f"{user_count:,}",
                                         style={
                                             "color": "#007bff",
                                             "margin": "0",
@@ -277,7 +385,7 @@ def layout() -> html.Div:
                                         },
                                     ),
                                     html.P(
-                                        "ASTEC Simulation Datasets",
+                                        "Registered Users",
                                         style={
                                             "margin": "0.5rem 0",
                                             "fontSize": "1.1rem",
@@ -285,7 +393,7 @@ def layout() -> html.Div:
                                         },
                                     ),
                                     html.Small(
-                                        "Covering severe accident scenarios",
+                                        "Researchers with platform access",
                                         style={"color": "#6c757d"},
                                     ),
                                 ],
@@ -294,7 +402,7 @@ def layout() -> html.Div:
                             html.Div(
                                 [
                                     html.H2(
-                                        "47.3 TB",
+                                        f"{dataset_count:,}",
                                         style={
                                             "color": "#28a745",
                                             "margin": "0",
@@ -303,7 +411,7 @@ def layout() -> html.Div:
                                         },
                                     ),
                                     html.P(
-                                        "Total Simulation Data",
+                                        "Available Datasets",
                                         style={
                                             "margin": "0.5rem 0",
                                             "fontSize": "1.1rem",
@@ -311,7 +419,7 @@ def layout() -> html.Div:
                                         },
                                     ),
                                     html.Small(
-                                        "High-resolution temporal data",
+                                        "ASTEC simulation datasets",
                                         style={"color": "#6c757d"},
                                     ),
                                 ],
@@ -320,74 +428,16 @@ def layout() -> html.Div:
                             html.Div(
                                 [
                                     html.H2(
-                                        "99.7%",
-                                        style={
-                                            "color": "#dc3545",
-                                            "margin": "0",
-                                            "fontSize": "2.5rem",
-                                            "fontWeight": "bold",
-                                        },
-                                    ),
-                                    html.P(
-                                        "Platform Uptime",
-                                        style={
-                                            "margin": "0.5rem 0",
-                                            "fontSize": "1.1rem",
-                                            "fontWeight": "500",
-                                        },
-                                    ),
-                                    html.Small(
-                                        "24/7 reliable access",
-                                        style={"color": "#6c757d"},
-                                    ),
-                                ],
-                                style=stat_card_style("#dc3545"),
-                            ),
-                            html.Div(
-                                [
-                                    html.H2(
-                                        "156",
-                                        style={
-                                            "color": "#6f42c1",
-                                            "margin": "0",
-                                            "fontSize": "2.5rem",
-                                            "fontWeight": "bold",
-                                        },
-                                    ),
-                                    html.P(
-                                        "Reactor Configurations",
-                                        style={
-                                            "margin": "0.5rem 0",
-                                            "fontSize": "1.1rem",
-                                            "fontWeight": "500",
-                                        },
-                                    ),
-                                    html.Small(
-                                        "PWR, BWR, and advanced designs",
-                                        style={"color": "#6c757d"},
-                                    ),
-                                ],
-                                style=stat_card_style("#6f42c1"),
-                            ),
-                        ],
-                        style={"textAlign": "center", "marginBottom": "2rem"},
-                    ),
-                    # Second Row of Stats
-                    html.Div(
-                        [
-                            html.Div(
-                                [
-                                    html.H2(
-                                        "89",
+                                        storage_binary,
                                         style={
                                             "color": "#fd7e14",
                                             "margin": "0",
-                                            "fontSize": "2.5rem",
+                                            "fontSize": "2.2rem",
                                             "fontWeight": "bold",
                                         },
                                     ),
                                     html.P(
-                                        "Accident Scenarios",
+                                        "NetCDF4 Storage Size",
                                         style={
                                             "margin": "0.5rem 0",
                                             "fontSize": "1.1rem",
@@ -395,7 +445,7 @@ def layout() -> html.Div:
                                         },
                                     ),
                                     html.Small(
-                                        "LOCA, SBO, SGTR, and more",
+                                        "Binary simulation data",
                                         style={"color": "#6c757d"},
                                     ),
                                 ],
@@ -404,16 +454,16 @@ def layout() -> html.Div:
                             html.Div(
                                 [
                                     html.H2(
-                                        "2.4M",
+                                        storage_hdf5,
                                         style={
-                                            "color": "#20c997",
+                                            "color": "#6f42c1",
                                             "margin": "0",
-                                            "fontSize": "2.5rem",
+                                            "fontSize": "2.2rem",
                                             "fontWeight": "bold",
                                         },
                                     ),
                                     html.P(
-                                        "Data Points/Dataset",
+                                        "HDF5 Storage Size",
                                         style={
                                             "margin": "0.5rem 0",
                                             "fontSize": "1.1rem",
@@ -421,75 +471,49 @@ def layout() -> html.Div:
                                         },
                                     ),
                                     html.Small(
-                                        "High temporal resolution",
+                                        "Hierarchical data format",
+                                        style={"color": "#6c757d"},
+                                    ),
+                                ],
+                                style=stat_card_style("#6f42c1"),
+                            ),
+                            html.Div(
+                                [
+                                    html.H2(
+                                        f"{avg_astec_vars:,}",
+                                        style={
+                                            "color": "#20c997",
+                                            "margin": "0",
+                                            "fontSize": "2.2rem",
+                                            "fontWeight": "bold",
+                                        },
+                                    ),
+                                    html.P(
+                                        "Avg. ASTEC Variables/Dataset",
+                                        style={
+                                            "margin": "0.5rem 0",
+                                            "fontSize": "1.1rem",
+                                            "fontWeight": "500",
+                                        },
+                                    ),
+                                    html.Small(
+                                        "Typical number of variables per dataset",
                                         style={"color": "#6c757d"},
                                     ),
                                 ],
                                 style=stat_card_style("#20c997"),
                             ),
-                            html.Div(
-                                [
-                                    html.H2(
-                                        "342",
-                                        style={
-                                            "color": "#e83e8c",
-                                            "margin": "0",
-                                            "fontSize": "2.5rem",
-                                            "fontWeight": "bold",
-                                        },
-                                    ),
-                                    html.P(
-                                        "Physical Parameters",
-                                        style={
-                                            "margin": "0.5rem 0",
-                                            "fontSize": "1.1rem",
-                                            "fontWeight": "500",
-                                        },
-                                    ),
-                                    html.Small(
-                                        "Thermal-hydraulic & fission products",
-                                        style={"color": "#6c757d"},
-                                    ),
-                                ],
-                                style=stat_card_style("#e83e8c"),
-                            ),
-                            html.Div(
-                                [
-                                    html.H2(
-                                        "< 2s",
-                                        style={
-                                            "color": "#17a2b8",
-                                            "margin": "0",
-                                            "fontSize": "2.5rem",
-                                            "fontWeight": "bold",
-                                        },
-                                    ),
-                                    html.P(
-                                        "Search Response Time",
-                                        style={
-                                            "margin": "0.5rem 0",
-                                            "fontSize": "1.1rem",
-                                            "fontWeight": "500",
-                                        },
-                                    ),
-                                    html.Small(
-                                        "Optimized database queries",
-                                        style={"color": "#6c757d"},
-                                    ),
-                                ],
-                                style=stat_card_style("#17a2b8"),
-                            ),
                         ],
-                        style={"textAlign": "center"},
+                        style={"textAlign": "center", "marginBottom": "2rem"},
                     ),
                 ],
-                style={"margin": "4rem 0", "padding": "2rem 0"},
+                style=content_style(),
             ),
             # Comprehensive Features Section
             html.Div(
                 [
                     html.H2(
-                        "Comprehensive Platform Features",
+                        "Comprehensive Database — FAIR Principles",
                         style={
                             "textAlign": "center",
                             "color": "#2c3e50",
@@ -498,11 +522,11 @@ def layout() -> html.Div:
                             "fontSize": "2.5rem",
                         },
                     ),
-                    # Data Access & Search Features
+                    # Findable
                     html.Div(
                         [
                             html.H3(
-                                "🔍 Advanced Data Discovery & Search",
+                                "🔎 Findable",
                                 style={
                                     "color": "#007bff",
                                     "fontFamily": "Arial, sans-serif",
@@ -514,11 +538,11 @@ def layout() -> html.Div:
                                 [
                                     html.Li(
                                         [
-                                            html.Strong("Multi-Parameter Filtering: "),
-                                            "Search by reactor type, accident ",
-                                            "scenario, simulation time, ",
-                                            "geometric configuration ",
-                                            "and physical phenomena",
+                                            html.Strong("Rich Metadata & Indexing: "),
+                                            "All datasets are described with detailed ",
+                                            "metadata, including simulation parameters",
+                                            ", provenance, and keywords for "
+                                            "easy discovery.",
                                         ],
                                         style={
                                             "marginBottom": "0.8rem",
@@ -527,10 +551,12 @@ def layout() -> html.Div:
                                     ),
                                     html.Li(
                                         [
-                                            html.Strong("Metadata-Rich Search: "),
-                                            "Query datasets using detailed simulation "
-                                            "parameters, boundary conditions, and "
-                                            "model assumptions",
+                                            html.Strong(
+                                                "Advanced Search & Filtering: "
+                                            ),
+                                            "Multi-parameter search by reactor type, ",
+                                            "accident scenario, physical phenomena, ",
+                                            "and more.",
                                         ],
                                         style={
                                             "marginBottom": "0.8rem",
@@ -539,22 +565,10 @@ def layout() -> html.Div:
                                     ),
                                     html.Li(
                                         [
-                                            html.Strong("Smart Auto-Complete: "),
-                                            "Intelligent search suggestions based on "
-                                            "available parameter combinations and "
-                                            "dataset attributes",
-                                        ],
-                                        style={
-                                            "marginBottom": "0.8rem",
-                                            "fontSize": "1.1rem",
-                                        },
-                                    ),
-                                    html.Li(
-                                        [
-                                            html.Strong("Saved Search Profiles: "),
-                                            "Create and save custom search "
-                                            "configurations for repeated access to "
-                                            "relevant datasets",
+                                            html.Strong("Persistent Identifiers: "),
+                                            "Each dataset is assigned a unique, ",
+                                            "persistent identifier for citation ",
+                                            "and reference.",
                                         ],
                                         style={
                                             "marginBottom": "0.8rem",
@@ -570,11 +584,11 @@ def layout() -> html.Div:
                         ],
                         style=detailed_card_style(),
                     ),
-                    # Data Visualization Features
+                    # Accessible
                     html.Div(
                         [
                             html.H3(
-                                "📊 Interactive Data Visualization & Preview",
+                                "🌐 Accessible",
                                 style={
                                     "color": "#28a745",
                                     "fontFamily": "Arial, sans-serif",
@@ -586,10 +600,12 @@ def layout() -> html.Div:
                                 [
                                     html.Li(
                                         [
-                                            html.Strong("Real-Time Data Tables: "),
-                                            "Interactive, sortable tables with ",
-                                            "pagination supporting thousands of ",
-                                            "datasets with sub-second response times",
+                                            html.Strong(
+                                                "Open Access for Registered Users: "
+                                            ),
+                                            "Datasets are available to all ",
+                                            "authenticated researchers, ",
+                                            "with clear access policies.",
                                         ],
                                         style={
                                             "marginBottom": "0.8rem",
@@ -598,10 +614,12 @@ def layout() -> html.Div:
                                     ),
                                     html.Li(
                                         [
-                                            html.Strong("Metadata Preview: "),
-                                            "Comprehensive dataset information ",
-                                            "including simulation setup, physical ",
-                                            "models and numerical methods",
+                                            html.Strong(
+                                                "Standardized Download & API: "
+                                            ),
+                                            "Data can be accessed via web ",
+                                            "interface or RESTful API, supporting ",
+                                            "batch and programmatic retrieval.",
                                         ],
                                         style={
                                             "marginBottom": "0.8rem",
@@ -610,22 +628,11 @@ def layout() -> html.Div:
                                     ),
                                     html.Li(
                                         [
-                                            html.Strong("Data Quality Indicators: "),
-                                            "Visual indicators for dataset "
-                                            "completeness, validation status and "
-                                            "recommended usage scenarios",
-                                        ],
-                                        style={
-                                            "marginBottom": "0.8rem",
-                                            "fontSize": "1.1rem",
-                                        },
-                                    ),
-                                    html.Li(
-                                        [
-                                            html.Strong("Comparative Analysis Tools: "),
-                                            "Side-by-side dataset comparison for "
-                                            "parameter sensitivity studies and "
-                                            "model validation",
+                                            html.Strong(
+                                                "Comprehensive Documentation: "
+                                            ),
+                                            "Guides and API docs ensure users ",
+                                            "can easily access and use the data.",
                                         ],
                                         style={
                                             "marginBottom": "0.8rem",
@@ -641,82 +648,11 @@ def layout() -> html.Div:
                         ],
                         style=detailed_card_style(),
                     ),
-                    # Performance Features
+                    # Interoperable
                     html.Div(
                         [
                             html.H3(
-                                "⚡ High-Performance Data Infrastructure",
-                                style={
-                                    "color": "#dc3545",
-                                    "fontFamily": "Arial, sans-serif",
-                                    "fontSize": "1.8rem",
-                                    "marginBottom": "1rem",
-                                },
-                            ),
-                            html.Ul(
-                                [
-                                    html.Li(
-                                        [
-                                            html.Strong("LSDF Direct Access: "),
-                                            "Direct connection to KIT's Large Scale "
-                                            "Data Facility with 10 Gb/s network "
-                                            "bandwidth",
-                                        ],
-                                        style={
-                                            "marginBottom": "0.8rem",
-                                            "fontSize": "1.1rem",
-                                        },
-                                    ),
-                                    html.Li(
-                                        [
-                                            html.Strong("Optimized Data Transfer: "),
-                                            "Parallel download streams, compression "
-                                            "algorithms and resume capability for "
-                                            "large datasets",
-                                        ],
-                                        style={
-                                            "marginBottom": "0.8rem",
-                                            "fontSize": "1.1rem",
-                                        },
-                                    ),
-                                    html.Li(
-                                        [
-                                            html.Strong("Intelligent Caching: "),
-                                            "Frequently accessed datasets cached for "
-                                            "instant access with automatic cache "
-                                            "optimization",
-                                        ],
-                                        style={
-                                            "marginBottom": "0.8rem",
-                                            "fontSize": "1.1rem",
-                                        },
-                                    ),
-                                    html.Li(
-                                        [
-                                            html.Strong("Load Balancing: "),
-                                            "Distributed architecture ensuring "
-                                            "consistent performance during peak "
-                                            "usage periods",
-                                        ],
-                                        style={
-                                            "marginBottom": "0.8rem",
-                                            "fontSize": "1.1rem",
-                                        },
-                                    ),
-                                ],
-                                style={
-                                    "lineHeight": "1.8",
-                                    "fontFamily": "Arial, sans-serif",
-                                },
-                            ),
-                        ],
-                        style=detailed_card_style(),
-                    ),
-                    # API Features
-                    html.Div(
-                        [
-                            html.H3(
-                                "🔌 Comprehensive API & Integration",
+                                "🔗 Interoperable",
                                 style={
                                     "color": "#6f42c1",
                                     "fontFamily": "Arial, sans-serif",
@@ -728,10 +664,10 @@ def layout() -> html.Div:
                                 [
                                     html.Li(
                                         [
-                                            html.Strong("NetCDF4 Native Support: "),
-                                            "Direct NetCDF4 file access with full "
-                                            "metadata preservation and efficient I/O "
-                                            "operations",
+                                            html.Strong("Standard Data Formats: "),
+                                            "Support for NetCDF4 and HDF5 formats ",
+                                            "ensures compatibility with scientific ",
+                                            "tools and workflows.",
                                         ],
                                         style={
                                             "marginBottom": "0.8rem",
@@ -740,10 +676,10 @@ def layout() -> html.Div:
                                     ),
                                     html.Li(
                                         [
-                                            html.Strong("RESTful API: "),
-                                            "Complete REST API with authentication, "
-                                            "rate limiting, and comprehensive "
-                                            "documentation",
+                                            html.Strong("Controlled Vocabularies: "),
+                                            "ASTEC variable naming conventions ",
+                                            "and metadata standards enable ",
+                                            "integration with other platforms.",
                                         ],
                                         style={
                                             "marginBottom": "0.8rem",
@@ -752,10 +688,47 @@ def layout() -> html.Div:
                                     ),
                                     html.Li(
                                         [
-                                            html.Strong("Python SDK: "),
-                                            "Native Python library for seamless "
-                                            "integration with scientific computing "
-                                            "workflows and Jupyter notebooks",
+                                            html.Strong("API & SDK Integration: "),
+                                            "RESTful API and Python SDK allow ",
+                                            "seamless interoperability with analysis "
+                                            "pipelines and external systems.",
+                                        ],
+                                        style={
+                                            "marginBottom": "0.8rem",
+                                            "fontSize": "1.1rem",
+                                        },
+                                    ),
+                                ],
+                                style={
+                                    "lineHeight": "1.8",
+                                    "fontFamily": "Arial, sans-serif",
+                                },
+                            ),
+                        ],
+                        style=detailed_card_style(),
+                    ),
+                    # Reusable
+                    html.Div(
+                        [
+                            html.H3(
+                                "♻️ Reusable",
+                                style={
+                                    "color": "#fd7e14",
+                                    "fontFamily": "Arial, sans-serif",
+                                    "fontSize": "1.8rem",
+                                    "marginBottom": "1rem",
+                                },
+                            ),
+                            html.Ul(
+                                [
+                                    html.Li(
+                                        [
+                                            html.Strong(
+                                                "Clear Licensing & Usage Terms: "
+                                            ),
+                                            "Datasets include explicit licensing ",
+                                            "and recommended usage scenarios for ",
+                                            "reproducible research.",
                                         ],
                                         style={
                                             "marginBottom": "0.8rem",
@@ -764,10 +737,20 @@ def layout() -> html.Div:
                                     ),
                                     html.Li(
                                         [
-                                            html.Strong("Batch Processing Support: "),
-                                            "Automated data retrieval for large-scale "
-                                            "analysis projects with job scheduling and "
-                                            "monitoring",
+                                            html.Strong("Rich Metadata & Provenance: "),
+                                            "Detailed provenance information ",
+                                            "supports data reuse and validation.",
+                                        ],
+                                        style={
+                                            "marginBottom": "0.8rem",
+                                            "fontSize": "1.1rem",
+                                        },
+                                    ),
+                                    html.Li(
+                                        [
+                                            html.Strong("Community Standards: "),
+                                            "Data curation follows community best "
+                                            "practices for nuclear safety analysis.",
                                         ],
                                         style={
                                             "marginBottom": "0.8rem",
@@ -784,7 +767,7 @@ def layout() -> html.Div:
                         style=detailed_card_style(),
                     ),
                 ],
-                style={"margin": "4rem 0"},
+                style={**content_style(), "margin": "4rem 0"},
             ),
             # Technical Specifications
             html.Div(
@@ -800,7 +783,7 @@ def layout() -> html.Div:
                     ),
                     html.Div(
                         [
-                            # Left Column
+                            # Left Column: Data & Metadata
                             html.Div(
                                 [
                                     html.H4(
@@ -829,14 +812,64 @@ def layout() -> html.Div:
                                             html.Li(
                                                 "UTF-8 encoding for all text metadata"
                                             ),
+                                            html.Li(
+                                                "Direct access to LSDF "
+                                                "(Large Scale Data Facility) storage"
+                                            ),
+                                            html.Li(
+                                                "Efficient binary storage for "
+                                                "large simulation datasets"
+                                            ),
+                                            html.Li(
+                                                "Automatic calculation and reporting "
+                                                "of dataset sizes"
+                                            ),
+                                            html.Li(
+                                                "Support for multi-dimensional "
+                                                "ASTEC variables"
+                                            ),
                                         ],
                                         style={"lineHeight": "1.8"},
                                     ),
                                     html.H4(
-                                        "Security & Access Control",
+                                        "Metadata & FAIR Compliance",
                                         style={
                                             "color": "#28a745",
                                             "marginTop": "2rem",
+                                            "marginBottom": "1rem",
+                                        },
+                                    ),
+                                    html.Ul(
+                                        [
+                                            html.Li(
+                                                "Rich metadata including simulation "
+                                                "parameters, provenance, and keywords"
+                                            ),
+                                            html.Li(
+                                                "Persistent identifiers "
+                                                "for all datasets"
+                                            ),
+                                            html.Li(
+                                                "Compliance with FAIR data principles"
+                                            ),
+                                        ],
+                                        style={"lineHeight": "1.8"},
+                                    ),
+                                ],
+                                style={
+                                    "width": "48%",
+                                    "display": "inline-block",
+                                    "verticalAlign": "top",
+                                    "margin": "1%",
+                                },
+                            ),
+                            # Right Column: Access, Security, Performance, Login Methods
+                            html.Div(
+                                [
+                                    html.H4(
+                                        "Security & Access Control",
+                                        style={
+                                            "color": "#dc3545",
                                             "marginBottom": "1rem",
                                         },
                                     ),
@@ -850,50 +883,46 @@ def layout() -> html.Div:
                                                 "Encrypted data transmission (TLS 1.3)"
                                             ),
                                             html.Li(
-                                                "Audit logging for all data access"
+                                                "Internal logging of data requests"
                                             ),
                                             html.Li("GDPR-compliant data handling"),
-                                        ],
-                                        style={"lineHeight": "1.8"},
-                                    ),
-                                ],
-                                style={
-                                    "width": "48%",
-                                    "display": "inline-block",
-                                    "verticalAlign": "top",
-                                    "margin": "1%",
-                                },
-                            ),
-                            # Right Column
-                            html.Div(
-                                [
-                                    html.H4(
-                                        "Performance Metrics",
-                                        style={
-                                            "color": "#dc3545",
-                                            "marginBottom": "1rem",
-                                        },
-                                    ),
-                                    html.Ul(
-                                        [
-                                            html.Li("< 2 second search response time"),
                                             html.Li(
-                                                "Up to 1 GB/s sustained download speeds"
+                                                [
+                                                    html.Strong(
+                                                        "Helmholtz AAI Login: "
+                                                    ),
+                                                    "Recommended for Helmholtz "
+                                                    "researchers. "
+                                                    "Secure single sign-on via ",
+                                                    html.A(
+                                                        "Helmholtz AAI",
+                                                        href=(
+                                                            "https://www.helmholtz.de/"
+                                                            "en/about-us/",
+                                                        ),
+                                                        target="_blank",
+                                                        style={
+                                                            "color": "#007bff",
+                                                            "textDecoration": (
+                                                                "underline",
+                                                            ),
+                                                        },
+                                                    ),
+                                                    ".",
+                                                ],
                                             ),
                                             html.Li(
-                                                "99.7% platform availability (SLA)"
-                                            ),
-                                            html.Li(
-                                                "Concurrent support for 100+ users"
-                                            ),
-                                            html.Li(
-                                                "Real-time dataset synchronization"
+                                                [
+                                                    html.Strong("Basic Auth Login: "),
+                                                    "Available for users with "
+                                                    "local credentials.",
+                                                ],
                                             ),
                                         ],
                                         style={"lineHeight": "1.8"},
                                     ),
                                     html.H4(
-                                        "Integration Capabilities",
+                                        "Performance & Scalability",
                                         style={
                                             "color": "#6f42c1",
                                             "marginTop": "2rem",
@@ -903,19 +932,20 @@ def layout() -> html.Div:
                                     html.Ul(
                                         [
                                             html.Li(
-                                                "Python 3.8+ scientific computing stack"
+                                                "Optimized for large-scale, "
+                                                "concurrent data access"
                                             ),
                                             html.Li(
-                                                "Jupyter Notebook direct integration"
+                                                "Responsive web interface for"
+                                                " dataset browsing"
                                             ),
                                             html.Li(
-                                                "MATLAB Data Import/Export "
-                                                "compatibility"
+                                                "Scalable architecture "
+                                                "supporting 100+ users"
                                             ),
                                             html.Li(
-                                                "R statistical computing interface"
+                                                "Scheduled dataset updates and curation"
                                             ),
-                                            html.Li("Docker containerized deployment"),
                                         ],
                                         style={"lineHeight": "1.8"},
                                     ),
@@ -929,7 +959,6 @@ def layout() -> html.Div:
                             ),
                         ],
                         style={
-                            # Mobile stacking
                             "@media (max-width: 768px)": {
                                 "display": "block",
                             },
@@ -1048,13 +1077,12 @@ def layout() -> html.Div:
                                     ),
                                     html.P(
                                         [
-                                            "Navigate to the Database section to browse"
-                                            "our comprehensive collection of ",
+                                            "Navigate to the Database section to ",
+                                            "browse our comprehensive collection of ",
                                             html.Strong(
-                                                "1,247 ASTEC simulation datasets"
+                                                f"{dataset_count} ASTEC datasets",
                                             ),
-                                            " covering various reactor types and "
-                                            "accident scenarios.",
+                                            " covering various accident scenarios.",
                                         ],
                                         style={
                                             "lineHeight": "1.6",
@@ -1101,13 +1129,13 @@ def layout() -> html.Div:
                                     ),
                                     html.P(
                                         [
-                                            "Use our advanced multi-parameter "
-                                            "filtering system to find datasets "
-                                            "matching your specific research "
+                                            "Use our advanced multi-parameter ",
+                                            "filtering system to find datasets ",
+                                            "matching your specific research ",
                                             "requirements across ",
-                                            html.Strong("342 physical parameters"),
-                                            " and ",
-                                            html.Strong("89 accident scenarios"),
+                                            html.Strong(
+                                                f"{avg_astec_vars} ASTEC variables",
+                                            ),
                                             ".",
                                         ],
                                         style={
@@ -1155,12 +1183,11 @@ def layout() -> html.Div:
                                     ),
                                     html.P(
                                         [
-                                            "Download datasets through our high-speed "
-                                            "web interface or access them "
-                                            "programmatically via our comprehensive "
-                                            "NetCDF4 API with ",
-                                            html.Strong("up to 1 GB/s"),
-                                            " transfer speeds.",
+                                            "Download up to ",
+                                            html.Strong(f"{storage_hdf5} of data"),
+                                            " in hdf5 format via the ",
+                                            "web interface or access them ",
+                                            "programmatically via the RESTful API.",
                                         ],
                                         style={
                                             "lineHeight": "1.6",
@@ -1207,9 +1234,10 @@ def layout() -> html.Div:
                                     ),
                                     html.P(
                                         [
-                                            "Leverage comprehensive metadata, "
-                                            "documentation, and our Python SDK for "
-                                            "advanced nuclear safety analysis with "
+                                            "Use the comprehensive metadata, ",
+                                            "documentation and the ",
+                                            html.Strong("NetCDF4 API"),
+                                            " to perform data analysis with ",
                                             "full traceability and reproducibility.",
                                         ],
                                         style={
@@ -1238,7 +1266,7 @@ def layout() -> html.Div:
                     html.Div(
                         [
                             html.H3(
-                                "Ready to accelerate your nuclear safety research?",
+                                "Join the ASSAS Community",
                                 style={
                                     "color": "#2c3e50",
                                     "fontFamily": "Arial, sans-serif",
@@ -1247,11 +1275,38 @@ def layout() -> html.Div:
                             ),
                             html.P(
                                 [
-                                    "Join researchers worldwide in leveraging the most "
-                                    "comprehensive nuclear safety simulation database "
-                                    "available. Start exploring datasets, discover new "
-                                    "insights, and advance the field of nuclear safety "
-                                    "analysis.",
+                                    "The ASSAS Data Hub is a collaborative project ",
+                                    "supported by leading partners in nuclear safety ",
+                                    "research. Our platform enables secure, ",
+                                    "FAIR-compliant access to high-quality ASTEC ",
+                                    "simulation data for research, analysis, ",
+                                    "and innovation. Whether you are a project partner",
+                                    ", academic researcher, or industry expert, ",
+                                    "ASSAS provides the tools and resources to ",
+                                    "advance nuclear safety science.",
+                                ],
+                                style={
+                                    "fontSize": "1.1rem",
+                                    "lineHeight": "1.8",
+                                    "marginBottom": "2rem",
+                                    "color": "#5a6c7d",
+                                },
+                            ),
+                            html.P(
+                                [
+                                    "For more information about the ASSAS project, ",
+                                    "its partners, and ongoing initiatives, ",
+                                    "please visit the ",
+                                    html.A(
+                                        "ASSAS Home Page",
+                                        href="https://assas-horizon-euratom.eu/",
+                                        target="_blank",
+                                        style={
+                                            "color": "#007bff",
+                                            "textDecoration": "underline",
+                                        },
+                                    ),
+                                    ".",
                                 ],
                                 style={
                                     "fontSize": "1.1rem",
@@ -1261,30 +1316,54 @@ def layout() -> html.Div:
                                 },
                             ),
                             dcc.Link(
-                                "🚀 Start Exploring Datasets",
-                                href="/assas_app/database",
+                                [
+                                    html.I(className="fas fa-database me-2"),
+                                    "Explore Datasets",
+                                ],
+                                href=f"{base_url}/database",
+                                style=button_style(),
+                            ),
+                            dcc.Link(
+                                [
+                                    html.I(
+                                        className="fas fa-info-circle",
+                                        style={"marginRight": "0.5em"},
+                                    ),
+                                    "About",
+                                ],
+                                href=f"{base_url}/about",
                                 style={
                                     **button_style(),
-                                    "fontSize": "20px",
-                                    "padding": "18px 36px",
-                                    "backgroundColor": "#007bff",
-                                    "marginRight": "1rem",
+                                    "backgroundColor": "#28a745",
+                                    "boxShadow": "0 2px 8px rgba(40, 167, 69, 0.3)",
+                                    ":hover": {
+                                        "backgroundColor": "#1e7e34",
+                                        "transform": "translateY(-2px)",
+                                        "boxShadow": (
+                                            "0 4px 12px rgba(40, 167, 69, 0.4)",
+                                        ),
+                                    },
                                 },
                             ),
                             dcc.Link(
-                                "📚 View Documentation",
-                                href="/assas_app/about",
+                                [
+                                    html.I(
+                                        className="fas fa-book",
+                                        style={"marginRight": "0.5em"},
+                                    ),
+                                    "Documentation",
+                                ],
+                                href=f"{base_url}/documentation",
                                 style={
                                     **button_style(),
-                                    "fontSize": "20px",
-                                    "padding": "18px 36px",
                                     "backgroundColor": "#6c757d",
                                     "boxShadow": "0 2px 8px rgba(108, 117, 125, 0.3)",
                                     ":hover": {
                                         "backgroundColor": "#545b62",
                                         "transform": "translateY(-2px)",
-                                        "boxShadow": "0 4px 12px "
-                                        "rgba(108, 117, 125, 0.4)",
+                                        "boxShadow": (
+                                            "0 4px 12px rgba(108, 117, 125, 0.4)"
+                                        ),
                                     },
                                 },
                             ),

@@ -62,20 +62,18 @@ def debug_oauth_urls():
             "APPLICATION_ROOT": current_app.config.get("APPLICATION_ROOT", "/"),
         },
         "oauth_settings": {
-            "github_client_id": current_app.config.get("GITHUB_CLIENT_ID", "Not set"),
-            "github_configured": bool(current_app.config.get("GITHUB_CLIENT_ID")),
-            "bwidm_configured": bool(current_app.config.get("BWIDM_CLIENT_ID")),
+            "HELMHOLTZ_CLIENT_ID": current_app.config.get(
+                "HELMHOLTZ_CLIENT_ID", "Not set"
+            ),
         },
     }
 
     # Generate OAuth callback URLs
     try:
-        github_callback = url_for("oauth.callback", provider="github", _external=True)
-        debug_info["generated_urls"] = {"github_callback": github_callback}
-
-        if current_app.config.get("BWIDM_CLIENT_ID"):
-            bwidm_callback = url_for("oauth.callback", provider="bwidm", _external=True)
-            debug_info["generated_urls"]["bwidm_callback"] = bwidm_callback
+        debug_info["oauth_callback_urls"] = {
+            "helmholtz": \
+                url_for("oauth.callback", provider="helmholtz", _external=True),
+        }
 
     except Exception as e:
         debug_info["url_generation_error"] = str(e)
@@ -93,18 +91,11 @@ def debug_oauth_config():
 
     return jsonify(
         {
-            "github_client_id": current_app.config.get("GITHUB_CLIENT_ID", "Not set"),
-            "github_configured": bool(current_app.config.get("GITHUB_CLIENT_ID")),
-            "bwidm_configured": bool(current_app.config.get("BWIDM_CLIENT_ID")),
-            "current_host": request.host,
-            "expected_callback_github": url_for(
-                "oauth.callback", provider="github", _external=True
+            "HELMHOLTZ_CLIENT_ID": current_app.config.get("HELMHOLTZ_CLIENT_ID"),
+            "HELMHOLTZ_CLIENT_SECRET": bool(
+                current_app.config.get("HELMHOLTZ_CLIENT_SECRET")
             ),
-            "expected_callback_bwidm": (
-                url_for("oauth.callback", provider="bwidm", _external=True)
-                if current_app.config.get("BWIDM_CLIENT_ID")
-                else "Not configured"
-            ),
+            "SECRET_KEY_SET": bool(current_app.config.get("SECRET_KEY")),
         }
     )
 

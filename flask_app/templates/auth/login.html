@@ -23,34 +23,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-github {
-            background-color: #333;
-            border-color: #333;
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .btn-github:hover {
-            background-color: #24292e;
-            border-color: #24292e;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .btn-bwidm {
-            background-color: #0066cc;
-            border-color: #0066cc;
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .btn-bwidm:hover {
-            background-color: #0052a3;
-            border-color: #0052a3;
-            color: white;
-            transform: translateY(-2px);
-        }
-
         .provider-section {
             border: 1px solid #e9ecef;
             border-radius: 10px;
@@ -69,7 +41,8 @@
     <div class="container">
         <div class="login-container">
             <div class="text-center mb-4">
-                <h2 class="text-primary">ASSAS Data Hub</h2>
+                <i class="fas fa-user-shield fa-3x text-primary mb-3"></i>
+                <h2 class="fw-bold text-primary">ASSAS Data Hub</h2>
                 <p class="text-muted">Please sign in to continue</p>
             </div>
 
@@ -85,33 +58,11 @@
             {% endif %}
             {% endwith %}
 
-            <!-- GitHub Authentication (Testing) -->
-            <div class="provider-section">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0">
-                        <i class="fab fa-github me-2"></i>
-                        GitHub Authentication
-                    </h5>
-                    <span class="badge bg-warning badge-status">Testing</span>
-                </div>
-
-                <p class="text-muted small mb-3">
-                    For development and testing purposes. Use your GitHub account to access the system.
-                </p>
-
-                <div class="d-grid">
-                    <a href="{{ url_for('oauth.login', provider='github') }}" class="btn btn-github btn-lg">
-                        <i class="fab fa-github me-2"></i>
-                        Sign in with GitHub
-                    </a>
-                </div>
-            </div>
-
             <!-- Helmholtz AAI Authentication -->
             <div class="provider-section">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">
-                        <i class="fas fa-galactic-republic me-2"></i>
+                        <i class="fas fa-user-shield me-2"></i>
                         Helmholtz AAI Authentication
                     </h5>
                     <span class="badge bg-success badge-status">Available</span>
@@ -124,7 +75,7 @@
 
                 <div class="d-grid">
                     <a href="{{ url_for('oauth.login', provider='helmholtz') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-galactic-republic me-2"></i>
+                        <i class="fas fa-user-shield me-2"></i>
                         Sign in with Helmholtz AAI
                     </a>
                 </div>
@@ -135,7 +86,7 @@
 
             <div class="text-center">
                 <p class="mb-3">Alternative login method:</p>
-                <a href="/test/auth/basic/login" class="btn btn-outline-secondary btn-lg">
+                <a href="{{ config.get('AUTH_BASE_URL') }}/basic/login" class="btn btn-outline-secondary btn-lg">
                     <i class="fas fa-user-shield me-2"></i>
                     Basic Auth Login
                 </a>
@@ -148,8 +99,7 @@
                 <h6 class="text-muted">Debug Information</h6>
                 <small class="text-muted">
                     <div>Environment: Development</div>
-                    <div>GitHub OAuth: {{ "✓ Configured" if config.GITHUB_CLIENT_ID else "✗ Not configured" }}</div>
-                    <div>Helmholtz OAuth: {{ "✓ Configured" if config.get('HELMHOLTZ_CLIENT_ID') else "✗ Not configured"
+                    <div>Helmholtz Auth: {{ "✓ Configured" if config.get('HELMHOLTZ_CLIENT_ID') else "✗ Not configured"
                         }}</div>
                 </small>
             </div>
@@ -158,8 +108,10 @@
             <div class="mt-4 text-center">
                 <small class="text-muted">
                     By signing in, you agree to our
-                    <a href="#" class="text-primary">Terms of Service</a> and
-                    <a href="#" class="text-primary">Privacy Policy</a>
+                    <a href="{{ config.get('BASE_URL') }}/terms" class="text-primary" target="_blank" rel="noopener">Terms of
+                        Service</a> and
+                    <a href="{{ config.get('BASE_URL') }}/privacy" class="text-primary" target="_blank" rel="noopener">Privacy
+                        Policy</a>
                 </small>
             </div>
         </div>

@@ -416,7 +416,11 @@ def get_datasets() -> Response:
         # Parse query parameters
         filters = {
             "name": request.args.get("name"),
-            "status": request.args.get("status"),
+            "status": (
+                request.args.get("status").capitalize()
+                if request.args.get("status")
+                else None
+            ),
             "user": request.args.get("user"),
             "created_after": request.args.get("created_after"),
             "created_before": request.args.get("created_before"),
@@ -1025,7 +1029,6 @@ def get_group_variables(dataset_id: uuid.UUID, group_name: str) -> Response:
         if not result_filepath:
             return APIResponse.error("No result file available for this dataset", 400)
 
-        # Get variables in specific group using NetCDF4 handler
         handler = DatasetService.get_variable_handler()
         variables_info = handler.read_metadata_for_variables(
             netcdf4_file=result_filepath, group=group_name
@@ -1047,4 +1050,97 @@ def get_group_variables(dataset_id: uuid.UUID, group_name: str) -> Response:
     except Exception as e:
         return handle_api_error(
             e, f"Failed to retrieve variables for group {group_name}"
+        )
+
+
+@datasets_bp.route("/<uuid:dataset_id>/metadata_variables", methods=["GET"])
+@auth.login_required
+def get_metadata_variables(dataset_id: uuid.UUID) -> Response:
+    """Route to get all meta_data variables.
+
+    GET /datasets/{id}/metadata_variables - Get NetCDF4 variables of type 'meta_data'.
+    """
+    try:
+        manager = DatasetService.get_database_manager()
+        document = manager.get_database_entry_by_uuid(dataset_id)
+
+        if not document:
+            return APIResponse.not_found("Dataset not found")
+
+        result_filepath = document.get("system_result", "")
+        if not result_filepath:
+            return APIResponse.error("No result file available for this dataset", 400)
+
+        handler = DatasetService.get_variable_handler()
+        meta_data_vars = handler.get_all_metadata_variables(result_filepath)
+
+        return APIResponse.success(
+            {
+                "dataset_id": str(dataset_id),
+                "meta_data_variables": meta_data_vars,
+                "count": len(meta_data_vars),
+            }
+        )
+
+    except Exception as e:
+        return handle_api_error(
+            e, f"Failed to retrieve meta_data variables for dataset {dataset_id}"
+        )
+
+
+@datasets_bp.route(
+    "/<uuid:dataset_id>/metadata_variables/<metadata_variable_name>", methods=["GET"]
+)
+@auth.login_required
+def get_metadata_variable(
+    dataset_id: uuid.UUID, metadata_variable_name: str
+) -> Response:
+    """Route to get a specific meta_data variable.
+
+    GET /datasets/{id}/metadata_variables/{metadata_variable_name}
+    - Get a specific meta_data variable.
+    """
+    try:
+        manager = DatasetService.get_database_manager()
+        document = manager.get_database_entry_by_uuid(dataset_id)
+
+        if not document:
+            return APIResponse.not_found("Dataset not found")
+
+        result_filepath = document.get("system_result", "")
+        if not result_filepath:
+            return APIResponse.error("No result file available for this dataset", 400)
+
+        handler = DatasetService.get_variable_handler()
+        meta_data_vars = handler.get_all_metadata_variables(result_filepath)
+
+        variable = next(
+            (
+                var
+                for var in meta_data_vars
+                if var["name"] == metadata_variable_name
+                or var.get("full_path") == metadata_variable_name
+            ),
+            None,
+        )
+
+        if not variable:
+            return APIResponse.not_found(
+                f"Meta data variable '{metadata_variable_name}' not found"
+            )
+
+        return APIResponse.success(
+            {
+                "dataset_id": str(dataset_id),
+                "meta_data_variable": variable,
+            }
+        )
+
+    except Exception as e:
+        return handle_api_error(
+            e,
+            (
+                f"Failed to retrieve meta_data variable '{metadata_variable_name}' "
+                f"for dataset {dataset_id}"
+            ),
         )

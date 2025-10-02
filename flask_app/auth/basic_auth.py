@@ -60,7 +60,7 @@ class BasicAuthUserManager:
                 if username and user.get("basic_auth_password_hash"):
                     all_users[username] = {
                         "password_hash": user["basic_auth_password_hash"],
-                        "roles": user.get("roles", ["viewer"]),
+                        "roles": user.get("roles", ["visitor"]),
                         "email": user.get("email"),
                         "name": user.get("name"),
                         "is_active": user.get("is_active", True),
@@ -82,13 +82,13 @@ class BasicAuthUserManager:
                     continue
 
                 # Check if user has OAuth provider but wants basic auth access
-                if user.get("provider") in ["github", "helmholtz"]:
+                if user.get("provider") in ["helmholtz"]:
                     # Generate a basic auth entry for OAuth users (they need to set password first)
                     temp_basic_auth = user.get("temp_basic_auth_password_hash")
                     if temp_basic_auth:
                         all_users[username] = {
                             "password_hash": temp_basic_auth,
-                            "roles": user.get("roles", ["viewer"]),
+                            "roles": user.get("roles", ["visitor"]),
                             "email": email,
                             "name": user.get("name"),
                             "is_active": user.get("is_active", True),
@@ -193,7 +193,7 @@ class BasicAuthSession:
             "name": user_data.get("name", username),
             "provider": "basic_auth",
             "authenticated": True,
-            "roles": user_data.get("roles", ["viewer"]),
+            "roles": user_data.get("roles", ["visitor"]),
             "auth_method": "basic_auth",
             "auth_source": source,
             "mongodb_id": (
@@ -291,7 +291,7 @@ def set_basic_auth_password():
         return redirect(build_auth_url("/login"))
 
     # Only allow OAuth users to set basic auth password
-    if current_user.get("provider") not in ["github", "bwidm", "helmholtz"]:
+    if current_user.get("provider") not in ["helmholtz"]:
         flash("This feature is only available for OAuth users", "error")
         return redirect(build_url("/profile"))
 
@@ -376,7 +376,7 @@ def change_password():
     auth_method = current_user.get("auth_method")
     provider = current_user.get("provider")
 
-    if not (auth_method == "basic_auth" or provider in ["github", "bwidm"]):
+    if not (auth_method == "basic_auth" or provider in ["helmholtz"]):
         flash("Password change not available for your account type", "error")
         base_url = get_base_url()
         return redirect(f"{base_url}/profile")
@@ -413,7 +413,7 @@ def change_password():
             new_password_hash = generate_password_hash(new_password)
 
             # Use different methods based on user type
-            if provider in ["github", "bwidm"]:
+            if provider in ["helmholtz"]:
                 # OAuth user setting/changing basic auth password
                 success = user_manager.set_temp_basic_auth_password(
                     username, new_password_hash
@@ -458,7 +458,7 @@ def admin_create_basic_user():
         password = data.get("password", "")
         email = data.get("email", "").strip()
         name = data.get("name", "").strip()
-        roles = data.get("roles", ["viewer"])
+        roles = data.get("roles", ["visitor"])
 
         if not all([username, password, email]):
             return {"error": "Username, password, and email are required"}, 400

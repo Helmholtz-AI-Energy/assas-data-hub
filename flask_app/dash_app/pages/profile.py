@@ -67,9 +67,9 @@ def get_role_badge_color(role: str) -> str:
     """Get badge color for role."""
     role_colors = {
         "admin": "danger",
-        "writer": "warning",
-        "reader": "info",
-        "viewer": "secondary",
+        "researcher": "warning",
+        "curator": "info",
+        "visitor": "secondary",
     }
     return role_colors.get(role.lower(), "secondary")
 
@@ -96,7 +96,7 @@ def create_user_info_card() -> dbc.Card:
             else:
                 role_list.append(str(role))
     else:
-        role_list = ["viewer"]  # Default fallback
+        role_list = ["visitor"]  # Default fallback
 
     # Create role badges safely
     role_badges = []
@@ -115,7 +115,7 @@ def create_user_info_card() -> dbc.Card:
 
     # If no valid roles found, add default
     if not role_badges:
-        role_badges = [[html.I(className="fas fa-shield-alt me-1"), "Viewer"]]
+        role_badges = [[html.I(className="fas fa-shield-alt me-1"), "Visitor"]]
 
     return dbc.Card(
         [
@@ -242,21 +242,9 @@ def create_account_details_card() -> dbc.Card:
         ("Authentication Provider", user.get("provider", "Unknown").title()),
     ]
 
-    # Add GitHub specific info
-    if user.get("provider") == "github" and user.get("github_profile"):
-        details.append(("GitHub Profile", user.get("github_profile")))
-
     detail_rows = []
     for label, value in details:
-        if label == "GitHub Profile" and value:
-            value_element = html.A(
-                value,
-                href=value,
-                target="_blank",
-                className="text-primary",
-                style={"textDecoration": "none"},
-            )
-        elif label == "Email Address" and value and value != "Not provided":
+        if label == "Email Address" and value and value != "Not provided":
             value_element = html.A(
                 value,
                 href=f"mailto:{value}",
@@ -317,10 +305,11 @@ def create_permissions_card() -> dbc.Card:
             "icon": "fas fa-crown",
             "description": "Full system access with administrative privileges",
             "permissions": [
-                "Manage all datasets",
-                "Access admin functions",
-                "Modify system settings",
-                "View all user data",
+                "Access profile page",
+                "Manage metadata",
+                "Manage datasets",
+                "Use analysis tools",
+                "Manage user accounts",
             ],
         },
         "researcher": {
@@ -328,10 +317,10 @@ def create_permissions_card() -> dbc.Card:
             "icon": "fas fa-microscope",
             "description": "Research data access and analysis tools",
             "permissions": [
-                "Access research datasets",
-                "Run analysis tools",
-                "Upload research data",
-                "Collaborate with team",
+                "Access profile page",
+                "Access metadata",
+                "Access datasets",
+                "Use analysis tools",
             ],
         },
         "curator": {
@@ -339,21 +328,19 @@ def create_permissions_card() -> dbc.Card:
             "icon": "fas fa-tasks",
             "description": "Data curation and quality control",
             "permissions": [
-                "Review data quality",
+                "Access profile page",
                 "Manage metadata",
-                "Approve datasets",
-                "Monitor data integrity",
+                "Manage datasets",
+                "Use analysis tools",
             ],
         },
-        "viewer": {
+        "visitor": {
             "color": "secondary",
             "icon": "fas fa-eye",
-            "description": "Basic viewing access",
+            "description": "Visitor access",
             "permissions": [
-                "Browse public datasets",
-                "View basic information",
-                "Access help documentation",
-                "Download permitted data",
+                "Access profile page",
+                "Access help",
             ],
         },
     }
@@ -523,13 +510,21 @@ def create_actions_card() -> dbc.Card:
         logout_section,
         dbc.Button(
             [html.I(className="fas fa-home me-2"), "Go to Home"],
-            href=f"{get_base_url()}/home",
+            href=(
+                f"{get_base_url()}/visitor"
+                if has_role("visitor")
+                else f"{get_base_url()}/home"
+            ),
             color="outline-primary",
             className="me-2 mb-2",
         ),
         dbc.Button(
             [html.I(className="fas fa-database me-2"), "Browse Database"],
-            href=f"{get_base_url()}/database",
+            href=(
+                f"{get_base_url()}/visitor"
+                if has_role("visitor")
+                else f"{get_base_url()}/database"
+            ),
             color="outline-info",
             className="me-2 mb-2",
         ),
@@ -544,6 +539,7 @@ def create_actions_card() -> dbc.Card:
                 color="outline-warning",
                 className="me-2 mb-2",
                 target="_blank",
+                external_link=True,
             )
         )
 
