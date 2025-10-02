@@ -1,10 +1,5 @@
-# Use a base image
 FROM python:3.11-slim
 
-# Set environment variables
-ENV REPO_PATH=/app
-
-# Add SSH key from build argument
 ARG SSH_PRIVATE_KEY
 ARG GIT_BRANCH
 
