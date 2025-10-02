@@ -39,16 +39,16 @@ class BasicAuthUserManager:
         """Get basic auth users from configuration and MongoDB database."""
         all_users = {}
 
-        # 1. Load static users from configuration (for emergency access)
-        static_users = current_app.config.get("BASIC_AUTH_USERS", {})
-        all_users.update(static_users)
-        logger.info(f"Loaded {len(static_users)} static basic auth users from config")
+        if current_app.config.get("DEVELOPMENT", False):
+            logger.warning("Running in DEVELOPMENT mode - basic auth users from config")
 
-        # 2. Load dynamic users from MongoDB database
+            static_users = current_app.config.get("BASIC_AUTH_USERS", {})
+            all_users.update(static_users)
+            logger.info(
+                f"Loaded {len(static_users)} static basic auth users from config")
+
         try:
             user_manager = UserManager()
-
-            # Get users with basic auth password hash
             db_users_with_basic_auth = user_manager.get_users_with_basic_auth()
             logger.info(
                 f"Found {len(db_users_with_basic_auth)} users with "
@@ -68,8 +68,6 @@ class BasicAuthUserManager:
                         "user_data": user,
                     }
 
-            # 3. Also check OAuth users who might want to use basic auth
-            # Allow OAuth users to authenticate with a generated basic auth password
             all_oauth_users = user_manager.get_all_users()
             oauth_basic_count = 0
 
@@ -77,13 +75,10 @@ class BasicAuthUserManager:
                 username = user.get("username")
                 email = user.get("email")
 
-                # Skip if already has basic auth or no username
                 if not username or username in all_users:
                     continue
 
-                # Check if user has OAuth provider but wants basic auth access
                 if user.get("provider") in ["helmholtz"]:
-                    # Generate a basic auth entry for OAuth users (they need to set password first)
                     temp_basic_auth = user.get("temp_basic_auth_password_hash")
                     if temp_basic_auth:
                         all_users[username] = {
@@ -105,9 +100,9 @@ class BasicAuthUserManager:
             return all_users
 
         except Exception as e:
+            
             logger.error(f"Error getting basic auth users from database: {e}")
-            # Return at least the static users if database fails
-            return static_users
+            return all_users
 
     @staticmethod
     def verify_password(username: str, password: str) -> bool:
@@ -121,12 +116,10 @@ class BasicAuthUserManager:
 
         user_data = users[username]
 
-        # Check if user is active
         if not user_data.get("is_active", True):
             logger.warning(f"Basic auth attempt for inactive user: {username}")
             return False
 
-        # Verify password hash
         password_hash = user_data.get("password_hash")
         if password_hash and check_password_hash(password_hash, password):
             source = user_data.get("source", "config")
@@ -134,7 +127,6 @@ class BasicAuthUserManager:
                 f"Basic auth successful for user: {username} (source: {source})"
             )
 
-            # Store authenticated user data for later retrieval
             http_basic_auth.authenticated_user = user_data
             return True
 

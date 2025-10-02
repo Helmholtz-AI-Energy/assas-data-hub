@@ -5,7 +5,6 @@ from datetime import timedelta
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash
 
-# Load environment variables from .env file
 load_dotenv()
 
 
@@ -29,14 +28,12 @@ class Config(object):
     MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", r"assas")
     USER_COLLECTION_NAME = os.getenv("USER_COLLECTION_NAME", r"users")
 
-    # URL and Server Configuration
-    SERVER_NAME = os.environ.get("SERVER_NAME")
-    PREFERRED_URL_SCHEME = os.environ.get("PREFERRED_URL_SCHEME", "http")
+    SERVER_NAME = os.getenv("SERVER_NAME", "assas.scc.kit.edu")
+    PREFERRED_URL_SCHEME = os.getenv("PREFERRED_URL_SCHEME", "http")
 
     HELMHOLTZ_CLIENT_ID = os.getenv("HELMHOLTZ_CLIENT_ID", "")
     HELMHOLTZ_CLIENT_SECRET = os.getenv("HELMHOLTZ_CLIENT_SECRET", "")
 
-    # Session Configuration
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-fallback-key-change-in-production")
     PERMANENT_SESSION_LIFETIME = timedelta(
         hours=int(os.getenv("SESSION_LIFETIME_HOURS", 8))
@@ -88,20 +85,18 @@ class DevelopmentConfig(Config):
     """Development configuration class for the ASSAS Data Hub application."""
 
     DEBUG = True
-    SERVER_NAME = None
     PREFERRED_URL_SCHEME = "https"
 
-    # Development basic auth users
     BASIC_AUTH_USERS = {
         "admin_local": {
-            "password_hash": generate_password_hash("admin123"),  # Change this!
+            "password_hash": generate_password_hash("admin123"),
             "roles": ["admin"],
             "email": "admin@dev.local",
             "name": "Development Admin",
             "is_active": True,
         },
         "user": {
-            "password_hash": generate_password_hash("user123"),  # Change this!
+            "password_hash": generate_password_hash("user123"),
             "roles": ["visitor"],
             "email": "user@dev.local",
             "name": "Development User",
@@ -114,5 +109,4 @@ class ProductionConfig(Config):
     """Production configuration class for the ASSAS Data Hub application."""
 
     DEBUG = False
-    # SERVER_NAME should be set via environment variable in production
     PREFERRED_URL_SCHEME = "https"
