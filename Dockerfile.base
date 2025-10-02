@@ -18,5 +18,4 @@ RUN git fetch origin && \
     git reset --hard origin/${GIT_BRANCH} && \
     echo "Checked out remote branch ${GIT_BRANCH}"
 
-RUN pip3 install --no-cache-dir -r requirements.txt
-RUN pip install ruff
+RUN pip install --no-cache-dir -r requirements.txt
