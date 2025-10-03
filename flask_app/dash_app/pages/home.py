@@ -101,12 +101,6 @@ def stat_card_style(color: str) -> dict:
         "boxShadow": "0 4px 12px rgba(0, 0, 0, 0.1)",
         "transition": "transform 0.2s ease",
         "fontFamily": "Arial, sans-serif",
-        "width": "calc(25% - 2rem)",
-        "display": "inline-block",
-        "verticalAlign": "top",
-        ":hover": {
-            "transform": "translateY(-3px)",
-        },
     }
 
 
@@ -424,7 +418,7 @@ def layout() -> html.Div:
                                         },
                                     ),
                                     html.P(
-                                        "NetCDF4 Storage Size",
+                                        "Binary Storage Size",
                                         style={
                                             "margin": "0.5rem 0",
                                             "fontSize": "1.1rem",
@@ -478,7 +472,7 @@ def layout() -> html.Div:
                                         },
                                     ),
                                     html.P(
-                                        "Avg. ASTEC Variables/Dataset",
+                                        "ASTEC Variables per Dataset",
                                         style={
                                             "margin": "0.5rem 0",
                                             "fontSize": "1.1rem",
@@ -494,6 +488,7 @@ def layout() -> html.Div:
                                 style=stat_card_style("#20c997"),
                             ),
                         ],
+                        className="stats-container",
                         style={"textAlign": "center", "marginBottom": "2rem"},
                     ),
                 ],
