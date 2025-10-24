@@ -9,7 +9,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from assas_database.assasdb.assas_database_handler import AssasDatabaseHandler
+from assasdb import AssasDatabaseHandler
 from pymongo import MongoClient
 
 # Setup logging
@@ -23,9 +23,9 @@ def restore_files_collection():
     """Restore the files collection from backup using AssasDatabaseHandler."""
 
     # Configuration
-    BACKUP_DIRECTORY = "D:/03_Projekte/backup"
+    BACKUP_DIRECTORY = "/mnt/ASSAS/backup_mongodb"
     CONNECTION_STRING = "mongodb://localhost:27017/"
-    DATABASE_NAME = "assas"
+    DATABASE_NAME = "assas_dev"
     COLLECTION_NAME = "files"
 
     logger.info("Starting collection restore process...")
@@ -94,9 +94,9 @@ def restore_manually():
     """Manually call restore_collections method without using __init__ flag."""
 
     # Configuration
-    BACKUP_DIRECTORY = "D:/03_Projekte/assas-data-hub/assas_database/backup"
+    BACKUP_DIRECTORY = "/mnt/ASSAS/backup_mongodb"
     CONNECTION_STRING = "mongodb://localhost:27017/"
-    DATABASE_NAME = "assas"
+    DATABASE_NAME = "assas_dev"
     COLLECTION_NAME = "files"
 
     try:
@@ -147,7 +147,7 @@ def restore_manually():
 def show_backup_info():
     """Show information about available backup files."""
 
-    BACKUP_DIRECTORY = "D:/03_Projekte/assas-data-hub/assas_database/backup"
+    BACKUP_DIRECTORY = "/mnt/ASSAS/backup_mongodb"
     backup_path = Path(BACKUP_DIRECTORY)
 
     if not backup_path.exists():
