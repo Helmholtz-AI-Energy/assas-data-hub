@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
-Standalone script to authenticate and check vessel_rupture data in valid datasets.
+Standalone script to authenticate and download datasets.
 
 This script:
 1. Authenticates via password
 2. Queries all datasets with status 'valid'
-3. For each dataset, queries the 'vessel_rupture' variable
-4. Checks if the data contains non-NaN values
-5. Reports results
+3. Downloads each dataset
+4. Reports results
 """
 
 import json
