@@ -8,9 +8,12 @@ import dash_bootstrap_components as dbc
 import logging
 
 from flask import current_app as app
-from dash import html
+from dash import html, Input, Output, State, callback
+
 from assasdb import AssasDatabaseManager, AssasDatabaseHandler
 from ..components import content_style
+from ...utils.url_utils import get_base_url
+from ...auth_utils import get_current_user
 
 logger = logging.getLogger("assas_app")
 
@@ -18,15 +21,7 @@ dash.register_page(__name__, path_template="/details/<report_id>")
 
 
 def meta_info_table(document: dict) -> dbc.Table:
-    """Generate a table displaying metadata information from the document.
-
-    Args:
-        document (dict): A dictionary containing metadata information.
-
-    Returns:
-        dbc.Table: A Dash Bootstrap Components table containing the metadata.
-
-    """
+    """Generate a table displaying metadata information from the document."""
     general_header = [
         html.Thead(html.Tr([html.Th("NetCDF4 Dataset Attribute"), html.Th("Value")]))
     ]
@@ -35,9 +30,6 @@ def meta_info_table(document: dict) -> dbc.Table:
         html.Tbody(
             [
                 html.Tr([html.Td("Name"), html.Td(document["meta_name"])]),
-                # html.Tr([html.Td('Group'), html.Td(document['meta_group'])]),
-                # html.Tr([html.Td('Date'), html.Td(document['meta_date'])]),
-                # html.Tr([html.Td('Creator'), html.Td(document['meta_creator'])]),
                 html.Tr(
                     [html.Td("Description"), html.Td(document["meta_description"])]
                 ),
@@ -63,7 +55,12 @@ def meta_info_table(document: dict) -> dbc.Table:
     if meta_data_variables is None:
         table = general_header + general_body
         return dbc.Table(
-            table, striped=True, bordered=True, hover=True, responsive=True
+            table,
+            striped=True,
+            bordered=True,
+            hover=True,
+            responsive=True,
+            className="mb-4",
         )
 
     data_meta = []
@@ -84,7 +81,14 @@ def meta_info_table(document: dict) -> dbc.Table:
 
     table = general_header + general_body + data_header + data_body
 
-    return dbc.Table(table, striped=True, bordered=True, hover=True, responsive=True)
+    return dbc.Table(
+        table,
+        striped=True,
+        bordered=True,
+        hover=True,
+        responsive=True,
+        className="mb-4",
+    )
 
 
 def layout(report_id: str | None = None) -> html.Div:
@@ -94,8 +98,8 @@ def layout(report_id: str | None = None) -> html.Div:
     if (report_id == "none") or (report_id is None):
         return html.Div(
             [
-                html.H1("This is the data details template."),
-                html.Div("The content is generated for each _id."),
+                html.H1("Data Details"),
+                html.Div("The content is generated for each dataset."),
             ],
             style=content_style(),
         )
@@ -105,6 +109,140 @@ def layout(report_id: str | None = None) -> html.Div:
                 database_name=app.config["MONGO_DB_NAME"],
             )
         ).get_database_entry_by_uuid(report_id)
-        logger.info(f"Found document {document}")
 
-        return html.Div([meta_info_table(document)], style=content_style())
+        logger.info(f"Found document {document}")
+        base_url = get_base_url()
+        datacite_url = f"{base_url}/files/datacite/{report_id}"
+
+        current_user = get_current_user()
+        show_edit = "admin" in current_user.get(
+            "roles", []
+        ) or "curator" in current_user.get("roles", [])
+        logger.info(f"Show edit section: {show_edit}")
+
+        return html.Div(
+            [
+                html.Div(
+                    [
+                        html.H2(
+                            f"Dataset Details: {document.get('meta_name', report_id)}",
+                            style={
+                                "fontWeight": "bold",
+                                "color": "#2c3e50",
+                                "marginBottom": "0.5rem",
+                                "fontFamily": "Arial, sans-serif",
+                            },
+                        ),
+                        html.P(
+                            document.get("meta_description", ""),
+                            style={
+                                "fontSize": "1.1rem",
+                                "color": "#444",
+                                "marginBottom": "1.5rem",
+                            },
+                        ),
+                        dbc.Button(
+                            [
+                                html.I(className="fas fa-download me-2"),
+                                "Show DataCite JSON",
+                            ],
+                            href=datacite_url,
+                            color="primary",
+                            outline=True,
+                            external_link=True,
+                            target="_blank",
+                            style={"marginBottom": "1.5rem"},
+                        ),
+                        (
+                            html.Div(
+                                [
+                                    dbc.Button(
+                                        "Edit Metadata",
+                                        id="toggle-edit-metadata",
+                                        color="warning",
+                                        outline=True,
+                                        style={"marginBottom": "1rem"},
+                                    ),
+                                    html.Div(
+                                        id="edit-metadata-section",
+                                        children=[],
+                                        style={"display": "none"},
+                                    ),
+                                ]
+                            )
+                            if show_edit
+                            else None
+                        ),
+                    ],
+                    style={
+                        "textAlign": "center",
+                        "marginBottom": "2rem",
+                        "backgroundColor": "#f8f9fa",
+                        "padding": "2rem",
+                        "borderRadius": "12px",
+                        "boxShadow": "0 2px 8px rgba(0,0,0,0.07)",
+                    },
+                ),
+                html.H4(
+                    "NetCDF4 Metadata",
+                    style={
+                        "color": "#007bff",
+                        "marginTop": "2rem",
+                        "marginBottom": "1rem",
+                        "fontWeight": "bold",
+                    },
+                ),
+                meta_info_table(document),
+            ],
+            style={
+                **content_style(),
+                "maxWidth": "900px",
+                "margin": "2rem auto",
+                "backgroundColor": "#fff",
+                "borderRadius": "16px",
+                "boxShadow": "0 4px 24px rgba(0,0,0,0.08)",
+                "padding": "2.5rem 2rem",
+            },
+        )
+
+
+# Callback to toggle and show the edit form
+@callback(
+    Output("edit-metadata-section", "style"),
+    Output("edit-metadata-section", "children"),
+    Input("toggle-edit-metadata", "n_clicks"),
+    State("edit-metadata-section", "style"),
+    prevent_initial_call=True,
+)
+def toggle_edit_metadata(n_clicks: int, current_style: dict) -> tuple[dict, list]:
+    """Toggle the visibility of the edit metadata form."""
+    if n_clicks is None:
+        return {"display": "none"}, []
+    # Toggle display and show form if visible
+    if current_style.get("display") == "none":
+        # Show form
+        return (
+            {"display": "block"},
+            [
+                dbc.Form(
+                    [
+                        dbc.Label("Name"),
+                        dbc.Input(id="edit-meta-name", type="text"),
+                        dbc.Label("Description", style={"marginTop": "1rem"}),
+                        dbc.Textarea(
+                            id="edit-meta-description", style={"height": "100px"}
+                        ),
+                        dbc.Button(
+                            "Save Changes",
+                            id="save-meta-btn",
+                            color="success",
+                            style={"marginTop": "1rem"},
+                        ),
+                        html.Div(id="edit-meta-feedback", style={"marginTop": "1rem"}),
+                    ]
+                )
+            ],
+        )
+    else:
+        # Hide form
+        return {"display": "none"}, []

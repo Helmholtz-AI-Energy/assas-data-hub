@@ -30,6 +30,39 @@ class FileService:
         )
 
 
+@files_bp.route("/datacite/<uuid:system_uuid>", methods=["GET"])
+@auth.login_required
+def get_datacite_json(system_uuid: uuid.UUID) -> Response:
+    """GET /files/datacite/{system_uuid} - Retrieve DataCite JSON for a dataset.
+
+    The JSON files are stored on LSDF, one per system_uuid.
+    """
+    try:
+        datacite_folder = Path(
+            app.config.get("DATACITE_FOLDER", "/mnt/ASSAS/datacite_json")
+        )
+        json_path = datacite_folder / f"{system_uuid}_datacite.json"
+        logger.info(f"Looking for DataCite JSON at: {json_path}")
+
+        if not json_path.exists():
+            return APIResponse.not_found("DataCite JSON not found for this system_uuid")
+
+        with open(json_path, "r", encoding="utf-8") as f:
+            datacite_json = f.read()
+
+        logger.info(f"Serving DataCite JSON: {json_path}")
+
+        return Response(
+            datacite_json,
+            mimetype="application/json",
+        )
+
+    except Exception as e:
+        return handle_api_error(
+            e, f"Failed to retrieve DataCite JSON for {system_uuid}"
+        )
+
+
 @files_bp.route("/download/<uuid:dataset_id>", methods=["GET"])
 @auth.login_required
 def download_dataset_file(dataset_id: uuid.UUID) -> Response:
