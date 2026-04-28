@@ -78,7 +78,7 @@ def download_dataset_file(dataset_id: uuid.UUID) -> Response:
         if not filepath:
             return APIResponse.not_found("File path not found for dataset")
 
-        file_path = Path(filepath)
+        file_path = Path(filepath).resolve()
         if not file_path.exists():
             return APIResponse.not_found("File does not exist on disk")
 
@@ -148,10 +148,11 @@ def get_file_info(dataset_id: uuid.UUID) -> Response:
             return APIResponse.not_found("Dataset not found")
 
         filepath = document.get("system_result")
+        filepath = Path(filepath).resolve() if filepath else None
         file_info = {
             "dataset_id": str(dataset_id),
-            "filepath": filepath,
-            "exists": Path(filepath).exists() if filepath else False,
+            "filepath": str(filepath) if filepath else None,
+            "exists": filepath.exists() if filepath else False,
             "size": document.get("system_size"),
             "size_hdf5": document.get("system_size_hdf5"),
         }
